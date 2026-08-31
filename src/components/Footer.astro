@@ -1,0 +1,94 @@
+---
+import { CATEGORIAS, CONTACT, NAV, PHONE_DISPLAY, PHONE_TEL, SITE, SOCIALS } from '../consts';
+
+const anio = new Date().getFullYear();
+---
+
+<footer class="bg-ink text-white/70">
+  <div class="mx-auto max-w-7xl px-6 py-14">
+    <div class="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
+      <div>
+        <div class="flex items-center gap-2.5">
+          <span
+            class="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-brand font-display text-lg font-bold text-white"
+            aria-hidden="true">R</span
+          >
+          <span class="font-display text-lg font-bold text-white">Imprenta Reverte</span>
+        </div>
+        <p class="mt-4 text-sm leading-relaxed">
+          {SITE.tagline} Imprenta en {CONTACT.locality}, {CONTACT.regionCode}.
+        </p>
+        <ul class="mt-5 flex gap-4 text-sm">
+          {
+            SOCIALS.map((s) => (
+              <li>
+                <a href={s.href} target="_blank" rel="noopener" class="hover:text-white">
+                  {s.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div class="lg:col-span-2">
+        <h2 class="text-sm font-semibold uppercase tracking-wider text-white">Catálogo</h2>
+        <ul class="mt-4 grid gap-2.5 text-sm sm:grid-cols-2">
+          {
+            CATEGORIAS.map((c) => (
+              <li>
+                <a href={`/catalogo/${c.slug}/`} class="hover:text-white">
+                  {c.etiqueta}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="text-sm font-semibold uppercase tracking-wider text-white">Contacto</h2>
+        <address class="mt-4 space-y-3 text-sm not-italic leading-relaxed">
+          <p>
+            {CONTACT.street}<br />
+            {CONTACT.neighborhood}<br />
+            {CONTACT.locality}, {CONTACT.region}
+          </p>
+          <p>
+            <a href={`tel:${PHONE_TEL}`} class="font-semibold text-white hover:text-accent">
+              {PHONE_DISPLAY}
+            </a>
+          </p>
+          <p>{CONTACT.hoursText}</p>
+        </address>
+
+        <ul class="mt-5 space-y-2 text-sm">
+          {
+            NAV.map((item) => (
+              <li>
+                <a href={item.href} class="hover:text-white">
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+
+    <div
+      class="mt-12 flex flex-col gap-3 border-t border-lineDk pt-6 text-xs sm:flex-row sm:items-center sm:justify-between"
+    >
+      <p>© {anio} Imprenta Reverte. Todos los derechos reservados.</p>
+      <p>
+        Sitio informativo. Fotografías de{' '}
+        <a
+          href="https://unsplash.com"
+          target="_blank"
+          rel="noopener"
+          class="underline underline-offset-2 hover:text-white">Unsplash</a
+        >.
+      </p>
+    </div>
+  </div>
+</footer>

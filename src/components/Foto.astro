@@ -1,0 +1,45 @@
+---
+// Imagen de Unsplash servida por su propio CDN.
+//
+// No pasa por `astro:assets` a propósito: el CDN de Unsplash ya redimensiona y
+// negocia el formato (`auto=format` da WebP/AVIF según el navegador), así que
+// optimizarla en el build solo añadiría descargas a cada compilación sin
+// mejorar el resultado. A cambio, aquí se fija el srcset a mano.
+import { foto } from '../consts';
+
+interface Props {
+  id: string;
+  alt: string;
+  /** Anchos reales que ocupará la imagen, para el atributo `sizes`. */
+  sizes?: string;
+  /** La imagen del hero (LCP) se carga con prioridad; el resto, en diferido. */
+  prioridad?: boolean;
+  class?: string;
+  /** Relación de aspecto para reservar el espacio y evitar CLS. */
+  ratio?: string;
+}
+
+const {
+  id,
+  alt,
+  sizes = '100vw',
+  prioridad = false,
+  class: clase = '',
+  ratio = '4/3',
+} = Astro.props;
+
+const anchos = [480, 768, 1080, 1600, 2000];
+const srcset = anchos.map((w) => `${foto(id, w)} ${w}w`).join(', ');
+---
+
+<img
+  src={foto(id, 1200)}
+  srcset={srcset}
+  sizes={sizes}
+  alt={alt}
+  style={`aspect-ratio:${ratio}`}
+  loading={prioridad ? 'eager' : 'lazy'}
+  fetchpriority={prioridad ? 'high' : 'auto'}
+  decoding={prioridad ? 'sync' : 'async'}
+  class={`h-full w-full object-cover ${clase}`}
+/>

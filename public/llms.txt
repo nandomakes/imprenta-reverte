@@ -1,0 +1,35 @@
+# Imprenta Reverte
+
+> Imprenta en Ciudad Valles, San Luis Potosí, México. Sitio informativo: no es
+> tienda en línea, no hay carrito ni precios publicados. El cliente consulta el
+> catálogo y pide una cotización.
+
+## Datos del negocio
+
+- Nombre: Imprenta Reverte
+- Dirección: Blvd. México - Laredo 86-SUR, Zona Centro, Ciudad Valles, San Luis Potosí, México
+- Teléfono: 481 381 6663 (+52 481 381 6663)
+- Horario: lunes a viernes 9:00–19:00; sábado 9:00–14:00
+- Zona de servicio: Ciudad Valles y la Huasteca Potosina (Tamuín, El Naranjo, Tamazunchale, Xilitla, Aquismón), además de la zona de Tampico y San Luis Potosí capital.
+- Tiraje mínimo: una pieza en tazas, termos, reconocimientos, playeras y sellos.
+- Diseño: incluido en la mayoría de los trabajos si el cliente no trae archivo.
+- Pago: anticipo al aprobar la prueba, resto contra entrega. Efectivo, transferencia y tarjeta.
+
+## Catálogo (9 categorías)
+
+1. **Papelería Comercial y Corporativa** — notas de venta, comandas, recibos, pedidos, vales, contratos y formatos, hojas membretadas. No incluye recetarios ni órdenes de laboratorio.
+2. **Papelería Médica y de Laboratorio** — recetarios, órdenes de laboratorio, sobres para laboratorio, bolsas para radiografías, papelería de consultorio.
+3. **Publicidad e Identidad Visual** — tarjetas de presentación, volantes, trípticos y dípticos, pósters, gafetes, etiquetas adhesivas y stickers, etiquetas para botellas, imanes, revistas y folletos, menús para restaurante. No incluye lonas ni gran formato.
+4. **Impresión en Gran Formato y Señalética** — lonas, banner display tipo araña, banderas, toldos y carpas, vinil para ventanas / micro perforado / esmerilado, señalética en corte de vinil, rotulación vehicular, rótulos para negocios, figuras en coroplast, cheques de premiación, vinil reflejante.
+5. **Impresión Textil y Artículos Promocionales** — uniformes, playeras (DTF, sublimación, serigrafía), playeras full print, gorras, mochilas, bolsas ecológicas y tote bag, cubrecuellos, sombreros, manteles de tela. No incluye tazas, termos, placas ni medallas: eso es grabado láser.
+6. **Grabado Láser y Sublimación en Rígidos** — tazas sublimadas, termos y vasos con grabado láser, cilindros, reconocimientos en acrílico/vidrio/madera, placas metálicas y para nicho, medallas, souvenirs, pulseras de sublimación. No incluye playeras ni gorras.
+7. **Sellos y Artículos de Oficina** — sellos Colop y de madera, fechadores, troqueles de realce, agendas y planeadores, lapiceros, carpetas, reglas, pines, pulseras Tyvek, portadas de tesis.
+8. **Impresión para Eventos Sociales y Deportivos** — invitaciones de boda/bautizo/comunión, menús decorativos, novenarios, abanicos, manteles de papel, calendarios, números de corredor, hojas de registro, figuras en coroplast.
+9. **Otros Servicios de Imprenta** — cualquier trabajo que no encaje con claridad en las anteriores.
+
+## Páginas
+
+- / — inicio, con el catálogo resumido y el formulario de cotización
+- /catalogo/ — catálogo completo, las nueve categorías con todos sus ejemplos
+- /catalogo/{categoria}/ — ficha de cada categoría
+- /contacto/ — formulario de cotización, ubicación y preguntas frecuentes

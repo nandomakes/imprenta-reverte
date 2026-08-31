@@ -1,0 +1,199 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5.5rem;
+  }
+
+  /* Red de seguridad: ningún elemento decorativo ancho puede provocar
+     scroll horizontal en la página. */
+  body {
+    overflow-x: clip;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  :focus-visible {
+    outline: 2px solid theme('colors.brand');
+    outline-offset: 3px;
+    border-radius: 3px;
+  }
+
+  ::selection {
+    background: theme('colors.brand');
+    color: #fff;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+
+  header {
+    transition:
+      box-shadow 0.35s var(--ease-out),
+      background-color 0.35s var(--ease-out);
+  }
+  header.is-scrolled {
+    box-shadow: 0 10px 30px -20px rgba(14, 23, 38, 0.55);
+  }
+}
+
+@layer components {
+  /* Reveal al hacer scroll. Visible por defecto: el estado oculto solo
+     existe cuando el JS marca <html data-reveal>, así que sin JS no se
+     pierde ni un bloque de contenido. */
+  html[data-reveal] .reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition:
+      opacity 0.7s var(--ease-out-soft) calc(var(--reveal-i, 0) * 70ms),
+      transform 0.7s var(--ease-out-soft) calc(var(--reveal-i, 0) * 70ms);
+  }
+  html[data-reveal] .reveal.in {
+    opacity: 1;
+    transform: none;
+  }
+
+  .pressable {
+    transition: transform 160ms var(--ease-out);
+  }
+  .pressable:active {
+    transform: scale(0.97);
+  }
+
+  .lift {
+    transition:
+      transform 0.35s var(--ease-out),
+      box-shadow 0.35s var(--ease-out),
+      border-color 0.35s var(--ease-out);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .lift:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 26px 50px -30px rgba(14, 23, 38, 0.5);
+    }
+  }
+
+  .zoom-img {
+    transition: transform 0.9s var(--ease-out);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .zoom-parent:hover .zoom-img {
+      transform: scale(1.06);
+    }
+  }
+
+  .nav-link {
+    position: relative;
+  }
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.15rem;
+    height: 2px;
+    background: theme('colors.brand');
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s var(--ease-out);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .nav-link:hover::after {
+      transform: scaleX(1);
+    }
+  }
+
+  .headline {
+    font-family: theme('fontFamily.display');
+    font-weight: 700;
+    letter-spacing: -0.022em;
+    line-height: 1.08;
+  }
+
+  /* Etiqueta corta en versalitas sobre los títulos de sección. */
+  .kicker {
+    font-family: theme('fontFamily.body');
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-size: 0.6875rem;
+    color: theme('colors.brand');
+  }
+
+  /* Campos del formulario de cotización. */
+  .field {
+    @apply w-full rounded-lg border border-line bg-white px-4 py-3 text-[0.95rem] text-ink
+      placeholder:text-ash focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/25;
+  }
+  .field-label {
+    @apply mb-1.5 block text-sm font-semibold text-ink;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  details.faq > *:not(summary) {
+    animation: faqin 0.3s var(--ease-out);
+  }
+  details.faq summary::-webkit-details-marker {
+    display: none;
+  }
+
+  /* Trama de puntos muy tenue para las secciones claras. */
+  .dot-bg {
+    background-image: radial-gradient(theme('colors.line') 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+}
+
+@keyframes faqin {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  html[data-reveal] .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .lift:hover,
+  .zoom-parent:hover .zoom-img {
+    transform: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

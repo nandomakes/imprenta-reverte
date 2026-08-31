@@ -1,0 +1,31 @@
+---
+// Barra flotante solo en móvil: llamar y cotizar siempre a un pulgar de
+// distancia, sin tener que volver arriba.
+import { CTA_LABEL, PHONE_DISPLAY, PHONE_TEL } from '../consts';
+---
+
+<div
+  class="fixed inset-x-0 bottom-0 z-40 grid grid-cols-2 gap-2 border-t border-line bg-white/95 p-3 backdrop-blur sm:hidden"
+>
+  <a
+    href={`tel:${PHONE_TEL}`}
+    class="pressable inline-flex items-center justify-center gap-2 rounded-lg border-2 border-brand py-3 text-sm font-semibold text-brand"
+  >
+    <svg viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4" aria-hidden="true">
+      <path
+        d="M2 3.5A1.5 1.5 0 013.5 2h1.6a1.5 1.5 0 011.45 1.1l.6 2.2a1.5 1.5 0 01-.4 1.5l-1 1a12 12 0 005.45 5.45l1-1a1.5 1.5 0 011.5-.4l2.2.6A1.5 1.5 0 0118 13.9v1.6a1.5 1.5 0 01-1.5 1.5C8.5 17 2 10.5 2 3.5z"
+      ></path>
+    </svg>
+    Llamar
+    <span class="sr-only">al {PHONE_DISPLAY}</span>
+  </a>
+  <a
+    href="/contacto/#cotizar"
+    class="pressable inline-flex items-center justify-center rounded-lg bg-accent py-3 text-sm font-semibold text-white"
+  >
+    {CTA_LABEL}
+  </a>
+</div>
+
+{/* Colchón para que la barra fija no tape el final del footer. */}
+<div class="h-[76px] sm:hidden" aria-hidden="true"></div>

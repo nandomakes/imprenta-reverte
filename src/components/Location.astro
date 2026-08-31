@@ -1,0 +1,72 @@
+---
+import { CONTACT, PHONE_DISPLAY, PHONE_TEL, SITE } from '../consts';
+---
+
+<section id="ubicacion" class="scroll-mt-24 bg-mist">
+  <div class="mx-auto grid max-w-7xl gap-10 px-6 py-16 md:py-20 lg:grid-cols-2">
+    <div>
+      <p class="kicker reveal">Dónde estamos</p>
+      <h2 class="headline reveal mt-3 text-3xl text-ink sm:text-4xl">
+        Pasa por el local en Zona Centro
+      </h2>
+
+      <address class="reveal mt-6 space-y-5 not-italic">
+        <div>
+          <h3 class="text-sm font-semibold uppercase tracking-wider text-ash">Dirección</h3>
+          <p class="mt-1 text-lg leading-relaxed text-ink">
+            {CONTACT.street}<br />
+            {CONTACT.neighborhood}<br />
+            {CONTACT.locality}, {CONTACT.region}
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-sm font-semibold uppercase tracking-wider text-ash">Teléfono</h3>
+          <p class="mt-1">
+            <a
+              href={`tel:${PHONE_TEL}`}
+              class="font-display text-2xl font-bold text-brand hover:text-brandDk"
+            >
+              {PHONE_DISPLAY}
+            </a>
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-sm font-semibold uppercase tracking-wider text-ash">Horario</h3>
+          <p class="mt-1 text-ink">{CONTACT.hoursText}</p>
+        </div>
+      </address>
+
+      <a
+        href={CONTACT.mapsUrl}
+        target="_blank"
+        rel="noopener"
+        class="pressable reveal mt-7 inline-flex items-center gap-2 rounded-lg border-2 border-brand px-5 py-2.5 text-sm font-semibold text-brand transition-colors hover:bg-brand hover:text-white"
+      >
+        Cómo llegar
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 16 16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="h-4 w-4"
+        >
+          <path d="M6 3h7v7M13 3L4 12"></path>
+        </svg>
+      </a>
+    </div>
+
+    <div class="reveal overflow-hidden rounded-2xl border border-line bg-white">
+      <iframe
+        src={CONTACT.mapEmbedUrl}
+        title={`Mapa de la ubicación de ${SITE.brand} en ${CONTACT.locality}`}
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        class="h-full min-h-[340px] w-full border-0"></iframe>
+    </div>
+  </div>
+</section>

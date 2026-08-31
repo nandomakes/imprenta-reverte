@@ -1,0 +1,113 @@
+---
+import { NAV, PHONE_DISPLAY, PHONE_TEL, SITE } from '../consts';
+import Cta from './Cta.astro';
+
+const ruta = Astro.url.pathname;
+const esActivo = (href: string) =>
+  href === '/' ? ruta === '/' : ruta.startsWith(href.replace(/#.*$/, ''));
+---
+
+<header class="sticky top-0 z-50 bg-white/95 backdrop-blur">
+  <!-- Barra superior: el teléfono es el dato que más se busca en un negocio
+       local, así que va arriba del todo y no dentro de un menú. -->
+  <div class="hidden border-b border-line bg-ink text-white md:block">
+    <div
+      class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-2 text-[0.8125rem]"
+    >
+      <p class="text-white/70">{SITE.tagline}</p>
+      <div class="flex items-center gap-5">
+        <span class="text-white/70">Ciudad Valles, SLP</span>
+        <a href={`tel:${PHONE_TEL}`} class="font-semibold hover:text-accent">
+          Tel. {PHONE_DISPLAY}
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-3.5">
+    <a href="/" class="flex items-center gap-2.5" aria-label={`${SITE.brand} — inicio`}>
+      <span
+        class="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-brand font-display text-lg font-bold text-white"
+        aria-hidden="true">R</span
+      >
+      <span class="leading-tight">
+        <span class="block font-display text-lg font-bold tracking-tight text-ink">
+          Imprenta Reverte
+        </span>
+        <span class="block text-[0.7rem] uppercase tracking-[0.14em] text-ash">
+          Ciudad Valles, SLP
+        </span>
+      </span>
+    </a>
+
+    <nav aria-label="Principal" class="hidden lg:block">
+      <ul class="flex items-center gap-7 text-[0.9375rem] font-medium">
+        {
+          NAV.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class:list={[
+                  'nav-link py-1',
+                  esActivo(item.href) ? 'text-brand' : 'text-char hover:text-brand',
+                ]}
+                aria-current={esActivo(item.href) ? 'page' : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <a
+        href={`tel:${PHONE_TEL}`}
+        class="pressable grid h-11 w-11 place-items-center rounded-lg border border-line text-brand hover:bg-brandLt lg:hidden"
+        aria-label={`Llamar al ${PHONE_DISPLAY}`}
+      >
+        <svg viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5" aria-hidden="true">
+          <path
+            d="M2 3.5A1.5 1.5 0 013.5 2h1.6a1.5 1.5 0 011.45 1.1l.6 2.2a1.5 1.5 0 01-.4 1.5l-1 1a12 12 0 005.45 5.45l1-1a1.5 1.5 0 011.5-.4l2.2.6A1.5 1.5 0 0118 13.9v1.6a1.5 1.5 0 01-1.5 1.5C8.5 17 2 10.5 2 3.5z"
+          ></path>
+        </svg>
+      </a>
+
+      <Cta href="/contacto/#cotizar" class="hidden sm:inline-flex" />
+
+      <button
+        type="button"
+        data-menu-toggle
+        aria-expanded="false"
+        aria-controls="menu-movil"
+        class="pressable grid h-11 w-11 place-items-center rounded-lg border border-line text-ink lg:hidden"
+      >
+        <span class="sr-only">Abrir menú</span>
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" class="h-5 w-5">
+          <path d="M3 5h14M3 10h14M3 15h14" stroke-linecap="round"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div id="menu-movil" data-menu hidden class="border-t border-line bg-white lg:hidden">
+    <nav aria-label="Menú móvil" class="mx-auto max-w-7xl px-6 py-4">
+      <ul class="flex flex-col gap-1">
+        {
+          NAV.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class="block rounded-lg px-3 py-2.5 text-base font-medium text-char hover:bg-mist hover:text-brand"
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <Cta href="/contacto/#cotizar" tamano="lg" class="mt-3 w-full" />
+    </nav>
+  </div>
+</header>

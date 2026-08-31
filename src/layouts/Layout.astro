@@ -1,0 +1,229 @@
+---
+// Fuentes autoalojadas: sin petición bloqueante a fonts.googleapis.com y sin
+// mandar la IP de cada visitante a Google. Solo subconjunto latino.
+import '@fontsource-variable/inter';
+import '@fontsource/archivo/latin-600.css';
+import '@fontsource/archivo/latin-700.css';
+import '../styles/global.css';
+import {
+  SITE,
+  CONTACT,
+  PHONE_TEL,
+  SOCIALS,
+  CATEGORIAS,
+  TESTIMONIOS,
+} from '../consts';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Fuera del índice (lo usan /gracias y /404). */
+  noindex?: boolean;
+  /** Nodos JSON-LD propios de la página (BreadcrumbList, FAQPage, Service…). */
+  schema?: unknown[];
+}
+
+const {
+  title = SITE.title,
+  description = SITE.description,
+  noindex = false,
+  schema = [],
+} = Astro.props;
+
+const site = Astro.site ?? new URL(SITE.url);
+const canonical = new URL(Astro.url.pathname, site).href;
+const ogImage = new URL('/og-image.png', site).href;
+
+const negocio = {
+  '@context': 'https://schema.org',
+  '@type': 'PrintShop',
+  '@id': `${SITE.url}/#negocio`,
+  name: SITE.brand,
+  description: SITE.description,
+  url: SITE.url,
+  image: ogImage,
+  telephone: PHONE_TEL,
+  priceRange: '$$',
+  currenciesAccepted: 'MXN',
+  paymentAccepted: 'Efectivo, Transferencia, Tarjeta',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: CONTACT.addressLine,
+    addressLocality: CONTACT.locality,
+    addressRegion: CONTACT.regionCode,
+    postalCode: CONTACT.postalCode,
+    addressCountry: CONTACT.country,
+  },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: CONTACT.geo.lat,
+    longitude: CONTACT.geo.lng,
+  },
+  openingHoursSpecification: CONTACT.hoursSpec.map((h) => ({
+    '@type': 'OpeningHoursSpecification',
+    dayOfWeek: h.days,
+    opens: h.opens,
+    closes: h.closes,
+  })),
+  areaServed: [
+    'Ciudad Valles',
+    'Tamuín',
+    'El Naranjo',
+    'Tamazunchale',
+    'Xilitla',
+    'Huasteca Potosina',
+    'San Luis Potosí',
+  ],
+  // Reseñas reales detrás de cualquier valoración: Google descuenta (y puede
+  // penalizar) una calificación agregada sin reseñas que la respalden.
+  review: TESTIMONIOS.map((t) => ({
+    '@type': 'Review',
+    author: { '@type': 'Person', name: t.autor },
+    reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
+    reviewBody: t.texto,
+  })),
+  sameAs: SOCIALS.map((s) => s.href),
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Catálogo de servicios de imprenta',
+    itemListElement: CATEGORIAS.map((c) => ({
+      '@type': 'Offer',
+      itemOffered: {
+        '@type': 'Service',
+        name: c.etiqueta,
+        description: c.ejemplos.join(', '),
+        url: `${SITE.url}/catalogo/${c.slug}/`,
+      },
+    })),
+  },
+};
+
+const website = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': `${SITE.url}/#website`,
+  url: SITE.url,
+  name: SITE.brand,
+  publisher: { '@id': `${SITE.url}/#negocio` },
+  inLanguage: 'es-MX',
+};
+
+const jsonLdNodes = [negocio, website, ...schema];
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Todas las fotos vienen del CDN de Unsplash; abrir la conexión temprano
+         le quita el DNS+TLS al camino crítico de la imagen del hero. -->
+    <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
+    <link rel="dns-prefetch" href="https://images.unsplash.com" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <link rel="manifest" href="/site.webmanifest" />
+    {/* Una página noindex no debe declararse canónica de nada. */}
+    {!noindex && <link rel="canonical" href={canonical} />}
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={SITE.brand} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+    <meta name="theme-color" content={SITE.themeColor} />
+    <meta name="geo.region" content="MX-SLP" />
+    <meta name="geo.placename" content={CONTACT.locality} />
+    <meta name="geo.position" content={`${CONTACT.geo.lat};${CONTACT.geo.lng}`} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_MX" />
+    <meta property="og:site_name" content={SITE.brand} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content={`${SITE.brand} — imprenta en ${CONTACT.locality}, ${CONTACT.regionCode}`}
+    />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    {
+      jsonLdNodes.map((node) => (
+        <script is:inline type="application/ld+json" set:html={JSON.stringify(node)} />
+      ))
+    }
+
+    <!-- El modo "reveal" solo se activa si hay JS; sin JS todo queda visible. -->
+    <script is:inline>
+      document.documentElement.setAttribute('data-reveal', '');
+    </script>
+  </head>
+  <body class="bg-paper font-body text-char antialiased">
+    <a
+      href="#contenido"
+      class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-brand focus:px-4 focus:py-2 focus:font-bold focus:text-white"
+    >
+      Saltar al contenido
+    </a>
+    <slot />
+
+    <script>
+      // Reveal escalonado por hermanos, para que rejillas y filas entren en
+      // cascada en vez de todas a la vez.
+      const reveals = document.querySelectorAll<HTMLElement>('.reveal');
+      reveals.forEach((el) => {
+        const hermanos = el.parentElement
+          ? Array.from(el.parentElement.children).filter((c) => c.classList.contains('reveal'))
+          : [el];
+        el.style.setProperty('--reveal-i', String(Math.min(hermanos.indexOf(el), 6)));
+      });
+
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add('in');
+              io.unobserve(e.target);
+            }
+          });
+        },
+        { threshold: 0.1, rootMargin: '0px 0px -6% 0px' }
+      );
+      reveals.forEach((el) => io.observe(el));
+
+      // Sombra del header al hacer scroll.
+      const header = document.querySelector('header');
+      if (header) {
+        const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 16);
+        onScroll();
+        window.addEventListener('scroll', onScroll, { passive: true });
+      }
+
+      // Menú móvil.
+      const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+      const menu = document.querySelector<HTMLElement>('[data-menu]');
+      if (toggle && menu) {
+        toggle.addEventListener('click', () => {
+          const abierto = toggle.getAttribute('aria-expanded') === 'true';
+          toggle.setAttribute('aria-expanded', String(!abierto));
+          menu.hidden = abierto;
+        });
+        // Al tocar un enlace el menú se cierra solo; si no, tapa el destino.
+        menu.addEventListener('click', (e) => {
+          if ((e.target as HTMLElement).closest('a')) {
+            toggle.setAttribute('aria-expanded', 'false');
+            menu.hidden = true;
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

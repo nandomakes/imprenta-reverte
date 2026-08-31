@@ -1,0 +1,85 @@
+---
+import { CATEGORIAS } from '../consts';
+import Foto from './Foto.astro';
+
+interface Props {
+  titulo?: string;
+  intro?: string;
+  /** Excluye una categoría (se usa en "otras categorías" de cada ficha). */
+  excluir?: string;
+  /** Corta la lista, para el bloque de relacionadas. */
+  limite?: number;
+  fondo?: 'blanco' | 'mist';
+}
+
+const {
+  titulo = 'Nuestro catálogo',
+  intro,
+  excluir,
+  limite,
+  fondo = 'blanco',
+} = Astro.props;
+
+let items = CATEGORIAS.filter((c) => c.slug !== excluir);
+if (limite) items = items.slice(0, limite);
+---
+
+<section class={fondo === 'mist' ? 'bg-mist' : 'bg-white'}>
+  <div class="mx-auto max-w-7xl px-6 py-16 md:py-20">
+    <div class="max-w-2xl">
+      <p class="kicker reveal">Qué imprimimos</p>
+      <h2 class="headline reveal mt-3 text-3xl text-ink sm:text-4xl">{titulo}</h2>
+      {intro && <p class="reveal mt-4 text-lg leading-relaxed text-char">{intro}</p>}
+    </div>
+
+    <ul class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        items.map((c) => (
+          <li class="reveal">
+            <a
+              href={`/catalogo/${c.slug}/`}
+              class="zoom-parent lift group flex h-full flex-col overflow-hidden rounded-xl border border-line bg-white"
+            >
+              <div class="overflow-hidden bg-mist">
+                <Foto
+                  id={c.imagen}
+                  alt={c.imagenAlt}
+                  ratio="16/10"
+                  sizes="(min-width:1024px) 380px, (min-width:640px) 50vw, 100vw"
+                  class="zoom-img"
+                />
+              </div>
+              <div class="flex flex-1 flex-col p-5">
+                <h3 class="font-display text-lg font-bold leading-snug text-ink group-hover:text-brand">
+                  {c.etiqueta}
+                </h3>
+                <p class="mt-2 text-sm leading-relaxed text-char">{c.resumen}</p>
+                {/* Los ejemplos son el catálogo real: dicen más que cualquier
+                    descripción que pudiéramos escribir. */}
+                <p class="mt-3 text-[0.8125rem] leading-relaxed text-ash">
+                  {c.ejemplos.slice(0, 4).join(' · ')}
+                  {c.ejemplos.length > 4 && ` · +${c.ejemplos.length - 4} más`}
+                </p>
+                <span class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand">
+                  Ver categoría
+                  <svg
+                    aria-hidden="true"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1"
+                  >
+                    <path d="M3 8h10M9 4l4 4-4 4" />
+                  </svg>
+                </span>
+              </div>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

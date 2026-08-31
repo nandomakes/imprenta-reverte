@@ -1,0 +1,231 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import CallFab from '../../components/CallFab.astro';
+import QuoteCTA from '../../components/QuoteCTA.astro';
+import CategoriasGrid from '../../components/CategoriasGrid.astro';
+import Foto from '../../components/Foto.astro';
+import Cta from '../../components/Cta.astro';
+import { CATEGORIAS, CONTACT, PASOS, SITE, type Categoria } from '../../consts';
+
+export function getStaticPaths() {
+  // Una página por categoría del catálogo. La lista sale de `data/catalogo.ts`,
+  // así que añadir una categoría allí genera su página sola.
+  return CATEGORIAS.map((categoria) => ({
+    params: { slug: categoria.slug },
+    props: { categoria },
+  }));
+}
+
+interface Props {
+  categoria: Categoria;
+}
+
+const { categoria: c } = Astro.props;
+
+const title = `${c.etiqueta} en Ciudad Valles | ${SITE.brand}`;
+const description = `${c.resumen} ${c.ejemplos.slice(0, 5).join(', ')} y más en Imprenta Reverte, ${CONTACT.locality}, ${CONTACT.regionCode}. Cotiza ahora.`;
+
+const breadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${SITE.url}/` },
+    { '@type': 'ListItem', position: 2, name: 'Catálogo', item: `${SITE.url}/catalogo/` },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: c.etiqueta,
+      item: `${SITE.url}/catalogo/${c.slug}/`,
+    },
+  ],
+};
+
+const servicio = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: c.etiqueta,
+  description: c.descripcion,
+  serviceType: c.etiqueta,
+  provider: { '@id': `${SITE.url}/#negocio` },
+  areaServed: {
+    '@type': 'City',
+    name: CONTACT.locality,
+    address: {
+      '@type': 'PostalAddress',
+      addressRegion: CONTACT.regionCode,
+      addressCountry: CONTACT.country,
+    },
+  },
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: c.etiqueta,
+    itemListElement: c.ejemplos.map((e) => ({
+      '@type': 'Offer',
+      itemOffered: { '@type': 'Product', name: e },
+    })),
+  },
+};
+---
+
+<Layout title={title} description={description} schema={[breadcrumb, servicio]}>
+  <Header />
+  <main id="contenido">
+    <section class="border-b border-line bg-mist">
+      <div class="mx-auto grid max-w-7xl items-center gap-10 px-6 py-14 md:py-16 lg:grid-cols-2">
+        <div>
+          <nav aria-label="Ruta" class="text-sm text-ash">
+            <a href="/" class="hover:text-brand">Inicio</a>
+            <span class="mx-2" aria-hidden="true">/</span>
+            <a href="/catalogo/" class="hover:text-brand">Catálogo</a>
+            <span class="mx-2" aria-hidden="true">/</span>
+            <span class="text-char">{c.etiqueta}</span>
+          </nav>
+
+          <h1 class="headline mt-4 text-3xl text-ink sm:text-4xl lg:text-[2.75rem]">
+            {c.etiqueta}
+          </h1>
+          <p class="mt-5 text-lg leading-relaxed text-char">{c.descripcion}</p>
+
+          <div class="mt-8 flex flex-wrap gap-3">
+            <Cta href="#cotizar" tamano="lg" />
+            <a
+              href="/catalogo/"
+              class="pressable inline-flex items-center justify-center rounded-lg border-2 border-line px-7 py-3.5 text-base font-semibold text-char transition-colors hover:border-brand hover:text-brand"
+            >
+              Ver todo el catálogo
+            </a>
+          </div>
+        </div>
+
+        <div class="overflow-hidden rounded-2xl border border-line">
+          <Foto
+            id={c.imagen}
+            alt={c.imagenAlt}
+            prioridad
+            ratio="4/3"
+            sizes="(min-width:1024px) 560px, 100vw"
+          />
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-white">
+      <div class="mx-auto max-w-7xl px-6 py-14 md:py-16">
+        <div class="grid gap-12 lg:grid-cols-[1.5fr_1fr]">
+          <div>
+            <p class="kicker reveal">Qué incluye</p>
+            <h2 class="headline reveal mt-3 text-2xl text-ink sm:text-3xl">
+              Todo lo que hacemos en esta categoría
+            </h2>
+
+            <ul class="reveal mt-7 grid gap-x-8 gap-y-3 sm:grid-cols-2">
+              {
+                c.ejemplos.map((e) => (
+                  <li class="flex items-start gap-3 border-b border-line pb-3 text-[0.9375rem] text-ink">
+                    <svg
+                      aria-hidden="true"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="mt-1 h-3.5 w-3.5 shrink-0 text-brand"
+                    >
+                      <path d="M3 8.5l3.5 3.5L13 5" />
+                    </svg>
+                    <span class="capitalize-first">{e}</span>
+                  </li>
+                ))
+              }
+            </ul>
+
+            {
+              /* El contraste del catálogo, tal cual está escrito en la fuente:
+                 es justo lo que evita que alguien pida una taza pensando que
+                 entra en textil. */
+              c.noIncluye && (
+                <div class="reveal mt-8 rounded-xl border-l-4 border-accent bg-mist px-5 py-4">
+                  <p class="font-display text-sm font-bold uppercase tracking-wider text-ink">
+                    Esto va en otra categoría
+                  </p>
+                  <p class="mt-2 leading-relaxed text-char">
+                    En <strong class="text-ink">{c.etiqueta}</strong> no entran {c.noIncluye}.{' '}
+                    <a href="/catalogo/" class="font-semibold text-brand underline underline-offset-4">
+                      Revisa el catálogo completo
+                    </a>{' '}
+                    para encontrar dónde va.
+                  </p>
+                </div>
+              )
+            }
+          </div>
+
+          <aside class="reveal lg:sticky lg:top-28 lg:self-start">
+            {
+              c.aSaber && (
+                <div class="rounded-xl border border-line bg-white p-6">
+                  <h2 class="font-display text-lg font-bold text-ink">Antes de cotizar</h2>
+                  <ul class="mt-4 space-y-3.5">
+                    {c.aSaber.map((a) => (
+                      <li class="flex gap-3 text-[0.9375rem] leading-relaxed text-char">
+                        <span
+                          class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent"
+                          aria-hidden="true"
+                        />
+                        <span>{a}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Cta href="#cotizar" class="mt-6 w-full" />
+                </div>
+              )
+            }
+
+            <ol class="mt-6 rounded-xl border border-line bg-mist p-6">
+              <h2 class="font-display text-lg font-bold text-ink">Cómo es el proceso</h2>
+              {
+                PASOS.map((p) => (
+                  <li class="mt-4 flex gap-3">
+                    <span
+                      class="font-display text-sm font-bold text-brand"
+                      aria-hidden="true"
+                    >
+                      {p.numero}
+                    </span>
+                    <span class="text-sm leading-relaxed text-char">
+                      <strong class="block font-semibold text-ink">{p.titulo}</strong>
+                      {p.texto}
+                    </span>
+                  </li>
+                ))
+              }
+            </ol>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <QuoteCTA
+      categoria={c.slug}
+      titulo={`Cotiza tu trabajo de ${c.etiqueta.toLowerCase()}`}
+    />
+
+    <CategoriasGrid
+      titulo="Otras categorías del catálogo"
+      excluir={c.slug}
+      limite={3}
+      fondo="mist"
+    />
+  </main>
+  <Footer />
+  <CallFab />
+</Layout>
+
+<style>
+  .capitalize-first::first-letter {
+    text-transform: uppercase;
+  }
+</style>

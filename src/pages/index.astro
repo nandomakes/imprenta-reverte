@@ -1,0 +1,38 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import Ventajas from '../components/Ventajas.astro';
+import CategoriasGrid from '../components/CategoriasGrid.astro';
+import ComoTrabajamos from '../components/ComoTrabajamos.astro';
+import Destacados from '../components/Destacados.astro';
+import Nosotros from '../components/Nosotros.astro';
+import Testimonios from '../components/Testimonios.astro';
+import Faq from '../components/Faq.astro';
+import QuoteCTA from '../components/QuoteCTA.astro';
+import Location from '../components/Location.astro';
+import Footer from '../components/Footer.astro';
+import CallFab from '../components/CallFab.astro';
+import { FAQS_HOME, faqPageSchema } from '../consts';
+---
+
+<Layout schema={[faqPageSchema(FAQS_HOME)]}>
+  <Header />
+  <main id="contenido">
+    <Hero />
+    <Ventajas />
+    <CategoriasGrid
+      titulo="Nueve categorías, un solo lugar"
+      intro="Del recetario del consultorio a la lona del frente del negocio. Entra a cada categoría para ver todo lo que incluye."
+    />
+    <ComoTrabajamos />
+    <Destacados />
+    <Nosotros />
+    <Testimonios />
+    <Faq items={FAQS_HOME} />
+    <QuoteCTA />
+    <Location />
+  </main>
+  <Footer />
+  <CallFab />
+</Layout>

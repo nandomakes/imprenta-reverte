@@ -1,0 +1,49 @@
+---
+import { IMAGES, PHONE_DISPLAY, PHONE_TEL } from '../consts';
+import Cta from './Cta.astro';
+import Foto from './Foto.astro';
+---
+
+<section class="relative overflow-hidden bg-ink text-white">
+  <div class="absolute inset-0">
+    <Foto
+      id={IMAGES.hero.id}
+      alt={IMAGES.hero.alt}
+      prioridad
+      ratio="16/9"
+      sizes="100vw"
+      class="opacity-30"
+    />
+    <div class="absolute inset-0 bg-gradient-to-r from-ink via-ink/90 to-ink/50"></div>
+  </div>
+
+  <div class="relative mx-auto max-w-7xl px-6 py-20 md:py-28 lg:py-32">
+    <div class="max-w-2xl">
+      <p class="kicker reveal text-accent">Imprenta en Ciudad Valles, SLP</p>
+      <h1 class="headline reveal mt-4 text-4xl text-white sm:text-5xl lg:text-[3.5rem]">
+        Todo lo que tu negocio necesita impreso, en un solo lugar
+      </h1>
+      <p class="reveal mt-6 max-w-xl text-lg leading-relaxed text-white/75">
+        Papelería, lonas, playeras, sellos, grabado láser e impresión para eventos. Nueve
+        categorías de catálogo, una sola imprenta, y la entrega en la fecha que te prometimos.
+      </p>
+
+      <div class="reveal mt-9 flex flex-wrap items-center gap-3">
+        <Cta href="/contacto/#cotizar" tamano="lg" />
+        <a
+          href="/catalogo/"
+          class="pressable inline-flex items-center justify-center rounded-lg border-2 border-white/30 px-7 py-3.5 text-base font-semibold text-white transition-colors hover:border-white hover:bg-white hover:text-ink"
+        >
+          Ver el catálogo
+        </a>
+      </div>
+
+      <p class="reveal mt-8 text-sm text-white/60">
+        ¿Prefieres hablarlo? Llámanos al{' '}
+        <a href={`tel:${PHONE_TEL}`} class="font-semibold text-white underline underline-offset-4">
+          {PHONE_DISPLAY}
+        </a>
+      </p>
+    </div>
+  </div>
+</section>

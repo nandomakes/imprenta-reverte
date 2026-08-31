@@ -1,0 +1,37 @@
+---
+import { TESTIMONIOS } from '../consts';
+---
+
+<section class="bg-ink text-white">
+  <div class="mx-auto max-w-7xl px-6 py-16 md:py-20">
+    <div class="max-w-2xl">
+      <p class="kicker reveal text-accent">Clientes</p>
+      <h2 class="headline reveal mt-3 text-3xl text-white sm:text-4xl">
+        Lo que dicen de nosotros
+      </h2>
+    </div>
+
+    <ul class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        TESTIMONIOS.map((t) => (
+          <li class="reveal flex h-full flex-col rounded-xl border border-lineDk bg-slate p-6">
+            <div class="flex gap-0.5 text-accent" aria-label="5 de 5 estrellas">
+              {[0, 1, 2, 3, 4].map(() => (
+                <svg viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4" aria-hidden="true">
+                  <path d="M10 1.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8L1.5 7.7l5.9-.9z" />
+                </svg>
+              ))}
+            </div>
+            <blockquote class="mt-4 flex-1 text-[0.9375rem] leading-relaxed text-white/80">
+              {t.texto}
+            </blockquote>
+            <footer class="mt-5 border-t border-lineDk pt-4">
+              <p class="font-semibold text-white">{t.autor}</p>
+              <p class="text-sm text-white/50">{t.rol}</p>
+            </footer>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

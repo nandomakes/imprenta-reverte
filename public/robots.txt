@@ -1,0 +1,27 @@
+User-agent: *
+Allow: /
+Disallow: /gracias/
+Disallow: /api/
+
+# Los rastreadores de IA sí pueden leer el sitio: para una imprenta local,
+# aparecer citada en una respuesta de ChatGPT o Perplexity vale tanto como
+# una posición en Google.
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+Sitemap: https://www.imprentareverte.com/sitemap-index.xml
