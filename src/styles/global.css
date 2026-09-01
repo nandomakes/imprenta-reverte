@@ -106,7 +106,12 @@
      el dedo y en escritorio lo mueven las flechas. */
   .rail {
     @apply flex gap-4 overflow-x-auto scroll-smooth pb-2 sm:gap-6;
-    scroll-snap-type: x mandatory;
+    /* `proximity`, no `mandatory`: con `mandatory` el navegador reajustaba a
+       la parada más cercana justo después de que las flechas colocaran el
+       carril, y eso era lo que dejaba la tarjeta cortada. Con `proximity` la
+       posición exacta que fijan las flechas se respeta, y el arrastre con el
+       dedo sigue encajando solo. */
+    scroll-snap-type: x proximity;
     scrollbar-width: none;
     -ms-overflow-style: none;
   }
@@ -117,11 +122,21 @@
     scroll-snap-align: start;
     flex: 0 0 auto;
   }
+  /* La última tarjeta encaja por su borde derecho: así el tope del carril es
+     una parada válida y nunca queda media tarjeta asomando al final. */
+  .rail > *:last-child {
+    scroll-snap-align: end;
+  }
 
   .arrow {
     @apply grid h-11 w-11 place-items-center rounded-full border border-line bg-white
-      text-brand shadow-md transition hover:bg-brand hover:text-white
-      disabled:pointer-events-none disabled:opacity-0;
+      text-brand shadow-md transition hover:bg-brand hover:text-white;
+  }
+  /* Las dos flechas se ven siempre. La que no lleva a ningún lado se atenúa
+     en vez de desaparecer: si se oculta, la fila se recoloca sola al llegar
+     a los extremos y el control "salta" bajo el cursor. */
+  .arrow:disabled {
+    @apply pointer-events-none border-line bg-white text-ash opacity-40 shadow-none;
   }
 
   .field {

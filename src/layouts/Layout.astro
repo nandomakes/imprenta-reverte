@@ -238,27 +238,68 @@ const jsonLdNodes = [negocio, website, ...schema];
         });
       }
 
-      // Carruseles horizontales: el scroll nativo hace el trabajo (y en móvil
-      // se arrastra con el dedo); las flechas solo lo empujan una tarjeta.
+      // Carruseles horizontales. En móvil se arrastran con el dedo; las
+      // flechas avanzan SIEMPRE una tarjeta exacta.
+      //
+      // La posición de destino se calcula desde la geometría real de cada
+      // tarjeta, no sumando "ancho + hueco": el hueco cambia con el breakpoint
+      // (16px en móvil, 24px desde `sm`) y esa diferencia se iba acumulando
+      // hasta dejar la cuarta tarjeta cortada a media altura.
       document.querySelectorAll<HTMLElement>('[data-carrusel]').forEach((raiz) => {
         const rail = raiz.querySelector<HTMLElement>('.rail');
         const prev = raiz.querySelector<HTMLButtonElement>('[data-prev]');
         const next = raiz.querySelector<HTMLButtonElement>('[data-next]');
         if (!rail) return;
-        const salto = () => {
-          const primera = rail.firstElementChild as HTMLElement | null;
-          return primera ? primera.offsetWidth + 24 : rail.clientWidth * 0.8;
+
+        const maxScroll = () => Math.max(0, rail.scrollWidth - rail.clientWidth);
+
+        /** scrollLeft con el que el borde izquierdo de `el` queda al ras. */
+        const posDe = (el: Element) => {
+          const relleno = parseFloat(getComputedStyle(rail).paddingLeft) || 0;
+          return Math.round(
+            rail.scrollLeft + el.getBoundingClientRect().left - rail.getBoundingClientRect().left - relleno
+          );
         };
-        prev?.addEventListener('click', () => rail.scrollBy({ left: -salto(), behavior: 'smooth' }));
-        next?.addEventListener('click', () => rail.scrollBy({ left: salto(), behavior: 'smooth' }));
-        // Las flechas se ocultan en los extremos en vez de quedarse muertas.
+
+        const mover = (dir: 1 | -1) => {
+          const paradas = [...rail.children].map(posDe);
+          const max = maxScroll();
+          const actual = rail.scrollLeft;
+          let destino: number | undefined;
+
+          if (dir === 1) {
+            destino = paradas.find((p) => p > actual + 2);
+          } else {
+            const previas = paradas.filter((p) => p < actual - 2);
+            destino = previas.length ? previas[previas.length - 1] : 0;
+          }
+          if (destino === undefined) destino = dir === 1 ? max : 0;
+
+          // Si el siguiente salto dejaría al final un trozo de tarjeta sin
+          // mostrar, se va hasta el tope de una vez: así la última tarjeta
+          // siempre aparece entera y nunca queda "un cachito" pendiente.
+          if (destino > max - 2) destino = max;
+
+          rail.scrollTo({ left: Math.max(0, Math.min(destino, max)), behavior: 'smooth' });
+        };
+
+        prev?.addEventListener('click', () => mover(-1));
+        next?.addEventListener('click', () => mover(1));
+
+        // Las dos flechas están siempre presentes; la que no lleva a ningún
+        // lado se atenúa (ver `.arrow:disabled` en global.css). Ocultarlas
+        // movía el resto de la fila al llegar a los extremos.
         const sync = () => {
-          const max = rail.scrollWidth - rail.clientWidth - 2;
+          const max = maxScroll();
           if (prev) prev.disabled = rail.scrollLeft <= 2;
-          if (next) next.disabled = rail.scrollLeft >= max;
+          if (next) next.disabled = rail.scrollLeft >= max - 2;
         };
         rail.addEventListener('scroll', sync, { passive: true });
         window.addEventListener('resize', sync);
+        // Las fotos llegan del CDN y cambian el ancho del carril al cargar.
+        rail.querySelectorAll('img').forEach((img) => {
+          if (!img.complete) img.addEventListener('load', sync, { once: true });
+        });
         sync();
       });
 
