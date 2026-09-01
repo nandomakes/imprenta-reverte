@@ -35,7 +35,7 @@ export const POST: APIRoute = async ({ request, redirect }) => {
   try {
     data = await request.formData();
   } catch {
-    return redirect('/contacto/?error=1', 303);
+    return redirect('/cotizar/?error=1', 303);
   }
 
   // Trampa antispam: si viene llena, es un bot. Respondemos como si todo
@@ -59,7 +59,7 @@ export const POST: APIRoute = async ({ request, redirect }) => {
   const categoriaValida = SLUGS_CATALOGO.includes(categoria);
 
   if (faltantes || !categoriaValida) {
-    return redirect('/contacto/?error=1#cotizar', 303);
+    return redirect('/cotizar/?error=1#cotizar', 303);
   }
 
   const etiqueta = etiquetaDe(categoria);
@@ -84,8 +84,8 @@ export const POST: APIRoute = async ({ request, redirect }) => {
         .map(
           ([k, v]) =>
             `<tr>
-               <td style="padding:6px 16px 6px 0;color:#8A94A6;vertical-align:top">${k}</td>
-               <td style="padding:6px 0;color:#0E1726">${escaparHtml(v).replace(/\n/g, '<br>')}</td>
+               <td style="padding:6px 16px 6px 0;color:#767676;vertical-align:top">${k}</td>
+               <td style="padding:6px 0;color:#3D3D3D">${escaparHtml(v).replace(/\n/g, '<br>')}</td>
              </tr>`
         )
         .join('')}

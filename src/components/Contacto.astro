@@ -1,0 +1,24 @@
+---
+// Donde la referencia pone el alta al boletín, aquí va el dato que de verdad
+// convierte en un negocio local: teléfono, dirección y horario en una línea,
+// con el CTA al lado. Un sitio informativo no tiene boletín que ofrecer.
+import { CONTACT, PHONE_DISPLAY, PHONE_TEL, CTA_LABEL } from '../consts';
+---
+
+<section class="bg-white py-10 md:py-14">
+  <div class="shell grid items-center gap-6 lg:grid-cols-[1fr_auto]">
+    <div>
+      <h2 class="text-[22px] font-semibold text-ink sm:text-[26px]">
+        ¿Lo hablamos por teléfono?
+      </h2>
+      <p class="mt-2 text-[15px] leading-relaxed">
+        {CONTACT.addressLine}, {CONTACT.locality}, {CONTACT.regionCode} ·{' '}
+        {CONTACT.hoursText}
+      </p>
+    </div>
+    <div class="flex flex-wrap items-center gap-3">
+      <a href={`tel:${PHONE_TEL}`} class="btn-outline">{PHONE_DISPLAY}</a>
+      <a href="/cotizar/" class="btn-accent">{CTA_LABEL}</a>
+    </div>
+  </div>
+</section>

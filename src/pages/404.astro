@@ -2,7 +2,9 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import { CATEGORIAS, PHONE_DISPLAY, PHONE_TEL, SITE } from '../consts';
+import CallFab from '../components/CallFab.astro';
+import Carrusel from '../components/Carrusel.astro';
+import { PHONE_DISPLAY, PHONE_TEL, SITE } from '../consts';
 ---
 
 <Layout
@@ -11,40 +13,29 @@ import { CATEGORIAS, PHONE_DISPLAY, PHONE_TEL, SITE } from '../consts';
   noindex
 >
   <Header />
-  <main id="contenido" class="bg-mist">
-    <div class="mx-auto max-w-2xl px-6 py-20 text-center md:py-28">
-      <p class="font-display text-6xl font-bold text-brandLt">404</p>
-      <h1 class="headline mt-4 text-3xl text-ink sm:text-4xl">Esta página no existe</h1>
-      <p class="mt-5 text-lg leading-relaxed text-char">
-        Puede que el enlace esté mal escrito o que hayamos movido la página. Prueba desde el
-        catálogo, o llámanos al{' '}
-        <a href={`tel:${PHONE_TEL}`} class="font-semibold text-brand underline underline-offset-4">
-          {PHONE_DISPLAY}
-        </a>.
-      </p>
+  <main id="contenido">
+    <section class="bg-mist py-16 md:py-24">
+      <div class="shell max-w-2xl text-center">
+        <p class="text-[64px] font-bold leading-none text-brand/20 sm:text-[80px]">404</p>
+        <h1 class="mt-3 text-[28px] font-semibold text-ink sm:text-[36px]">
+          Esta página no existe
+        </h1>
+        <p class="mt-5 text-[16px] leading-relaxed">
+          Puede que el enlace esté mal escrito o que hayamos movido la página. Prueba desde el
+          catálogo, o llámanos al{' '}
+          <a href={`tel:${PHONE_TEL}`} class="font-semibold text-brand underline underline-offset-4">
+            {PHONE_DISPLAY}
+          </a>.
+        </p>
+        <div class="mt-8 flex flex-wrap justify-center gap-3">
+          <a href="/" class="btn-brand">Volver al inicio</a>
+          <a href="/catalogo/" class="btn-outline">Ver el catálogo</a>
+        </div>
+      </div>
+    </section>
 
-      <ul class="mt-9 flex flex-wrap justify-center gap-2">
-        {
-          CATEGORIAS.map((c) => (
-            <li>
-              <a
-                href={`/catalogo/${c.slug}/`}
-                class="inline-block rounded-full border border-line bg-white px-3.5 py-1.5 text-sm text-char transition-colors hover:border-brand hover:text-brand"
-              >
-                {c.etiqueta}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-
-      <a
-        href="/"
-        class="pressable mt-9 inline-flex items-center justify-center rounded-lg bg-brand px-7 py-3.5 text-base font-semibold text-white transition-colors hover:bg-brandDk"
-      >
-        Volver al inicio
-      </a>
-    </div>
+    <Carrusel titulo="Quizá buscabas alguna de estas" />
   </main>
   <Footer />
+  <CallFab />
 </Layout>

@@ -1,0 +1,89 @@
+---
+// Equivale a /es/terms-of-use.html de la referencia.
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import CallFab from '../components/CallFab.astro';
+import PageHead from '../components/PageHead.astro';
+import Legal from '../components/Legal.astro';
+import { SITE } from '../consts';
+---
+
+<Layout
+  title={`Términos y condiciones | ${SITE.brand}`}
+  description="Condiciones de las cotizaciones, aprobación de pruebas, anticipos, tiempos de entrega y responsabilidad sobre los archivos en Imprenta Reverte."
+>
+  <Header />
+  <main id="contenido">
+    <PageHead
+      titulo="Términos y condiciones"
+      migas={[{ label: 'Inicio', href: '/' }, { label: 'Términos y condiciones' }]}
+    />
+    <Legal>
+      <h2>Sobre este sitio</h2>
+      <p>
+        Este sitio es <strong>informativo</strong>. No es una tienda en línea: no hay carrito, no
+        se publican precios y no se procesan pagos. Sirve para consultar el catálogo y solicitar
+        una cotización.
+      </p>
+
+      <h2>Cotizaciones</h2>
+      <p>
+        Enviar el formulario no genera un pedido ni obliga a ninguna de las partes. Es una
+        solicitud de precio. La cotización que te entregamos es válida por{' '}
+        <strong>15 días naturales</strong> y puede cambiar si cambian las medidas, la cantidad, el
+        material o el diseño del trabajo.
+      </p>
+
+      <h2>Pruebas y aprobación</h2>
+      <p>
+        Antes de imprimir te enviamos una prueba para tu visto bueno. <strong>Nada entra a
+        máquina sin tu aprobación.</strong> Una vez aprobada, los errores de contenido que no
+        detectaste en la prueba (nombres, fechas, teléfonos, precios) no son reimprimibles sin
+        costo, porque el material ya se consumió. Revísala con calma: es el momento de corregir.
+      </p>
+
+      <h2>Archivos y derechos</h2>
+      <p>
+        Al mandarnos un archivo declaras que tienes derecho a usar ese contenido: logotipos,
+        fotografías, tipografías e imágenes. No imprimimos material que infrinja derechos de
+        terceros ni contenido ilegal. La responsabilidad sobre el contenido que nos entregas es
+        tuya.
+      </p>
+      <p>
+        Si el diseño lo hacemos nosotros, el archivo editable queda en la imprenta; el trabajo
+        impreso, por supuesto, es tuyo.
+      </p>
+
+      <h2>Anticipos y pago</h2>
+      <p>
+        Para trabajos personalizados pedimos un anticipo al aprobar la prueba y el resto contra
+        entrega. Aceptamos efectivo, transferencia y tarjeta. Los trabajos personalizados
+        <strong>no admiten devolución</strong>, porque no se pueden revender a nadie más.
+      </p>
+
+      <h2>Tiempos de entrega</h2>
+      <p>
+        La fecha que te damos al cotizar es la que cumplimos. Esa fecha empieza a contar desde que
+        apruebas la prueba y cubres el anticipo, no desde que pediste el precio. Retrasos por
+        causas ajenas (falta de material del proveedor, fallas eléctricas, clima) se te avisan en
+        cuanto los conocemos.
+      </p>
+
+      <h2>Color</h2>
+      <p>
+        La pantalla ilumina y el papel refleja: puede haber variación entre el color que ves en tu
+        dispositivo y el impreso. Si el color es crítico para tu marca, dínoslo al cotizar y lo
+        trabajamos con referencia física.
+      </p>
+
+      <h2>Contacto</h2>
+      <p>
+        Cualquier duda sobre estas condiciones se resuelve en el local o por teléfono, antes de
+        arrancar el trabajo.
+      </p>
+    </Legal>
+  </main>
+  <Footer />
+  <CallFab />
+</Layout>

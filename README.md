@@ -7,6 +7,38 @@ cliente consulte el catálogo y pida una cotización.
 Construido con **Astro 5 + Tailwind 3 + TypeScript**, el mismo stack que
 `../mariostintshop`.
 
+## Diseño: réplica de printshopsolution.com/es/
+
+La estructura, el orden de secciones, la retícula, la tipografía y la paleta
+replican `https://www.printshopsolution.com/es/`. Los valores no se sacaron a
+ojo: se extrajeron del sitio en vivo con `getComputedStyle`.
+
+| | Valor |
+|---|---|
+| Tipografía | **Quicksand** 400/500/600/700, autoalojada |
+| Azul | `#0221C4` — botones secundarios, enlaces, footer |
+| Magenta | `#E00087` — CTA principal |
+| Celeste | `#D9F6FF` — bandas de sección |
+| Gris | `#F4F4F4` — secciones alternas |
+| Texto | `#3D3D3D` sobre blanco, 16px |
+| Manuscrita | Dancing Script, solo el titular del hero |
+
+Orden de secciones del home, el mismo que la referencia: barra promo con
+degradado → cabecera con buscador píldora → fila de navegación → hero con
+slider y borde de papel rasgado → dos paneles promocionales → carrusel → banda
+celeste → "3 maneras" → carrusel → banda de experiencia → carrusel → mosaico a
+sangre → distintivos → giros → testimonios → dos tarjetas CTA → contacto →
+footer azul.
+
+**Lo que NO se replicó, a propósito:** carrito, login, precios y alta al
+boletín. El negocio pidió un sitio informativo, no una tienda en línea. Donde
+la referencia pone "Comienza desde $16.67" va una muestra de los trabajos de
+esa categoría, y donde va el boletín está el teléfono con la dirección.
+
+El borde de papel rasgado es una máscara SVG en `--torn` (`global.css`).
+Hereda el `background` del elemento, así que sirve sobre cualquier sección sin
+tocar el color a mano.
+
 ## Arrancar
 
 ```bash
@@ -26,9 +58,14 @@ src/
   components/          ← secciones, todas alimentadas por consts.ts
   pages/
     index.astro
-    catalogo/index.astro    ← catálogo completo en una página
+    catalogo/index.astro    ← catálogo completo (filtra con ?q= del buscador)
     catalogo/[slug].astro   ← una página por categoría (9)
-    contacto.astro
+    cotizar.astro           ← solicitar cotización
+    contacto.astro          ← ubicación, mapa y formulario
+    preguntas-frecuentes.astro
+    privacidad.astro        ← aviso de privacidad (LFPDPPP)
+    terminos.astro          ← términos y condiciones
+    accesibilidad.astro     ← declaración de accesibilidad
     gracias.astro
     404.astro
     api/cotizar.ts          ← única ruta con servidor (Resend)

@@ -2,6 +2,8 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import CallFab from '../components/CallFab.astro';
+import Carrusel from '../components/Carrusel.astro';
 import { CONTACT, PHONE_DISPLAY, PHONE_TEL, SITE, WHATSAPP_URL } from '../consts';
 ---
 
@@ -11,56 +13,38 @@ import { CONTACT, PHONE_DISPLAY, PHONE_TEL, SITE, WHATSAPP_URL } from '../consts
   noindex
 >
   <Header />
-  <main id="contenido" class="bg-mist">
-    <div class="mx-auto max-w-2xl px-6 py-20 text-center md:py-28">
-      <span
-        class="mx-auto grid h-16 w-16 place-items-center rounded-full bg-brand text-white"
-        aria-hidden="true"
-      >
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="h-8 w-8"
-        >
-          <path d="M4 12.5l5.5 5.5L20 7"></path>
-        </svg>
-      </span>
+  <main id="contenido">
+    <section class="bg-sky py-16 md:py-24">
+      <div class="shell max-w-2xl text-center">
+        <span class="mx-auto grid h-16 w-16 place-items-center rounded-full bg-brand text-white" aria-hidden="true">
+          <svg viewBox="0 0 24 24" class="h-8 w-8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 12.5l5.5 5.5L20 7"></path>
+          </svg>
+        </span>
 
-      <h1 class="headline mt-7 text-3xl text-ink sm:text-4xl">Recibimos tu solicitud</h1>
-      <p class="mt-5 text-lg leading-relaxed text-char">
-        Gracias. Ya tenemos los datos de tu trabajo y te contestamos con precio y fecha de entrega
-        dentro del horario de tienda: {CONTACT.hoursText.toLowerCase()}.
-      </p>
+        <h1 class="mt-7 text-[30px] font-semibold text-ink sm:text-[38px]">
+          Recibimos tu solicitud
+        </h1>
+        <p class="mt-5 text-[16px] leading-relaxed">
+          Gracias. Ya tenemos los datos de tu trabajo y te contestamos con precio y fecha de
+          entrega dentro del horario de tienda: {CONTACT.hoursText.toLowerCase()}.
+        </p>
 
-      <div class="mt-9 flex flex-wrap justify-center gap-3">
-        <a
-          href={`tel:${PHONE_TEL}`}
-          class="pressable inline-flex items-center justify-center rounded-lg bg-accent px-7 py-3.5 text-base font-semibold text-white transition-colors hover:bg-accentDk"
-        >
-          Llamar al {PHONE_DISPLAY}
-        </a>
-        <a
-          href={WHATSAPP_URL}
-          target="_blank"
-          rel="noopener"
-          class="pressable inline-flex items-center justify-center rounded-lg border-2 border-brand px-7 py-3.5 text-base font-semibold text-brand transition-colors hover:bg-brand hover:text-white"
-        >
-          Escribir por WhatsApp
-        </a>
+        <div class="mt-9 flex flex-wrap justify-center gap-3">
+          <a href={`tel:${PHONE_TEL}`} class="btn-accent">Llamar al {PHONE_DISPLAY}</a>
+          <a href={WHATSAPP_URL} target="_blank" rel="noopener" class="btn-outline">
+            Escribir por WhatsApp
+          </a>
+        </div>
+
+        <p class="mt-9 text-[15px]">
+          ¿Es urgente? Pasa al local: {CONTACT.addressLine}, {CONTACT.locality}.
+        </p>
       </div>
+    </section>
 
-      <p class="mt-10 text-char">
-        Mientras tanto, puedes{' '}
-        <a href="/catalogo/" class="font-semibold text-brand underline underline-offset-4">
-          seguir viendo el catálogo
-        </a>{' '}
-        o pasar al local en {CONTACT.addressLine}, {CONTACT.locality}.
-      </p>
-    </div>
+    <Carrusel titulo="Mientras tanto, sigue viendo el catálogo" />
   </main>
   <Footer />
+  <CallFab />
 </Layout>

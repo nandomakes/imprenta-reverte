@@ -1,0 +1,28 @@
+---
+// Banda celeste a media altura: texto grande a la izquierda, botón magenta e
+// imagen a sangre a la derecha (el banner de "24 horas" en la referencia).
+import { BANNER_SKY } from '../consts';
+import Foto from './Foto.astro';
+---
+
+<section class="bg-sky">
+  <div class="grid items-stretch md:grid-cols-2">
+    <div class="flex items-center px-[15px] py-12 sm:px-8 md:justify-end md:py-16 lg:py-20">
+      <div class="w-full md:max-w-[420px]">
+        <h2 class="reveal text-[28px] font-medium leading-[1.25] text-ink sm:text-[34px] lg:text-[38px]">
+          {BANNER_SKY.titulo}
+        </h2>
+        <a href={BANNER_SKY.href} class="btn-accent reveal mt-7">{BANNER_SKY.cta}</a>
+      </div>
+    </div>
+    <div class="min-h-[240px] md:min-h-[380px]">
+      <Foto
+        id={BANNER_SKY.imagen}
+        alt={BANNER_SKY.alt}
+        ratio="4/3"
+        sizes="(min-width:768px) 50vw, 100vw"
+        class="h-full"
+      />
+    </div>
+  </div>
+</section>

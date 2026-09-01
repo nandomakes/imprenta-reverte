@@ -5,11 +5,12 @@ import Footer from '../components/Footer.astro';
 import CallFab from '../components/CallFab.astro';
 import QuoteCTA from '../components/QuoteCTA.astro';
 import Location from '../components/Location.astro';
-import Faq from '../components/Faq.astro';
-import { CONTACT, FAQS_HOME, PHONE_DISPLAY, PHONE_TEL, SITE, faqPageSchema } from '../consts';
+import PageHead from '../components/PageHead.astro';
+import CtaDuo from '../components/CtaDuo.astro';
+import { CONTACT, SITE } from '../consts';
 
-const title = `Contacto y cotizaciones | ${SITE.brand} — Ciudad Valles, SLP`;
-const description = `Pide tu cotización a Imprenta Reverte: ${CONTACT.addressLine}, ${CONTACT.locality}, ${CONTACT.regionCode}. Teléfono 481 381 6663.`;
+const title = `Contacto y ubicación | ${SITE.brand} — Ciudad Valles, SLP`;
+const description = `Imprenta Reverte: ${CONTACT.addressLine}, ${CONTACT.locality}, ${CONTACT.regionCode}. Teléfono 481 381 6663. Horario y cómo llegar.`;
 
 const breadcrumb = {
   '@context': 'https://schema.org',
@@ -21,57 +22,18 @@ const breadcrumb = {
 };
 ---
 
-<Layout
-  title={title}
-  description={description}
-  schema={[breadcrumb, faqPageSchema(FAQS_HOME)]}
->
+<Layout title={title} description={description} schema={[breadcrumb]}>
   <Header />
   <main id="contenido">
-    <section class="border-b border-line bg-mist">
-      <div class="mx-auto max-w-7xl px-6 py-14 md:py-16">
-        <nav aria-label="Ruta" class="text-sm text-ash">
-          <a href="/" class="hover:text-brand">Inicio</a>
-          <span class="mx-2" aria-hidden="true">/</span>
-          <span class="text-char">Contacto</span>
-        </nav>
-        <h1 class="headline mt-4 max-w-3xl text-4xl text-ink sm:text-5xl">
-          Pide tu cotización
-        </h1>
-        <p class="mt-5 max-w-2xl text-lg leading-relaxed text-char">
-          Llena el formulario, llámanos o pasa al local en Zona Centro. Te damos precio y fecha de
-          entrega, sin compromiso.
-        </p>
-
-        {/* El endpoint devuelve aquí con ?error=1 cuando faltan campos
-            obligatorios o la categoría no existe. El aviso se descubre en el
-            cliente para que la página siga siendo estática y cacheable. */}
-        <p
-          id="aviso-error"
-          role="alert"
-          hidden
-          class="mt-6 max-w-2xl rounded-lg border-l-4 border-accent bg-white px-5 py-4 leading-relaxed text-ink"
-        >
-          No pudimos enviar tu solicitud: revisa que estén llenos tu nombre, teléfono, ciudad y la
-          categoría. Si sigue fallando, llámanos al{' '}
-          <a href={`tel:${PHONE_TEL}`} class="font-semibold text-brand underline underline-offset-4">
-            {PHONE_DISPLAY}
-          </a>.
-        </p>
-      </div>
-    </section>
-
-    <QuoteCTA titulo="Cuéntanos qué necesitas" />
+    <PageHead
+      titulo="Contacto y ubicación"
+      intro="Estamos sobre el Blvd. México - Laredo, en plena Zona Centro de Ciudad Valles."
+      migas={[{ label: 'Inicio', href: '/' }, { label: 'Contacto' }]}
+    />
     <Location />
-    <Faq items={FAQS_HOME} />
+    <QuoteCTA titulo="O mándanos los datos por aquí" />
+    <CtaDuo />
   </main>
   <Footer />
   <CallFab />
 </Layout>
-
-<script>
-  if (new URLSearchParams(location.search).get('error') === '1') {
-    const aviso = document.getElementById('aviso-error');
-    if (aviso) aviso.hidden = false;
-  }
-</script>

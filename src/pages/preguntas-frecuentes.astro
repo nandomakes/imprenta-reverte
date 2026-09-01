@@ -1,0 +1,44 @@
+---
+// Equivale a /es/faq.html de la referencia.
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import CallFab from '../components/CallFab.astro';
+import CtaDuo from '../components/CtaDuo.astro';
+import Faq from '../components/Faq.astro';
+import PageHead from '../components/PageHead.astro';
+import { FAQS_HOME, SITE, faqPageSchema } from '../consts';
+
+const title = `Preguntas frecuentes | ${SITE.brand}`;
+const description =
+  'Tiempos de entrega, mínimos, formatos de archivo, envíos y formas de pago en Imprenta Reverte, Ciudad Valles, SLP.';
+
+const breadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${SITE.url}/` },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'Preguntas frecuentes',
+      item: `${SITE.url}/preguntas-frecuentes/`,
+    },
+  ],
+};
+---
+
+<Layout title={title} description={description} schema={[breadcrumb, faqPageSchema(FAQS_HOME)]}>
+  <Header />
+  <main id="contenido">
+    <PageHead
+      titulo="Preguntas frecuentes"
+      intro="Lo que más nos preguntan antes de mandar un trabajo a imprimir."
+      migas={[{ label: 'Inicio', href: '/' }, { label: 'Preguntas frecuentes' }]}
+    />
+    <Faq items={FAQS_HOME} titulo="Dudas comunes" />
+    <CtaDuo />
+  </main>
+  <Footer />
+  <CallFab />
+</Layout>

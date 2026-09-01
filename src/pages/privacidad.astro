@@ -1,0 +1,87 @@
+---
+// Equivale a /es/privacy-policy.html de la referencia.
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import CallFab from '../components/CallFab.astro';
+import PageHead from '../components/PageHead.astro';
+import Legal from '../components/Legal.astro';
+import { CONTACT, EMAIL, PHONE_DISPLAY, PHONE_TEL, SITE } from '../consts';
+---
+
+<Layout
+  title={`Aviso de privacidad | ${SITE.brand}`}
+  description="Aviso de privacidad de Imprenta Reverte: qué datos recabamos en el formulario de cotización, para qué los usamos y cómo ejercer tus derechos ARCO."
+>
+  <Header />
+  <main id="contenido">
+    <PageHead
+      titulo="Aviso de privacidad"
+      migas={[{ label: 'Inicio', href: '/' }, { label: 'Aviso de privacidad' }]}
+    />
+    <Legal>
+      <h2>Quién es responsable de tus datos</h2>
+      <p>
+        <strong>Imprenta Reverte</strong>, con domicilio en {CONTACT.addressLine}, {CONTACT.locality},
+        {CONTACT.region}, es responsable del tratamiento de los datos personales que nos
+        proporcionas a través de este sitio, conforme a la Ley Federal de Protección de Datos
+        Personales en Posesión de los Particulares.
+      </p>
+
+      <h2>Qué datos recabamos</h2>
+      <p>
+        Únicamente los que escribes en el formulario de cotización: <strong>nombre</strong>,
+        <strong>teléfono</strong>, <strong>ciudad</strong>, y de forma opcional tu
+        <strong>correo electrónico</strong>, la cantidad, la fecha en que lo necesitas y los
+        detalles del trabajo. No pedimos datos financieros, ni datos sensibles, ni creamos cuentas
+        de usuario: este sitio no vende en línea.
+      </p>
+
+      <h2>Para qué los usamos</h2>
+      <p>
+        Solo para responder tu solicitud: elaborar la cotización, contactarte para aclarar dudas
+        del trabajo y darte seguimiento hasta la entrega. No los usamos para publicidad no
+        solicitada y no los vendemos, rentamos ni compartimos con terceros con fines comerciales.
+      </p>
+
+      <h2>Con quién se comparten</h2>
+      <p>
+        Tu solicitud viaja por correo electrónico hasta nuestra bandeja a través de un proveedor de
+        envío de correo, que actúa únicamente como encargado del tratamiento y no usa tus datos
+        para fines propios. Fuera de eso, no transferimos tus datos a nadie, salvo requerimiento de
+        una autoridad competente.
+      </p>
+
+      <h2>Cuánto tiempo los conservamos</h2>
+      <p>
+        Conservamos las solicitudes de cotización el tiempo necesario para atenderlas y, en su
+        caso, para cumplir obligaciones fiscales derivadas del trabajo contratado.
+      </p>
+
+      <h2>Cookies</h2>
+      <p>
+        Este sitio no usa cookies de publicidad ni de rastreo, y no tiene herramientas de
+        analítica de terceros. Solo usamos el almacenamiento del propio navegador para recordar
+        que cerraste el aviso de la barra superior durante tu visita.
+      </p>
+
+      <h2>Tus derechos ARCO</h2>
+      <p>
+        Puedes solicitar el <strong>acceso</strong>, la <strong>rectificación</strong>, la
+        <strong>cancelación</strong> de tus datos o <strong>oponerte</strong> a su tratamiento, así
+        como revocar tu consentimiento, escribiendo a{' '}
+        <a href={`mailto:${EMAIL}`}>{EMAIL}</a> o llamando al{' '}
+        <a href={`tel:${PHONE_TEL}`}>{PHONE_DISPLAY}</a>. Te responderemos en un plazo máximo de 20
+        días hábiles.
+      </p>
+
+      <h2>Cambios a este aviso</h2>
+      <p>
+        Si modificamos este aviso, publicaremos la versión actualizada en esta misma página. Te
+        sugerimos revisarla de vez en cuando.
+      </p>
+    </Legal>
+  </main>
+  <Footer />
+  <CallFab />
+</Layout>

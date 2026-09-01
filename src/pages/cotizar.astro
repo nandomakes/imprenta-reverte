@@ -1,0 +1,66 @@
+---
+// Equivale a /quote_create.php de la referencia: la página dedicada a
+// solicitar una cotización.
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import CallFab from '../components/CallFab.astro';
+import QuoteCTA from '../components/QuoteCTA.astro';
+import PageHead from '../components/PageHead.astro';
+import Faq from '../components/Faq.astro';
+import { FAQS_HOME, PHONE_DISPLAY, PHONE_TEL, SITE, faqPageSchema } from '../consts';
+
+const title = `Solicitar una cotización | ${SITE.brand}`;
+const description =
+  'Pide tu cotización a Imprenta Reverte en Ciudad Valles, SLP. Dinos qué necesitas imprimir y te damos precio y fecha de entrega, sin compromiso.';
+
+const breadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${SITE.url}/` },
+    { '@type': 'ListItem', position: 2, name: 'Solicitar cotización', item: `${SITE.url}/cotizar/` },
+  ],
+};
+---
+
+<Layout title={title} description={description} schema={[breadcrumb, faqPageSchema(FAQS_HOME)]}>
+  <Header />
+  <main id="contenido">
+    <PageHead
+      titulo="Solicitar una cotización"
+      intro="Sin compromiso y sin costo. Te damos precio y fecha de entrega en horario de tienda."
+      migas={[{ label: 'Inicio', href: '/' }, { label: 'Solicitar cotización' }]}
+    />
+
+    <div class="shell pt-8">
+      {/* El endpoint devuelve aquí con ?error=1 cuando faltan campos
+          obligatorios o la categoría no existe. Se descubre en el cliente
+          para que la página siga siendo estática y cacheable. */}
+      <p
+        id="aviso-error"
+        role="alert"
+        hidden
+        class="border-l-4 border-accent bg-mist px-5 py-4 text-[15px] leading-relaxed"
+      >
+        No pudimos enviar tu solicitud: revisa que estén llenos tu nombre, teléfono, ciudad y la
+        categoría. Si sigue fallando, llámanos al{' '}
+        <a href={`tel:${PHONE_TEL}`} class="font-semibold text-brand underline underline-offset-4">
+          {PHONE_DISPLAY}
+        </a>.
+      </p>
+    </div>
+
+    <QuoteCTA titulo="Cuéntanos qué necesitas" />
+    <Faq items={FAQS_HOME} titulo="Antes de pedir tu cotización" />
+  </main>
+  <Footer />
+  <CallFab />
+</Layout>
+
+<script>
+  if (new URLSearchParams(location.search).get('error') === '1') {
+    const aviso = document.getElementById('aviso-error');
+    if (aviso) aviso.hidden = false;
+  }
+</script>

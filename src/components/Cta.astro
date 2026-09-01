@@ -5,37 +5,15 @@
 import { CTA_LABEL } from '../consts';
 
 interface Props {
-  /** A dónde apunta. Por defecto, al formulario de la página actual. */
   href?: string;
-  tamano?: 'md' | 'lg';
+  /** El magenta es el CTA principal de la referencia; el azul, secundario. */
+  tono?: 'accent' | 'brand';
   class?: string;
 }
 
-const { href = '#cotizar', tamano = 'md', class: clase = '' } = Astro.props;
-
-// Naranja siempre: es el único elemento naranja del sitio, así que el CTA
-// nunca compite visualmente con los enlaces azules.
-const base =
-  'pressable inline-flex items-center justify-center gap-2 rounded-lg font-semibold whitespace-nowrap bg-accent text-white shadow-sm shadow-accent/30 transition-colors duration-200 hover:bg-accentDk';
-
-const tamanos = {
-  md: 'px-5 py-2.5 text-[0.9375rem]',
-  lg: 'px-7 py-3.5 text-base',
-};
+const { href = '/cotizar/', tono = 'accent', class: clase = '' } = Astro.props;
 ---
 
-<a href={href} class={`${base} ${tamanos[tamano]} ${clase}`}>
+<a href={href} class={`${tono === 'accent' ? 'btn-accent' : 'btn-brand'} ${clase}`}>
   {CTA_LABEL}
-  <svg
-    aria-hidden="true"
-    viewBox="0 0 16 16"
-    fill="none"
-    class="h-4 w-4"
-    stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  >
-    <path d="M3 8h10M9 4l4 4-4 4" />
-  </svg>
 </a>

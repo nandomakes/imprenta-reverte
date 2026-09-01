@@ -1,73 +1,137 @@
 ---
-import { CATEGORIAS, CONTACT, NAV, PHONE_DISPLAY, PHONE_TEL, SITE, SOCIALS } from '../consts';
+// Footer azul #0221C4 a cuatro columnas, igual que la referencia: marca +
+// eslogan, Productos (a dos columnas), Enlaces rápidos, Contacto con redes
+// en círculos, y barra inferior de copyright.
+import {
+  CATEGORIAS,
+  CONTACT,
+  EMAIL,
+  ENLACES_RAPIDOS,
+  PHONE_DISPLAY,
+  PHONE_TEL,
+  SITE,
+  SOCIALS,
+} from '../consts';
+import Logo from './Logo.astro';
 
 const anio = new Date().getFullYear();
+const mitad = Math.ceil(CATEGORIAS.length / 2);
+const col1 = CATEGORIAS.slice(0, mitad);
+const col2 = CATEGORIAS.slice(mitad);
 ---
 
-<footer class="bg-ink text-white/70">
-  <div class="mx-auto max-w-7xl px-6 py-14">
-    <div class="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
+<footer class="bg-brand text-white">
+  <div class="shell py-12 md:py-16">
+    <div class="grid gap-10 md:grid-cols-2 lg:grid-cols-[1.1fr_1.6fr_1fr_1fr]">
       <div>
-        <div class="flex items-center gap-2.5">
-          <span
-            class="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-brand font-display text-lg font-bold text-white"
-            aria-hidden="true">R</span
-          >
-          <span class="font-display text-lg font-bold text-white">Imprenta Reverte</span>
-        </div>
-        <p class="mt-4 text-sm leading-relaxed">
-          {SITE.tagline} Imprenta en {CONTACT.locality}, {CONTACT.regionCode}.
+        <Logo tono="blanco" />
+        <p class="mt-5 max-w-[280px] text-[17px] font-semibold leading-snug">
+          {SITE.tagline}
         </p>
-        <ul class="mt-5 flex gap-4 text-sm">
+      </div>
+
+      <div>
+        <h2 class="text-[19px] font-semibold">Catálogo</h2>
+        <div class="mt-5 grid gap-x-6 gap-y-3 sm:grid-cols-2">
+          <ul class="space-y-3 text-[15px]">
+            {
+              col1.map((c) => (
+                <li>
+                  <a href={`/catalogo/${c.slug}/`} class="text-white/85 hover:text-white">
+                    {c.etiqueta}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+          <ul class="space-y-3 text-[15px]">
+            {
+              col2.map((c) => (
+                <li>
+                  <a href={`/catalogo/${c.slug}/`} class="text-white/85 hover:text-white">
+                    {c.etiqueta}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="text-[19px] font-semibold">Enlaces rápidos</h2>
+        <ul class="mt-5 space-y-3 text-[15px]">
+          {
+            ENLACES_RAPIDOS.map((e) => (
+              <li>
+                <a href={e.href} class="text-white/85 hover:text-white">
+                  {e.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="text-[19px] font-semibold">Contacto</h2>
+        <ul class="mt-5 space-y-3.5 text-[15px]">
+          <li class="flex items-start gap-3">
+            <svg viewBox="0 0 24 24" class="mt-0.5 h-5 w-5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.6">
+              <path d="M12 21s-7-4.5-7-10a7 7 0 1114 0c0 5.5-7 10-7 10z"></path>
+              <circle cx="12" cy="11" r="2.5"></circle>
+            </svg>
+            <address class="not-italic leading-relaxed text-white/85">
+              {CONTACT.street}<br />{CONTACT.neighborhood}<br />
+              {CONTACT.locality}, {CONTACT.region}
+            </address>
+          </li>
+          <li class="flex items-center gap-3">
+            <svg viewBox="0 0 24 24" class="h-5 w-5 shrink-0" fill="currentColor">
+              <path
+                d="M2.5 4.5A2 2 0 014.5 2.5h2a2 2 0 011.94 1.5l.7 2.7a2 2 0 01-.53 1.94l-1.2 1.2a14.5 14.5 0 006.75 6.75l1.2-1.2a2 2 0 011.94-.53l2.7.7a2 2 0 011.5 1.94v2a2 2 0 01-2 2C10.6 21.5 2.5 13.4 2.5 4.5z"
+              ></path>
+            </svg>
+            <a href={`tel:${PHONE_TEL}`} class="font-semibold hover:underline">{PHONE_DISPLAY}</a>
+          </li>
+          <li class="flex items-center gap-3">
+            <svg viewBox="0 0 24 24" class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.6">
+              <rect x="2.5" y="5" width="19" height="14" rx="2"></rect>
+              <path d="M3 6.5l9 6 9-6"></path>
+            </svg>
+            <a href={`mailto:${EMAIL}`} class="text-white/85 hover:text-white">{EMAIL}</a>
+          </li>
+          <li class="pt-1 text-white/85">{CONTACT.hoursText}</li>
+        </ul>
+
+        <ul class="mt-6 flex gap-3">
           {
             SOCIALS.map((s) => (
               <li>
-                <a href={s.href} target="_blank" rel="noopener" class="hover:text-white">
-                  {s.label}
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </div>
-
-      <div class="lg:col-span-2">
-        <h2 class="text-sm font-semibold uppercase tracking-wider text-white">Catálogo</h2>
-        <ul class="mt-4 grid gap-2.5 text-sm sm:grid-cols-2">
-          {
-            CATEGORIAS.map((c) => (
-              <li>
-                <a href={`/catalogo/${c.slug}/`} class="hover:text-white">
-                  {c.etiqueta}
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </div>
-
-      <div>
-        <h2 class="text-sm font-semibold uppercase tracking-wider text-white">Contacto</h2>
-        <address class="mt-4 space-y-3 text-sm not-italic leading-relaxed">
-          <p>
-            {CONTACT.street}<br />
-            {CONTACT.neighborhood}<br />
-            {CONTACT.locality}, {CONTACT.region}
-          </p>
-          <p>
-            <a href={`tel:${PHONE_TEL}`} class="font-semibold text-white hover:text-accent">
-              {PHONE_DISPLAY}
-            </a>
-          </p>
-          <p>{CONTACT.hoursText}</p>
-        </address>
-
-        <ul class="mt-5 space-y-2 text-sm">
-          {
-            NAV.map((item) => (
-              <li>
-                <a href={item.href} class="hover:text-white">
-                  {item.label}
+                <a
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener"
+                  class="grid h-11 w-11 place-items-center rounded-full bg-white text-brand transition hover:bg-white/85"
+                  aria-label={s.label}
+                >
+                  {s.icon === 'facebook' && (
+                    <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor">
+                      <path d="M13.5 21v-8h2.7l.4-3.1h-3.1V7.9c0-.9.25-1.5 1.55-1.5h1.65V3.6c-.29-.04-1.27-.12-2.41-.12-2.38 0-4.01 1.45-4.01 4.13v2.29H7.6V13h2.68v8z" />
+                    </svg>
+                  )}
+                  {s.icon === 'instagram' && (
+                    <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.9">
+                      <rect x="3" y="3" width="18" height="18" rx="5" />
+                      <circle cx="12" cy="12" r="4" />
+                      <circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none" />
+                    </svg>
+                  )}
+                  {s.icon === 'whatsapp' && (
+                    <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor">
+                      <path d="M12 2a10 10 0 00-8.6 15l-1.3 4.7 4.8-1.26A10 10 0 1012 2zm0 2a8 8 0 016.8 12.2l-.3.5.75 2.7-2.78-.73-.48.28A8 8 0 1112 4zm-3.5 4.3c-.2 0-.5.07-.75.35-.26.28-1 .96-1 2.35s1.02 2.73 1.16 2.92c.14.19 2 3.06 4.86 4.17 2.37.92 2.85.73 3.37.69.51-.05 1.66-.68 1.9-1.33.23-.65.23-1.2.16-1.32-.07-.11-.26-.18-.54-.32-.28-.14-1.66-.82-1.92-.91-.26-.1-.44-.14-.63.14-.19.28-.72.9-.88 1.09-.16.19-.32.21-.6.07-.28-.14-1.19-.44-2.26-1.4-.84-.74-1.4-1.66-1.56-1.94-.17-.28-.02-.43.12-.57.13-.13.28-.33.42-.5.14-.16.19-.28.28-.47.1-.19.05-.35-.02-.49-.07-.14-.63-1.52-.86-2.08-.23-.55-.46-.47-.63-.48z" />
+                    </svg>
+                  )}
                 </a>
               </li>
             ))
@@ -75,19 +139,16 @@ const anio = new Date().getFullYear();
         </ul>
       </div>
     </div>
+  </div>
 
-    <div
-      class="mt-12 flex flex-col gap-3 border-t border-lineDk pt-6 text-xs sm:flex-row sm:items-center sm:justify-between"
-    >
+  <div class="border-t border-white/20">
+    <div class="shell flex flex-col gap-2 py-5 text-[13px] text-white/80 sm:flex-row sm:items-center sm:justify-between">
       <p>© {anio} Imprenta Reverte. Todos los derechos reservados.</p>
       <p>
-        Sitio informativo. Fotografías de{' '}
-        <a
-          href="https://unsplash.com"
-          target="_blank"
-          rel="noopener"
-          class="underline underline-offset-2 hover:text-white">Unsplash</a
-        >.
+        Sitio informativo · Fotografías de{' '}
+        <a href="https://unsplash.com" target="_blank" rel="noopener" class="underline hover:text-white">
+          Unsplash
+        </a>
       </p>
     </div>
   </div>

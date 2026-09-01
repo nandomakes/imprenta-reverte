@@ -4,30 +4,34 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Azul profesional — la referencia (printshopsolution) vive del
-        // contraste azul intenso sobre mucho blanco.
-        brand: '#1B4DB1', // azul principal: CTAs, enlaces, acentos
-        brandDk: '#153C8C', // hover / pressed
-        brandLt: '#EAF0FB', // superficie azul pálida (tarjetas, badges)
-        ink: '#0E1726', // azul casi negro: fondos oscuros, títulos
-        slate: '#1B2740', // superficie oscura elevada
-        line: '#E3E8F0', // hairlines sobre claro
-        lineDk: '#25324D', // hairlines sobre oscuro
-        paper: '#FFFFFF',
-        mist: '#F6F8FC', // fondo de sección alterno
-        ash: '#8A94A6', // texto atenuado
-        char: '#3A4459', // texto de cuerpo
-        // Acento cálido: SOLO para el botón "Cotiza ahora", para que el CTA
-        // no se confunda con los enlaces azules.
-        accent: '#F3701B',
-        accentDk: '#D45C0C',
+        // Paleta tomada directamente de printshopsolution.com/es/ con
+        // getComputedStyle sobre el sitio en vivo, no a ojo.
+        brand: '#0221C4', // rgb(2,33,196) — botones, footer, enlaces
+        brandDk: '#011a9c',
+        accent: '#E00087', // rgb(224,0,135) — magenta del CTA principal
+        accentDk: '#b8006e',
+        sky: '#D9F6FF', // rgb(217,246,255) — bandas celestes
+        cream: '#FDEBDD', // fondo del hero
+        mist: '#F4F4F4', // rgb(244,244,244) — secciones grises
+        mist2: '#F8F8F8',
+        ink: '#3D3D3D', // rgb(61,61,61) — color de texto del body
+        ash: '#767676',
+        line: '#E6E6E6',
+        // Fondos pastel de las tarjetas de producto del carrusel.
+        card1: '#FCE4EC',
+        card2: '#DEF5F3',
+        card3: '#E8EAF6',
+        card4: '#FDF3DE',
       },
       fontFamily: {
-        display: ['Archivo', 'system-ui', 'sans-serif'],
-        body: ['"Inter Variable"', 'Inter', 'system-ui', 'sans-serif'],
+        // Quicksand es LA fuente del sitio de referencia (redondeada,
+        // geométrica). Se usa para absolutamente todo menos el titular
+        // manuscrito del hero.
+        sans: ['Quicksand', 'system-ui', 'sans-serif'],
+        script: ['"Dancing Script"', 'cursive'],
       },
-      borderRadius: {
-        '4xl': '2rem',
+      maxWidth: {
+        shell: '1360px',
       },
       transitionTimingFunction: {
         out: 'cubic-bezier(0.23, 1, 0.32, 1)',

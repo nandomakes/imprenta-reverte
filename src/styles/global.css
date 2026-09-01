@@ -5,30 +5,29 @@
 @layer base {
   :root {
     --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
-    --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   html {
     scroll-behavior: smooth;
-    scroll-padding-top: 5.5rem;
+    scroll-padding-top: 7rem;
   }
 
-  /* Red de seguridad: ningún elemento decorativo ancho puede provocar
-     scroll horizontal en la página. */
   body {
     overflow-x: clip;
     -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
+    /* El sitio de referencia corre a 16px/Quicksand con texto #3D3D3D. */
+    font-size: 16px;
+    color: theme('colors.ink');
+    background: #fff;
   }
 
   :focus-visible {
     outline: 2px solid theme('colors.brand');
-    outline-offset: 3px;
-    border-radius: 3px;
+    outline-offset: 2px;
   }
 
   ::selection {
-    background: theme('colors.brand');
+    background: theme('colors.accent');
     color: #fff;
   }
 
@@ -36,143 +35,139 @@
   h2,
   h3 {
     text-wrap: balance;
+    font-weight: 600;
   }
   p {
     text-wrap: pretty;
   }
-
-  header {
-    transition:
-      box-shadow 0.35s var(--ease-out),
-      background-color 0.35s var(--ease-out);
-  }
-  header.is-scrolled {
-    box-shadow: 0 10px 30px -20px rgba(14, 23, 38, 0.55);
-  }
 }
 
 @layer components {
-  /* Reveal al hacer scroll. Visible por defecto: el estado oculto solo
-     existe cuando el JS marca <html data-reveal>, así que sin JS no se
-     pierde ni un bloque de contenido. */
+  /* El contenedor del sitio: la referencia centra a ~1360px con 32px de aire
+     en escritorio y 15px en móvil. */
+  .shell {
+    @apply mx-auto w-full max-w-shell px-[15px] sm:px-6 lg:px-8;
+  }
+
+  /* Título de sección: Quicksand 600, gris oscuro, muy poco tracking. */
+  .h-sec {
+    @apply text-[30px] font-semibold leading-[1.2] text-ink sm:text-[34px] lg:text-[40px];
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 text-[15px]
+      font-semibold transition-colors duration-200;
+  }
+  /* Magenta = acción principal. Azul = acción secundaria. Exactamente como
+     los usa la referencia: el CTA del hero es magenta, "Start Browsing" azul. */
+  .btn-accent {
+    @apply btn bg-accent text-white hover:bg-accentDk;
+  }
+  .btn-brand {
+    @apply btn bg-brand text-white hover:bg-brandDk;
+  }
+  .btn-outline {
+    @apply btn border-2 border-brand bg-transparent text-brand hover:bg-brand hover:text-white;
+  }
+
+  /* Borde de papel rasgado: cierra el hero y abre la banda celeste, igual
+     que en la referencia. Es una máscara, así que hereda el color de fondo
+     del elemento y funciona sobre cualquier sección. */
+  .torn-b::after,
+  .torn-t::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 26px;
+    background: inherit;
+    -webkit-mask-size: 1200px 26px;
+    mask-size: 1200px 26px;
+    -webkit-mask-repeat: repeat-x;
+    mask-repeat: repeat-x;
+  }
+  .torn-b::after {
+    bottom: -25px;
+    -webkit-mask-image: var(--torn);
+    mask-image: var(--torn);
+  }
+  .torn-t::before {
+    top: -25px;
+    transform: scaleY(-1);
+    -webkit-mask-image: var(--torn);
+    mask-image: var(--torn);
+  }
+  .torn-b,
+  .torn-t {
+    --torn: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%221200%22%20height%3D%2226%22%20preserveAspectRatio%3D%22none%22%3E%3Cpath%20d%3D%22M0%2C26%20L0%2C13%20L20%2C13.8%20L40%2C9.9%20L60%2C13%20L80%2C18.8%20L100%2C14.7%20L120%2C12.9%20L140%2C17.3%20L160%2C17.9%20L180%2C7%20L200%2C19%20L220%2C8.7%20L240%2C8.5%20L260%2C18.9%20L280%2C6.8%20L300%2C11%20L320%2C6.4%20L340%2C6.9%20L360%2C14.8%20L380%2C18%20L400%2C16.5%20L420%2C15.6%20L440%2C6.8%20L460%2C14%20L480%2C12.4%20L500%2C8.7%20L520%2C17.6%20L540%2C6.9%20L560%2C16.4%20L580%2C7.9%20L600%2C6.4%20L620%2C15.3%20L640%2C15.6%20L660%2C17.2%20L680%2C16.6%20L700%2C16.9%20L720%2C15.7%20L740%2C6.5%20L760%2C10.4%20L780%2C8%20L800%2C14.6%20L820%2C11%20L840%2C9.9%20L860%2C16.3%20L880%2C10.1%20L900%2C17.4%20L920%2C13.3%20L940%2C8.6%20L960%2C12%20L980%2C13.5%20L1000%2C11.4%20L1020%2C9.9%20L1040%2C16.9%20L1060%2C13.8%20L1080%2C10.6%20L1100%2C15.3%20L1120%2C13.6%20L1140%2C11.2%20L1160%2C13.5%20L1180%2C9.1%20L1200%2C13%20L1200%2C26%20Z%22%20fill%3D%22%23000%22%2F%3E%3C%2Fsvg%3E");
+  }
+
+  /* Carrusel horizontal con scroll nativo y snap: en móvil se arrastra con
+     el dedo y en escritorio lo mueven las flechas. */
+  .rail {
+    @apply flex gap-4 overflow-x-auto scroll-smooth pb-2 sm:gap-6;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .rail::-webkit-scrollbar {
+    display: none;
+  }
+  .rail > * {
+    scroll-snap-align: start;
+    flex: 0 0 auto;
+  }
+
+  .arrow {
+    @apply grid h-11 w-11 place-items-center rounded-full border border-line bg-white
+      text-brand shadow-md transition hover:bg-brand hover:text-white
+      disabled:pointer-events-none disabled:opacity-0;
+  }
+
+  .field {
+    @apply w-full border border-line bg-white px-4 py-3 text-[15px] text-ink
+      placeholder:text-ash focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand;
+  }
+  .field-label {
+    @apply mb-1.5 block text-[14px] font-semibold text-ink;
+  }
+
+
   html[data-reveal] .reveal {
     opacity: 0;
-    transform: translateY(18px);
+    transform: translateY(16px);
     transition:
-      opacity 0.7s var(--ease-out-soft) calc(var(--reveal-i, 0) * 70ms),
-      transform 0.7s var(--ease-out-soft) calc(var(--reveal-i, 0) * 70ms);
+      opacity 0.6s var(--ease-out) calc(var(--reveal-i, 0) * 60ms),
+      transform 0.6s var(--ease-out) calc(var(--reveal-i, 0) * 60ms);
   }
   html[data-reveal] .reveal.in {
     opacity: 1;
     transform: none;
   }
 
-  .pressable {
-    transition: transform 160ms var(--ease-out);
-  }
-  .pressable:active {
-    transform: scale(0.97);
-  }
-
   .lift {
     transition:
       transform 0.35s var(--ease-out),
-      box-shadow 0.35s var(--ease-out),
-      border-color 0.35s var(--ease-out);
+      box-shadow 0.35s var(--ease-out);
   }
   @media (hover: hover) and (pointer: fine) {
     .lift:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 26px 50px -30px rgba(14, 23, 38, 0.5);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px -26px rgba(0, 0, 0, 0.4);
     }
   }
 
   .zoom-img {
-    transition: transform 0.9s var(--ease-out);
+    transition: transform 0.8s var(--ease-out);
   }
   @media (hover: hover) and (pointer: fine) {
     .zoom-parent:hover .zoom-img {
-      transform: scale(1.06);
+      transform: scale(1.05);
     }
   }
 
-  .nav-link {
-    position: relative;
-  }
-  .nav-link::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0.15rem;
-    height: 2px;
-    background: theme('colors.brand');
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.3s var(--ease-out);
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .nav-link:hover::after {
-      transform: scaleX(1);
-    }
-  }
-
-  .headline {
-    font-family: theme('fontFamily.display');
-    font-weight: 700;
-    letter-spacing: -0.022em;
-    line-height: 1.08;
-  }
-
-  /* Etiqueta corta en versalitas sobre los títulos de sección. */
-  .kicker {
-    font-family: theme('fontFamily.body');
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.16em;
-    font-size: 0.6875rem;
-    color: theme('colors.brand');
-  }
-
-  /* Campos del formulario de cotización. */
-  .field {
-    @apply w-full rounded-lg border border-line bg-white px-4 py-3 text-[0.95rem] text-ink
-      placeholder:text-ash focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/25;
-  }
-  .field-label {
-    @apply mb-1.5 block text-sm font-semibold text-ink;
-  }
-
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-
-  details.faq > *:not(summary) {
-    animation: faqin 0.3s var(--ease-out);
-  }
   details.faq summary::-webkit-details-marker {
     display: none;
-  }
-
-  /* Trama de puntos muy tenue para las secciones claras. */
-  .dot-bg {
-    background-image: radial-gradient(theme('colors.line') 1px, transparent 1px);
-    background-size: 22px 22px;
-  }
-}
-
-@keyframes faqin {
-  from {
-    opacity: 0;
-    transform: translateY(-5px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
   }
 }
 
@@ -193,7 +188,6 @@
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
 }

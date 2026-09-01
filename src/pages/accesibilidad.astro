@@ -1,0 +1,76 @@
+---
+// Equivale a /es/accessibility.html de la referencia.
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import CallFab from '../components/CallFab.astro';
+import PageHead from '../components/PageHead.astro';
+import Legal from '../components/Legal.astro';
+import { EMAIL, PHONE_DISPLAY, PHONE_TEL, SITE } from '../consts';
+---
+
+<Layout
+  title={`Accesibilidad | ${SITE.brand}`}
+  description="Compromiso de accesibilidad de Imprenta Reverte: qué hemos hecho para que el sitio sea usable con teclado, lector de pantalla y en cualquier tamaño de pantalla."
+>
+  <Header />
+  <main id="contenido">
+    <PageHead
+      titulo="Accesibilidad"
+      migas={[{ label: 'Inicio', href: '/' }, { label: 'Accesibilidad' }]}
+    />
+    <Legal>
+      <h2>Nuestro compromiso</h2>
+      <p>
+        Queremos que cualquiera pueda consultar el catálogo y pedir una cotización, use lo que use
+        para navegar. Tomamos como referencia las <strong>WCAG 2.1 nivel AA</strong>.
+      </p>
+
+      <h2>Qué hemos hecho</h2>
+      <ul>
+        <li>
+          <strong>Navegación con teclado:</strong> todo el sitio se recorre con Tab, el foco es
+          siempre visible y hay un enlace para saltar directo al contenido.
+        </li>
+        <li>
+          <strong>Lectores de pantalla:</strong> encabezados en orden jerárquico, texto alternativo
+          descriptivo en todas las fotos, y los botones e iconos llevan su etiqueta accesible.
+        </li>
+        <li>
+          <strong>Contraste:</strong> el texto va en gris oscuro sobre blanco y los botones usan
+          combinaciones con contraste suficiente.
+        </li>
+        <li>
+          <strong>Sin depender de JavaScript:</strong> el formulario de cotización es HTML nativo y
+          funciona aunque el JavaScript falle. El contenido se ve completo sin animaciones.
+        </li>
+        <li>
+          <strong>Movimiento reducido:</strong> si tu sistema pide reducir animaciones, el sitio
+          desactiva las transiciones y el carrusel deja de avanzar solo.
+        </li>
+        <li>
+          <strong>Zoom y móvil:</strong> el texto se puede ampliar y no hay desplazamiento
+          horizontal en ninguna página.
+        </li>
+      </ul>
+
+      <h2>Dónde sabemos que podemos mejorar</h2>
+      <p>
+        El mapa de la página de contacto lo genera Google y no controlamos su accesibilidad
+        interna. Por eso la dirección completa, el teléfono y el horario están siempre en texto
+        junto al mapa, y hay un enlace directo a "Cómo llegar": no necesitas usar el mapa para
+        obtener ninguno de esos datos.
+      </p>
+
+      <h2>Avísanos si algo no funciona</h2>
+      <p>
+        Si encuentras una barrera en este sitio, dinos cuál y en qué página. Escríbenos a{' '}
+        <a href={`mailto:${EMAIL}`}>{EMAIL}</a> o llámanos al{' '}
+        <a href={`tel:${PHONE_TEL}`}>{PHONE_DISPLAY}</a>. Y si el sitio no te sirve para lo que
+        necesitas, el teléfono siempre es una alternativa completa: cotizamos igual por llamada.
+      </p>
+    </Legal>
+  </main>
+  <Footer />
+  <CallFab />
+</Layout>

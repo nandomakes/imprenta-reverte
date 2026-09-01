@@ -1,31 +1,30 @@
 ---
-// Barra flotante solo en móvil: llamar y cotizar siempre a un pulgar de
-// distancia, sin tener que volver arriba.
+// Barra fija inferior, solo en móvil: llamar y cotizar siempre a un pulgar
+// de distancia. El sitio de referencia no la tiene, pero es una tienda con
+// carrito; aquí el teléfono ES la conversión.
 import { CTA_LABEL, PHONE_DISPLAY, PHONE_TEL } from '../consts';
 ---
 
-<div
-  class="fixed inset-x-0 bottom-0 z-40 grid grid-cols-2 gap-2 border-t border-line bg-white/95 p-3 backdrop-blur sm:hidden"
->
+<div class="fixed inset-x-0 bottom-0 z-40 grid grid-cols-2 border-t border-line bg-white/95 backdrop-blur sm:hidden">
   <a
     href={`tel:${PHONE_TEL}`}
-    class="pressable inline-flex items-center justify-center gap-2 rounded-lg border-2 border-brand py-3 text-sm font-semibold text-brand"
+    class="flex items-center justify-center gap-2 py-3.5 text-[15px] font-semibold text-brand"
   >
-    <svg viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4" aria-hidden="true">
+    <svg viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor" aria-hidden="true">
       <path
-        d="M2 3.5A1.5 1.5 0 013.5 2h1.6a1.5 1.5 0 011.45 1.1l.6 2.2a1.5 1.5 0 01-.4 1.5l-1 1a12 12 0 005.45 5.45l1-1a1.5 1.5 0 011.5-.4l2.2.6A1.5 1.5 0 0118 13.9v1.6a1.5 1.5 0 01-1.5 1.5C8.5 17 2 10.5 2 3.5z"
+        d="M2.5 4.5A2 2 0 014.5 2.5h2a2 2 0 011.94 1.5l.7 2.7a2 2 0 01-.53 1.94l-1.2 1.2a14.5 14.5 0 006.75 6.75l1.2-1.2a2 2 0 011.94-.53l2.7.7a2 2 0 011.5 1.94v2a2 2 0 01-2 2C10.6 21.5 2.5 13.4 2.5 4.5z"
       ></path>
     </svg>
     Llamar
     <span class="sr-only">al {PHONE_DISPLAY}</span>
   </a>
   <a
-    href="/contacto/#cotizar"
-    class="pressable inline-flex items-center justify-center rounded-lg bg-accent py-3 text-sm font-semibold text-white"
+    href="/cotizar/"
+    class="flex items-center justify-center bg-accent py-3.5 text-[15px] font-semibold text-white"
   >
     {CTA_LABEL}
   </a>
 </div>
 
 {/* Colchón para que la barra fija no tape el final del footer. */}
-<div class="h-[76px] sm:hidden" aria-hidden="true"></div>
+<div class="h-[54px] sm:hidden" aria-hidden="true"></div>

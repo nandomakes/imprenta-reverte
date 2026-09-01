@@ -1,9 +1,14 @@
 ---
-// Fuentes autoalojadas: sin petición bloqueante a fonts.googleapis.com y sin
-// mandar la IP de cada visitante a Google. Solo subconjunto latino.
-import '@fontsource-variable/inter';
-import '@fontsource/archivo/latin-600.css';
-import '@fontsource/archivo/latin-700.css';
+// Quicksand es la tipografía de printshopsolution.com (comprobado con
+// getComputedStyle sobre el sitio en vivo). Autoalojada: sin petición
+// bloqueante a fonts.googleapis.com y sin mandar la IP de cada visitante a
+// Google. Solo subconjunto latino.
+import '@fontsource/quicksand/latin-400.css';
+import '@fontsource/quicksand/latin-500.css';
+import '@fontsource/quicksand/latin-600.css';
+import '@fontsource/quicksand/latin-700.css';
+// Manuscrita solo para el titular del hero, igual que la referencia.
+import '@fontsource/dancing-script/latin-600.css';
 import '../styles/global.css';
 import {
   SITE,
@@ -166,10 +171,10 @@ const jsonLdNodes = [negocio, website, ...schema];
       document.documentElement.setAttribute('data-reveal', '');
     </script>
   </head>
-  <body class="bg-paper font-body text-char antialiased">
+  <body class="bg-white font-sans text-ink antialiased">
     <a
       href="#contenido"
-      class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-brand focus:px-4 focus:py-2 focus:font-bold focus:text-white"
+      class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:bg-brand focus:px-4 focus:py-2 focus:font-bold focus:text-white"
     >
       Saltar al contenido
     </a>
@@ -207,20 +212,101 @@ const jsonLdNodes = [negocio, website, ...schema];
         window.addEventListener('scroll', onScroll, { passive: true });
       }
 
-      // Menú móvil.
+      // Menú móvil (panel deslizante, como el hamburguesa de la referencia).
       const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
       const menu = document.querySelector<HTMLElement>('[data-menu]');
       if (toggle && menu) {
+        const cerrar = () => {
+          toggle.setAttribute('aria-expanded', 'false');
+          menu.hidden = true;
+          document.body.style.overflow = '';
+        };
         toggle.addEventListener('click', () => {
           const abierto = toggle.getAttribute('aria-expanded') === 'true';
-          toggle.setAttribute('aria-expanded', String(!abierto));
-          menu.hidden = abierto;
+          if (abierto) return cerrar();
+          toggle.setAttribute('aria-expanded', 'true');
+          menu.hidden = false;
+          // Con el panel abierto la página de atrás no debe desplazarse.
+          document.body.style.overflow = 'hidden';
         });
-        // Al tocar un enlace el menú se cierra solo; si no, tapa el destino.
         menu.addEventListener('click', (e) => {
-          if ((e.target as HTMLElement).closest('a')) {
-            toggle.setAttribute('aria-expanded', 'false');
-            menu.hidden = true;
+          const t = e.target as HTMLElement;
+          if (t.closest('a') || t.hasAttribute('data-menu-cerrar')) cerrar();
+        });
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && !menu.hidden) cerrar();
+        });
+      }
+
+      // Carruseles horizontales: el scroll nativo hace el trabajo (y en móvil
+      // se arrastra con el dedo); las flechas solo lo empujan una tarjeta.
+      document.querySelectorAll<HTMLElement>('[data-carrusel]').forEach((raiz) => {
+        const rail = raiz.querySelector<HTMLElement>('.rail');
+        const prev = raiz.querySelector<HTMLButtonElement>('[data-prev]');
+        const next = raiz.querySelector<HTMLButtonElement>('[data-next]');
+        if (!rail) return;
+        const salto = () => {
+          const primera = rail.firstElementChild as HTMLElement | null;
+          return primera ? primera.offsetWidth + 24 : rail.clientWidth * 0.8;
+        };
+        prev?.addEventListener('click', () => rail.scrollBy({ left: -salto(), behavior: 'smooth' }));
+        next?.addEventListener('click', () => rail.scrollBy({ left: salto(), behavior: 'smooth' }));
+        // Las flechas se ocultan en los extremos en vez de quedarse muertas.
+        const sync = () => {
+          const max = rail.scrollWidth - rail.clientWidth - 2;
+          if (prev) prev.disabled = rail.scrollLeft <= 2;
+          if (next) next.disabled = rail.scrollLeft >= max;
+        };
+        rail.addEventListener('scroll', sync, { passive: true });
+        window.addEventListener('resize', sync);
+        sync();
+      });
+
+      // Slider del hero: autoavance con pausa al pasar el cursor.
+      const slider = document.querySelector<HTMLElement>('[data-slider]');
+      if (slider) {
+        const slides = [...slider.querySelectorAll<HTMLElement>('[data-slide]')];
+        const puntos = [...slider.querySelectorAll<HTMLButtonElement>('[data-punto]')];
+        let i = 0;
+        let timer = 0;
+        const ir = (n: number) => {
+          i = (n + slides.length) % slides.length;
+          slides.forEach((s, k) => {
+            s.classList.toggle('opacity-0', k !== i);
+            s.classList.toggle('pointer-events-none', k !== i);
+            s.setAttribute('aria-hidden', String(k !== i));
+          });
+          puntos.forEach((p, k) => p.setAttribute('aria-current', String(k === i)));
+        };
+        const arrancar = () => {
+          if (slides.length < 2) return;
+          if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+          timer = window.setInterval(() => ir(i + 1), 6500);
+        };
+        const parar = () => window.clearInterval(timer);
+        slider.querySelector('[data-slider-prev]')?.addEventListener('click', () => { parar(); ir(i - 1); arrancar(); });
+        slider.querySelector('[data-slider-next]')?.addEventListener('click', () => { parar(); ir(i + 1); arrancar(); });
+        puntos.forEach((p, k) => p.addEventListener('click', () => { parar(); ir(k); arrancar(); }));
+        slider.addEventListener('mouseenter', parar);
+        slider.addEventListener('mouseleave', arrancar);
+        ir(0);
+        arrancar();
+      }
+
+      // Barra promocional: se cierra y no vuelve en la sesión.
+      const promo = document.querySelector<HTMLElement>('[data-promo]');
+      if (promo) {
+        try {
+          if (sessionStorage.getItem('promo-cerrada') === '1') promo.hidden = true;
+        } catch {
+          /* modo privado: da igual, se muestra */
+        }
+        promo.querySelector('[data-promo-cerrar]')?.addEventListener('click', () => {
+          promo.hidden = true;
+          try {
+            sessionStorage.setItem('promo-cerrada', '1');
+          } catch {
+            /* sin persistencia, pero cerrada en esta vista */
           }
         });
       }

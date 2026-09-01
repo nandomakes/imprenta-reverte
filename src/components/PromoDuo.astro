@@ -1,0 +1,33 @@
+---
+// Los dos paneles de imagen con texto centrado encima ("Use su arte con
+// orgullo" / "Destacar como profesional" en la referencia).
+import { PROMO_DUO } from '../consts';
+import Foto from './Foto.astro';
+---
+
+<section class="shell grid gap-5 pb-4 pt-12 sm:gap-6 md:grid-cols-2 md:pt-16">
+  {
+    PROMO_DUO.map((p) => (
+      <a href={p.href} class="zoom-parent lift reveal group relative block overflow-hidden">
+        <Foto
+          id={p.imagen}
+          alt={p.alt}
+          ratio="16/10"
+          sizes="(min-width:768px) 640px, 100vw"
+          class="zoom-img"
+        />
+        {/* Velo oscuro: sin él el texto blanco se pierde sobre la foto. */}
+        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/10" />
+        <div class="absolute inset-0 flex flex-col items-center justify-center px-6 text-center text-white">
+          <h2 class="text-[26px] font-semibold leading-tight sm:text-[30px]">{p.titulo}</h2>
+          <p class="mt-1.5 text-[15px] font-semibold uppercase tracking-wide sm:text-[17px]">
+            {p.sub}
+          </p>
+          <span class="mt-4 border-b-2 border-white pb-1 text-[16px] sm:text-[18px]">
+            Ver la categoría
+          </span>
+        </div>
+      </a>
+    ))
+  }
+</section>

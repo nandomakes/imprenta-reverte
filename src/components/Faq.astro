@@ -2,21 +2,21 @@
 interface Props {
   items: readonly { q: string; a: string }[];
   titulo?: string;
+  fondo?: 'blanco' | 'mist';
 }
 
-const { items, titulo = 'Preguntas frecuentes' } = Astro.props;
+const { items, titulo = 'Preguntas frecuentes', fondo = 'blanco' } = Astro.props;
 ---
 
-<section class="bg-white">
-  <div class="mx-auto max-w-3xl px-6 py-16 md:py-20">
-    <p class="kicker reveal">Dudas</p>
-    <h2 class="headline reveal mt-3 text-3xl text-ink sm:text-4xl">{titulo}</h2>
+<section class={fondo === 'mist' ? 'bg-mist py-12 md:py-16' : 'bg-white py-12 md:py-16'}>
+  <div class="shell max-w-3xl">
+    <h2 class="h-sec reveal text-center">{titulo}</h2>
 
-    <div class="mt-8 divide-y divide-line border-y border-line">
+    <div class="mt-9 divide-y divide-line border-y border-line">
       {
         items.map((f) => (
-          <details class="faq reveal group py-1">
-            <summary class="flex cursor-pointer list-none items-start justify-between gap-4 py-4 text-left font-semibold text-ink hover:text-brand">
+          <details class="faq reveal group">
+            <summary class="flex cursor-pointer list-none items-start justify-between gap-4 py-4 text-left text-[16px] font-semibold text-ink hover:text-brand">
               <span>{f.q}</span>
               <svg
                 aria-hidden="true"
@@ -30,7 +30,7 @@ const { items, titulo = 'Preguntas frecuentes' } = Astro.props;
                 <path d="M10 4v12M4 10h12" />
               </svg>
             </summary>
-            <p class="pb-5 pr-9 leading-relaxed text-char">{f.a}</p>
+            <p class="pb-5 pr-9 text-[15px] leading-relaxed">{f.a}</p>
           </details>
         ))
       }

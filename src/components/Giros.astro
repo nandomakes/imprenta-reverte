@@ -1,0 +1,21 @@
+---
+// Franja gris con los giros que atendemos, en el lugar donde la referencia
+// pone los logotipos de las marcas que confían en ella. Aquí no se inventan
+// logotipos de clientes: se nombran los giros, que es verificable.
+import { GIROS } from '../consts';
+---
+
+<section class="bg-mist py-12 md:py-16">
+  <div class="shell text-center">
+    <h2 class="h-sec reveal">Negocios de Ciudad Valles que ya imprimen con nosotros</h2>
+    <ul class="mt-9 flex flex-wrap justify-center gap-x-3 gap-y-3">
+      {
+        GIROS.map((g) => (
+          <li class="reveal border border-line bg-white px-5 py-2.5 text-[15px] text-ink">
+            {g}
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

@@ -1,14 +1,13 @@
 /**
  * Fuente única de contenido del sitio.
  *
- * Los componentes son presentación pura y no llevan texto propio: todo lo que
- * se lee en pantalla sale de aquí. Cambiar un teléfono, una foto o un titular
- * es editar este archivo, no diez plantillas.
- *
  * El CATÁLOGO no vive aquí: vive en `src/data/catalogo.ts`, transcrito y
- * verificado contra el PDF. Este archivo solo le añade la CAPA VISUAL
- * (foto, resumen, proceso, FAQ) indexada por slug — así una corrección al
- * catálogo real nunca se pierde entre decisiones de diseño.
+ * verificado contra el PDF. Este archivo le añade la capa visual y todo el
+ * copy de las secciones.
+ *
+ * La ESTRUCTURA y el sistema visual replican printshopsolution.com/es/:
+ * mismo orden de secciones, misma tipografía (Quicksand), y colores tomados
+ * con getComputedStyle del sitio en vivo — no aproximados a ojo.
  */
 
 import { CATALOGO, type CategoriaCatalogo } from './data/catalogo';
@@ -19,11 +18,11 @@ export const SITE = {
   city: 'Ciudad Valles',
   region: 'San Luis Potosí',
   url: 'https://www.imprentareverte.com',
-  themeColor: '#1B4DB1',
+  themeColor: '#0221C4',
   title: 'Imprenta Reverte | Imprenta en Ciudad Valles, SLP',
   description:
     'Imprenta en Ciudad Valles, SLP. Papelería comercial y médica, lonas y gran formato, playeras, grabado láser, sellos e impresión para eventos. Cotiza ahora al 481 381 6663.',
-  tagline: 'Todo lo que tu negocio necesita impreso, en un solo lugar.',
+  tagline: 'Transforma tu idea en impreso, en cualquier momento, en cualquier lugar.',
 } as const;
 
 /** El CTA del sitio. Una sola etiqueta, en todas partes, sin variantes. */
@@ -31,7 +30,7 @@ export const CTA_LABEL = 'Cotiza ahora';
 
 export const PHONE_DISPLAY = '481 381 6663';
 export const PHONE_TEL = '+524813816663';
-/** WhatsApp usa el número en formato internacional sin signos. */
+export const EMAIL = 'contacto@imprentareverte.com';
 export const WHATSAPP_URL = `https://wa.me/524813816663?text=${encodeURIComponent(
   'Hola, quiero cotizar un trabajo de imprenta.'
 )}`;
@@ -65,24 +64,71 @@ export const CONTACT = {
     '&t=&z=15&ie=UTF8&iwloc=&output=embed',
 } as const;
 
-export const SOCIALS: { label: string; href: string }[] = [
-  { label: 'Facebook', href: 'https://www.facebook.com/' },
-  { label: 'WhatsApp', href: WHATSAPP_URL },
+export const SOCIALS: { label: string; href: string; icon: 'facebook' | 'whatsapp' | 'instagram' }[] = [
+  { label: 'Facebook', href: 'https://www.facebook.com/', icon: 'facebook' },
+  { label: 'Instagram', href: 'https://www.instagram.com/', icon: 'instagram' },
+  { label: 'WhatsApp', href: WHATSAPP_URL, icon: 'whatsapp' },
 ];
 
-export const NAV = [
-  { label: 'Inicio', href: '/' },
-  { label: 'Catálogo', href: '/catalogo/' },
-  { label: 'Nosotros', href: '/#nosotros' },
-  { label: 'Contacto', href: '/contacto/' },
-] as const;
+/** Barra promocional superior (la referencia lleva una con degradado). */
+export const PROMO_BAR = {
+  texto: 'Diseño incluido en todos los trabajos · Entrega en Ciudad Valles',
+  enlaceTexto: 'Cotiza ahora',
+  href: '/cotizar/',
+} as const;
 
 /**
- * Fotografía: Unsplash por URL remota (los parámetros `w`/`q`/`auto=format`
- * los sirve su propio CDN, así que no hay que descargar ni optimizar nada en
- * el build). Cada ID fue verificado visualmente antes de asignarlo, para que
- * el `alt` describa de verdad lo que se ve.
+ * Menú principal. La referencia tiene 7 entradas de primer nivel que agrupan
+ * subcategorías; aquí se agrupan las 9 del catálogo de la misma forma.
  */
+export const NAV: { label: string; href: string; hijos?: string[] }[] = [
+  { label: 'Todo el catálogo', href: '/catalogo/' },
+  {
+    label: 'Papelería',
+    href: '/catalogo/papeleria-comercial-corporativa/',
+    hijos: ['papeleria-comercial-corporativa', 'papeleria-medica-laboratorio'],
+  },
+  {
+    label: 'Publicidad',
+    href: '/catalogo/publicidad-identidad-visual/',
+    hijos: ['publicidad-identidad-visual'],
+  },
+  {
+    label: 'Gran formato',
+    href: '/catalogo/impresion-gran-formato-senaletica/',
+    hijos: ['impresion-gran-formato-senaletica'],
+  },
+  {
+    label: 'Textil y promocionales',
+    href: '/catalogo/impresion-textil-promocionales/',
+    hijos: ['impresion-textil-promocionales'],
+  },
+  {
+    label: 'Grabado láser',
+    href: '/catalogo/grabado-laser-sublimacion-rigidos/',
+    hijos: ['grabado-laser-sublimacion-rigidos'],
+  },
+  {
+    label: 'Oficina y eventos',
+    href: '/catalogo/sellos-articulos-oficina/',
+    hijos: ['sellos-articulos-oficina', 'impresion-eventos', 'otros-servicios-imprenta'],
+  },
+];
+
+/** Enlaces rápidos del footer (la referencia tiene una columna igual). */
+export const ENLACES_RAPIDOS = [
+  { label: 'Preguntas frecuentes', href: '/preguntas-frecuentes/' },
+  { label: 'Solicitar una cotización', href: '/cotizar/' },
+  { label: 'Cómo llegar', href: '/contacto/' },
+  { label: 'Aviso de privacidad', href: '/privacidad/' },
+  { label: 'Términos y condiciones', href: '/terminos/' },
+  { label: 'Accesibilidad', href: '/accesibilidad/' },
+] as const;
+
+/** ------------------------------------------------------------------
+ *  FOTOGRAFÍA — Unsplash, servida por su CDN.
+ *  Cada ID fue revisado visualmente antes de asignarlo.
+ *  ------------------------------------------------------------------ */
 const UNSPLASH = 'https://images.unsplash.com/';
 export function foto(id: string, w = 1200): string {
   return `${UNSPLASH}${id}?auto=format&fit=crop&q=75&w=${w}`;
@@ -93,26 +139,38 @@ export const IMAGES = {
     id: 'photo-1503694978374-8a2fa686963a',
     alt: 'Prensa de impresión offset sacando pliegos impresos a alta velocidad',
   },
+  heroAlt: {
+    id: 'photo-1572044162444-ad60f128bdea',
+    alt: 'Diseñador trabajando en una laptop con abanicos de muestras de color Pantone',
+  },
   nosotros: {
     id: 'photo-1585776245991-cf89dd7fc73a',
     alt: 'Máquina de escribir antigua con una hoja puesta, evocando el oficio de la imprenta',
   },
+  playera: {
+    id: 'photo-1521572163474-6864f9cf17ab',
+    alt: 'Persona vistiendo una playera blanca lisa lista para estampar',
+  },
+  volante: {
+    id: 'photo-1580828343064-fde4fc206bc6',
+    alt: 'Letras grandes de vinil adhesivo aplicadas sobre el aparador de un local',
+  },
+  taller: {
+    id: 'photo-1611532736597-de2d4265fba3',
+    alt: 'Tableta mostrando el diseño de una letra junto a un cuaderno tipográfico naranja',
+  },
 } as const;
 
-/** ---------------------------------------------------------------------
- *  CAPA VISUAL DEL CATÁLOGO
- *  Indexada por el slug de `data/catalogo.ts`. Si falta una entrada, la
- *  página de esa categoría sigue funcionando con valores por defecto.
+/** ------------------------------------------------------------------
+ *  CAPA VISUAL DEL CATÁLOGO — indexada por el slug de data/catalogo.ts
  *  ------------------------------------------------------------------ */
 export interface CategoriaUI {
-  /** ID de Unsplash, verificado a ojo contra la categoría. */
   imagen: string;
   imagenAlt: string;
-  /** Una línea para la tarjeta del grid. */
+  /** Fondo pastel de la tarjeta, como los del carrusel de la referencia. */
+  tono: 'card1' | 'card2' | 'card3' | 'card4';
   resumen: string;
-  /** Uno o dos párrafos para la página de la categoría. */
   descripcion: string;
-  /** Lo que el cliente debería traer o decidir antes de cotizar. */
   aSaber?: string[];
 }
 
@@ -120,6 +178,7 @@ export const CATEGORIAS_UI: Record<string, CategoriaUI> = {
   'papeleria-comercial-corporativa': {
     imagen: 'photo-1554224155-6726b3ff858f',
     imagenAlt: 'Formatos y facturas impresos sobre un escritorio junto a una calculadora',
+    tono: 'card1',
     resumen: 'Los formatos con los que tu negocio opera todos los días.',
     descripcion:
       'Notas de venta, comandas, recibos, contratos y hoja membretada: lo que se llena, se firma y se archiva. Lo imprimimos foliado, en original y copias, en block engomado o en talonario, con tus datos fiscales y tu logotipo.',
@@ -132,6 +191,7 @@ export const CATEGORIAS_UI: Record<string, CategoriaUI> = {
   'papeleria-medica-laboratorio': {
     imagen: 'photo-1576091160550-2173dba999ef',
     imagenAlt: 'Estetoscopio sobre un escritorio junto a una persona escribiendo en una laptop',
+    tono: 'card2',
     resumen: 'Recetarios y formatos para consultorio, clínica y laboratorio.',
     descripcion:
       'Recetarios, órdenes de laboratorio, sobres y bolsas para radiografías. Papelería que lleva cédula profesional, especialidad y domicilio impresos, y que tiene que verse seria porque el paciente se la lleva en la mano.',
@@ -144,6 +204,7 @@ export const CATEGORIAS_UI: Record<string, CategoriaUI> = {
   'publicidad-identidad-visual': {
     imagen: 'photo-1572044162444-ad60f128bdea',
     imagenAlt: 'Diseñador trabajando en una laptop con abanicos de muestras de color Pantone',
+    tono: 'card3',
     resumen: 'Tarjetas, volantes, trípticos y todo lo que presenta tu marca.',
     descripcion:
       'La cara de tu negocio en papel: tarjetas de presentación, volantes, trípticos, pósters, etiquetas, stickers, gafetes y menús. Full color por ambos lados, en papel couché, opalina o sulfatado, con acabado mate o brillante.',
@@ -156,6 +217,7 @@ export const CATEGORIAS_UI: Record<string, CategoriaUI> = {
   'impresion-gran-formato-senaletica': {
     imagen: 'photo-1580828343064-fde4fc206bc6',
     imagenAlt: 'Letras grandes de vinil adhesivo aplicadas sobre el aparador de un local',
+    tono: 'card4',
     resumen: 'Lonas, rótulos, vinil y rotulación para que te vean de lejos.',
     descripcion:
       'Todo lo que se imprime en grande: lonas, banners tipo araña, banderas, toldos, vinil para ventanas, señalética en corte de vinil, rótulos de negocio y rotulación vehicular. Se cotiza por metro cuadrado y se entrega listo para colgar o instalar.',
@@ -168,6 +230,7 @@ export const CATEGORIAS_UI: Record<string, CategoriaUI> = {
   'impresion-textil-promocionales': {
     imagen: 'photo-1523381210434-271e8be1f52b',
     imagenAlt: 'Playeras lisas colgadas en ganchos de madera sobre un burro de ropa',
+    tono: 'card2',
     resumen: 'Playeras, uniformes, gorras y bolsas con tu logotipo.',
     descripcion:
       'Estampado sobre tela: playeras en DTF, sublimación o serigrafía, playeras full print, uniformes, gorras, mochilas, bolsas ecológicas y tote bags, cubrecuellos y manteles de tela. Desde una pieza para un regalo hasta el uniforme de toda la plantilla.',
@@ -180,6 +243,7 @@ export const CATEGORIAS_UI: Record<string, CategoriaUI> = {
   'grabado-laser-sublimacion-rigidos': {
     imagen: 'photo-1567016526105-22da7c13161a',
     imagenAlt: 'Termo metálico liso de color verde sobre fondo blanco',
+    tono: 'card1',
     resumen: 'Tazas, termos, placas y reconocimientos personalizados.',
     descripcion:
       'Marcado sobre objetos rígidos: tazas sublimadas, termos, vasos y cilindros con grabado láser, reconocimientos en acrílico, vidrio o madera, placas metálicas y para nicho, medallas y souvenirs. El grabado láser no se despinta ni se despega: queda marcado en el material.',
@@ -192,6 +256,7 @@ export const CATEGORIAS_UI: Record<string, CategoriaUI> = {
   'sellos-articulos-oficina': {
     imagen: 'photo-1568205612837-017257d2310a',
     imagenAlt: 'Lápices de colores acomodados en abanico sobre una superficie blanca',
+    tono: 'card4',
     resumen: 'Sellos Colop, fechadores, agendas, carpetas y artículos escolares.',
     descripcion:
       'Sellos automáticos Colop y de madera, fechadores, troqueles de realce, más agendas y planeadores, carpetas, reglas, lapiceros, pines, pulseras Tyvek y portadas para tesis y documentos. El día a día de la oficina y el ciclo escolar.',
@@ -204,6 +269,7 @@ export const CATEGORIAS_UI: Record<string, CategoriaUI> = {
   'impresion-eventos': {
     imagen: 'photo-1519225421980-715cb0215aed',
     imagenAlt: 'Mesa larga montada para un banquete de boda con flores y servilletas',
+    tono: 'card3',
     resumen: 'Invitaciones, menús, novenarios y todo para tu evento.',
     descripcion:
       'Bodas, bautizos, primeras comuniones, novenarios y también carreras y torneos: invitaciones, menús decorativos, abanicos, manteles de papel, calendarios, números de corredor, hojas de registro y figuras en coroplast para decorar.',
@@ -216,6 +282,7 @@ export const CATEGORIAS_UI: Record<string, CategoriaUI> = {
   'otros-servicios-imprenta': {
     imagen: 'photo-1611532736597-de2d4265fba3',
     imagenAlt: 'Tableta mostrando el diseño de una letra junto a un cuaderno tipográfico naranja',
+    tono: 'card1',
     resumen: '¿No lo viste en la lista? Pregúntanos: seguro se puede.',
     descripcion:
       'El catálogo cubre lo que más nos piden, pero no es todo lo que hacemos. Si tienes un trabajo que no encaja claramente en ninguna categoría, o todavía no sabes bien cómo quieres resolverlo, mándanos los detalles y te decimos qué se puede hacer y qué cuesta.',
@@ -229,6 +296,7 @@ export const CATEGORIAS_UI: Record<string, CategoriaUI> = {
 const UI_POR_DEFECTO: CategoriaUI = {
   imagen: IMAGES.hero.id,
   imagenAlt: 'Trabajos de imprenta recién salidos de la prensa',
+  tono: 'card1',
   resumen: 'Consulta esta categoría del catálogo.',
   descripcion: 'Escríbenos y te cotizamos este trabajo.',
 };
@@ -237,7 +305,6 @@ export function uiDe(slug: string): CategoriaUI {
   return CATEGORIAS_UI[slug] ?? UI_POR_DEFECTO;
 }
 
-/** Categoría + su capa visual, que es lo que consumen las plantillas. */
 export interface Categoria extends CategoriaCatalogo, CategoriaUI {}
 
 export const CATEGORIAS: Categoria[] = CATALOGO.map((c) => ({ ...c, ...uiDe(c.slug) }));
@@ -246,61 +313,162 @@ export function categoriaPorSlug(slug: string): Categoria | undefined {
   return CATEGORIAS.find((c) => c.slug === slug);
 }
 
-/** ------------------------------------------------------------------ */
+/** ------------------------------------------------------------------
+ *  CONTENIDO DE LAS SECCIONES DEL HOME
+ *  Mismo orden que printshopsolution.com/es/
+ *  ------------------------------------------------------------------ */
 
-export const VENTAJAS = [
+/** 1. Hero (slider). */
+export const HERO_SLIDES = [
   {
-    titulo: 'Aquí mismo, en Ciudad Valles',
+    script: 'Para negocios con historia…',
+    titulo: 'Impresión que sostiene tu día a día',
+    cta: 'Explora el catálogo',
+    href: '/catalogo/',
+    imagen: IMAGES.hero.id,
+    alt: IMAGES.hero.alt,
+  },
+  {
+    script: 'De la idea al papel…',
+    titulo: 'Diseñamos contigo antes de imprimir',
+    cta: 'Cómo trabajamos',
+    href: '/#tres-maneras',
+    imagen: IMAGES.heroAlt.id,
+    alt: IMAGES.heroAlt.alt,
+  },
+] as const;
+
+/** 2. Dos paneles promocionales (equivale a "Use su arte con orgullo"). */
+export const PROMO_DUO = [
+  {
+    titulo: 'Lleva tu marca puesta',
+    sub: 'Playeras, uniformes y gorras',
+    href: '/catalogo/impresion-textil-promocionales/',
+    imagen: IMAGES.playera.id,
+    alt: IMAGES.playera.alt,
+  },
+  {
+    titulo: 'Que te vean desde la calle',
+    sub: 'Lonas, rótulos y vinil',
+    href: '/catalogo/impresion-gran-formato-senaletica/',
+    imagen: IMAGES.volante.id,
+    alt: IMAGES.volante.alt,
+  },
+] as const;
+
+/** 5. Banda celeste con imagen (equivale al banner de las 24 horas). */
+export const BANNER_SKY = {
+  titulo: 'Sellos automáticos listos el mismo día',
+  cta: 'Pide el tuyo',
+  href: '/catalogo/sellos-articulos-oficina/',
+  imagen: 'photo-1568205612837-017257d2310a',
+  alt: 'Lápices de colores acomodados en abanico sobre una superficie blanca',
+} as const;
+
+/** 6. "Diseñe su estilo de firma en 3 maneras!" */
+export const TRES_MANERAS = [
+  {
+    titulo: 'Lo diseñamos contigo',
     texto:
-      'No mandamos tu trabajo a otra ciudad. Se imprime aquí, lo revisas aquí y lo recoges aquí el día acordado.',
+      'Desde una tarjeta de presentación hasta una lona: nos sientas, nos cuentas y lo armamos ahí mismo contigo.',
+    imagen: 'photo-1572044162444-ad60f128bdea',
+    alt: 'Diseñador trabajando con muestras de color sobre el escritorio',
+    tono: 'card4',
+  },
+  {
+    titulo: 'Parte de una plantilla',
+    texto:
+      'Te enseñamos modelos que ya funcionan para tu giro y los personalizamos con tus datos, tus colores y tu logo.',
+    imagen: 'photo-1611532736597-de2d4265fba3',
+    alt: 'Diseño tipográfico en pantalla junto a un cuaderno impreso',
+    tono: 'card1',
+  },
+  {
+    titulo: 'Trae tu archivo',
+    texto:
+      'Si ya tienes el diseño, mándalo en PDF, AI o CDR. Lo revisamos, te decimos si da la calidad y lo dejamos listo.',
+    imagen: 'photo-1554224155-6726b3ff858f',
+    alt: 'Documentos impresos revisados sobre un escritorio',
+    tono: 'card3',
+  },
+] as const;
+
+/** 9. "Experiencia 20+ años" → banda celeste con datos del negocio. */
+export const EXPERIENCIA = {
+  titulo: 'Una imprenta de Ciudad Valles, para los negocios de Ciudad Valles',
+  texto:
+    'Estamos sobre el Blvd. México - Laredo, en plena Zona Centro. Atendemos consultorios, restaurantes, escuelas, ferreterías y constructoras: nueve categorías de catálogo, tiraje mínimo de una pieza y la entrega en la fecha que prometimos.',
+  cta: 'Hablemos',
+  href: '/contacto/',
+} as const;
+
+/** 12. "Nuevas llegadas" — tres mosaicos a sangre. */
+export const MOSAICO = [
+  {
+    titulo: 'Invitaciones y eventos',
+    href: '/catalogo/impresion-eventos/',
+    imagen: 'photo-1519225421980-715cb0215aed',
+    alt: 'Mesa de banquete decorada para una boda',
+  },
+  {
+    titulo: 'Tazas y termos grabados',
+    href: '/catalogo/grabado-laser-sublimacion-rigidos/',
+    imagen: 'photo-1544787219-7f47ccb76574',
+    alt: 'Taza blanca sobre una base de madera junto a unas galletas',
+  },
+  {
+    titulo: 'Menús para restaurante',
+    href: '/catalogo/publicidad-identidad-visual/',
+    imagen: 'photo-1512909006721-3d6018887383',
+    alt: 'Comedor de un restaurante con las mesas montadas',
+  },
+] as const;
+
+/** 13. Tres distintivos (equivale a Envío gratuito / Garantía / Precio). */
+export const DISTINTIVOS = [
+  {
+    titulo: 'Entrega local',
+    imagen: 'photo-1595246140625-573b715d11dc',
+    alt: 'Cajas de cartón listas para entrega sobre fondo claro',
   },
   {
     titulo: 'Desde una pieza',
-    texto:
-      'Una taza para un regalo o mil volantes para una campaña: el tiraje chico también nos interesa.',
+    imagen: 'photo-1544787219-7f47ccb76574',
+    alt: 'Taza blanca personalizada sobre una base de madera',
   },
   {
     titulo: 'Diseño incluido',
-    texto:
-      '¿No tienes archivo? Lo armamos contigo antes de imprimir y te mandamos la prueba para tu visto bueno.',
-  },
-  {
-    titulo: 'Te decimos si no conviene',
-    texto:
-      'Si hay un material o un proceso que te sale mejor para lo que necesitas, te lo decimos aunque cueste menos.',
+    imagen: 'photo-1572044162444-ad60f128bdea',
+    alt: 'Diseñador trabajando con muestras de color Pantone',
   },
 ] as const;
 
-export const PASOS = [
-  {
-    numero: '01',
-    titulo: 'Nos cuentas qué necesitas',
-    texto:
-      'Por el formulario, por teléfono o pasando al local. Con que sepas qué es y cuántos quieres, empezamos.',
-  },
-  {
-    numero: '02',
-    titulo: 'Cotizamos y ajustamos el diseño',
-    texto:
-      'Te pasamos precio y tiempo de entrega. Si traes archivo lo revisamos; si no, lo diseñamos contigo.',
-  },
-  {
-    numero: '03',
-    titulo: 'Apruebas la prueba e imprimimos',
-    texto:
-      'Nada entra a máquina sin tu visto bueno. Una vez aprobado, imprimimos y te avisamos cuando esté listo.',
-  },
+/** 14. "Únete a la Liga de Marcas" → giros que atendemos. */
+export const GIROS = [
+  'Consultorios',
+  'Restaurantes',
+  'Escuelas',
+  'Ferreterías',
+  'Constructoras',
+  'Hoteles',
+  'Farmacias',
+  'Talleres',
 ] as const;
 
-export const DESTACADOS = [
-  { nombre: 'Tarjetas de presentación', categoria: 'publicidad-identidad-visual', imagen: 'photo-1611532736597-de2d4265fba3', alt: 'Diseño tipográfico en pantalla junto a un cuaderno impreso' },
-  { nombre: 'Lonas publicitarias', categoria: 'impresion-gran-formato-senaletica', imagen: 'photo-1580828343064-fde4fc206bc6', alt: 'Rotulación de gran tamaño en el aparador de un negocio' },
-  { nombre: 'Playeras y uniformes', categoria: 'impresion-textil-promocionales', imagen: 'photo-1521572163474-6864f9cf17ab', alt: 'Persona vistiendo una playera blanca lisa lista para estampar' },
-  { nombre: 'Tazas y termos', categoria: 'grabado-laser-sublimacion-rigidos', imagen: 'photo-1544787219-7f47ccb76574', alt: 'Taza blanca sobre una base de madera junto a unas galletas' },
-  { nombre: 'Recetarios médicos', categoria: 'papeleria-medica-laboratorio', imagen: 'photo-1576091160550-2173dba999ef', alt: 'Estetoscopio y laptop en el escritorio de un consultorio' },
-  { nombre: 'Menús para restaurante', categoria: 'publicidad-identidad-visual', imagen: 'photo-1512909006721-3d6018887383', alt: 'Comedor de un restaurante con las mesas montadas' },
-  { nombre: 'Invitaciones de boda', categoria: 'impresion-eventos', imagen: 'photo-1519225421980-715cb0215aed', alt: 'Mesa de banquete decorada para una boda' },
-  { nombre: 'Etiquetas para botellas', categoria: 'publicidad-identidad-visual', imagen: 'photo-1571781926291-c477ebfd024b', alt: 'Envases de producto con etiqueta impresa sobre fondo de color' },
+/** 16. Dos tarjetas de cierre sobre banda celeste. */
+export const CTA_DUO = [
+  {
+    icono: 'documento',
+    texto: '¿Listo para arrancar tu trabajo de impresión? Cuéntanos qué necesitas y te cotizamos sin compromiso.',
+    boton: 'Pedir cotización',
+    href: '/cotizar/',
+  },
+  {
+    icono: 'persona',
+    texto: '¿No tienes diseño todavía? Lo armamos contigo antes de imprimir, incluido en el trabajo.',
+    boton: 'Hablar con diseño',
+    href: '/contacto/',
+  },
 ] as const;
 
 export const TESTIMONIOS = [
@@ -357,7 +525,6 @@ export const FAQS_HOME = [
   },
 ] as const;
 
-/** Ciudades sugeridas en el campo "Ciudad" del formulario. */
 export const CIUDADES_SUGERIDAS = [
   'Ciudad Valles',
   'Tamuín',
@@ -370,7 +537,6 @@ export const CIUDADES_SUGERIDAS = [
   'San Luis Potosí',
 ] as const;
 
-/** JSON-LD de FAQPage — mismo helper que usa cada página con preguntas. */
 export function faqPageSchema(items: readonly { q: string; a: string }[]) {
   return {
     '@context': 'https://schema.org',

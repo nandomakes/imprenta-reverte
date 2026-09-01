@@ -1,0 +1,25 @@
+---
+// Los tres distintivos con imagen de fondo y texto blanco encima
+// (Envío gratuito / Garantía 100% / Precio más bajo en la referencia).
+import { DISTINTIVOS } from '../consts';
+import Foto from './Foto.astro';
+---
+
+<section class="shell grid gap-5 py-12 sm:gap-6 md:grid-cols-3 md:py-16">
+  {
+    DISTINTIVOS.map((d) => (
+      <div class="reveal relative overflow-hidden">
+        <Foto
+          id={d.imagen}
+          alt=""
+          ratio="16/9"
+          sizes="(min-width:768px) 430px, 100vw"
+        />
+        <div class="absolute inset-0 bg-black/45" />
+        <p class="absolute inset-0 flex items-center justify-center text-[22px] font-medium text-white sm:text-[24px]">
+          {d.titulo}
+        </p>
+      </div>
+    ))
+  }
+</section>

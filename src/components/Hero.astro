@@ -1,49 +1,95 @@
 ---
-import { IMAGES, PHONE_DISPLAY, PHONE_TEL } from '../consts';
-import Cta from './Cta.astro';
+// Hero de la referencia: fondo crema, titular manuscrito, subtítulo, botón
+// magenta, imagen a la derecha, flechas a los lados y borde de papel rasgado
+// abajo. Slider con dos diapositivas.
+import { HERO_SLIDES } from '../consts';
 import Foto from './Foto.astro';
 ---
 
-<section class="relative overflow-hidden bg-ink text-white">
-  <div class="absolute inset-0">
-    <Foto
-      id={IMAGES.hero.id}
-      alt={IMAGES.hero.alt}
-      prioridad
-      ratio="16/9"
-      sizes="100vw"
-      class="opacity-30"
-    />
-    <div class="absolute inset-0 bg-gradient-to-r from-ink via-ink/90 to-ink/50"></div>
-  </div>
-
-  <div class="relative mx-auto max-w-7xl px-6 py-20 md:py-28 lg:py-32">
-    <div class="max-w-2xl">
-      <p class="kicker reveal text-accent">Imprenta en Ciudad Valles, SLP</p>
-      <h1 class="headline reveal mt-4 text-4xl text-white sm:text-5xl lg:text-[3.5rem]">
-        Todo lo que tu negocio necesita impreso, en un solo lugar
-      </h1>
-      <p class="reveal mt-6 max-w-xl text-lg leading-relaxed text-white/75">
-        Papelería, lonas, playeras, sellos, grabado láser e impresión para eventos. Nueve
-        categorías de catálogo, una sola imprenta, y la entrega en la fecha que te prometimos.
-      </p>
-
-      <div class="reveal mt-9 flex flex-wrap items-center gap-3">
-        <Cta href="/contacto/#cotizar" tamano="lg" />
-        <a
-          href="/catalogo/"
-          class="pressable inline-flex items-center justify-center rounded-lg border-2 border-white/30 px-7 py-3.5 text-base font-semibold text-white transition-colors hover:border-white hover:bg-white hover:text-ink"
+<section
+  data-slider
+  class="torn-b relative bg-cream"
+  aria-roledescription="carrusel"
+  aria-label="Destacados"
+>
+  <div class="relative">
+    {
+      HERO_SLIDES.map((s, i) => (
+        <div
+          data-slide
+          class:list={[
+            'transition-opacity duration-700',
+            i === 0 ? '' : 'absolute inset-0 opacity-0 pointer-events-none',
+          ]}
+          role="group"
+          aria-label={`Diapositiva ${i + 1} de ${HERO_SLIDES.length}`}
         >
-          Ver el catálogo
-        </a>
-      </div>
+          <div class="shell grid items-center gap-6 py-10 sm:py-14 lg:grid-cols-2 lg:gap-10 lg:py-16">
+            <div class="order-2 lg:order-1">
+              <p class="font-script text-[34px] leading-[1.15] text-accent sm:text-[46px] lg:text-[56px]">
+                {s.script}
+              </p>
+              <h1 class="mt-2 text-[22px] font-medium leading-snug text-ink sm:text-[26px] lg:text-[30px]">
+                {s.titulo}
+              </h1>
+              <a href={s.href} class="btn-accent mt-6 uppercase tracking-wide">
+                {s.cta}
+              </a>
+            </div>
+            <div class="order-1 lg:order-2">
+              <Foto
+                id={s.imagen}
+                alt={s.alt}
+                prioridad={i === 0}
+                ratio="16/10"
+                sizes="(min-width:1024px) 620px, 100vw"
+                class="shadow-xl"
+              />
+            </div>
+          </div>
+        </div>
+      ))
+    }
 
-      <p class="reveal mt-8 text-sm text-white/60">
-        ¿Prefieres hablarlo? Llámanos al{' '}
-        <a href={`tel:${PHONE_TEL}`} class="font-semibold text-white underline underline-offset-4">
-          {PHONE_DISPLAY}
-        </a>
-      </p>
+    <!-- Flechas -->
+    <button
+      type="button"
+      data-slider-prev
+      class="absolute left-2 top-1/2 z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-brand shadow-md transition hover:bg-white sm:left-4"
+      aria-label="Anterior"
+    >
+      <svg viewBox="0 0 16 16" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2">
+        <path d="M10 3L5 8l5 5" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+    </button>
+    <button
+      type="button"
+      data-slider-next
+      class="absolute right-2 top-1/2 z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-brand shadow-md transition hover:bg-white sm:right-4"
+      aria-label="Siguiente"
+    >
+      <svg viewBox="0 0 16 16" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2">
+        <path d="M6 3l5 5-5 5" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+    </button>
+
+    <!-- Puntos -->
+    {/* La barra que se ve mide 8px de alto, pero el botón lleva relleno
+        vertical para dar un área táctil cómoda en móvil. */}
+    <div class="absolute bottom-1 left-1/2 z-10 flex -translate-x-1/2">
+      {
+        HERO_SLIDES.map((_, i) => (
+          <button
+            type="button"
+            data-punto
+            aria-current={i === 0 ? 'true' : 'false'}
+            class="group px-2 py-3"
+            aria-label={`Ir a la diapositiva ${i + 1}`}
+          >
+            <span class="block h-2 w-6 bg-ink/25 transition-colors group-aria-[current=true]:bg-accent" />
+          </button>
+        ))
+      }
     </div>
   </div>
 </section>
