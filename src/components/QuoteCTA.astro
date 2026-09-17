@@ -1,6 +1,6 @@
 ---
 import QuoteForm from './QuoteForm.astro';
-import { PHONE_DISPLAY, PHONE_TEL, CONTACT, WHATSAPP_URL, EMAIL } from '../consts';
+import { PHONE_DISPLAY, PHONE_TEL, CONTACT, EMAIL } from '../consts';
 
 interface Props {
   categoria?: string;
@@ -40,15 +40,13 @@ const tieneAviso = Astro.slots.has('aviso');
             </a>
           </span>
         </li>
-        <li class="flex gap-3">
-          <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" aria-hidden="true"></span>
-          <span>
-            <strong class="font-semibold text-ink">Por WhatsApp:</strong>{' '}
-            <a href={WHATSAPP_URL} target="_blank" rel="noopener" class="text-brand underline underline-offset-4">
-              manda tu mensaje
-            </a>
-          </span>
-        </li>
+        {/* Sin WhatsApp a propósito: esta lista está al lado del formulario y
+            compite con él. El objetivo de esta sección es que el prospecto
+            deje sus datos para que la imprenta lo contacte — un enlace a
+            WhatsApp aquí se lleva ese lead a un chat suelto que nadie
+            registra. Teléfono, correo y local se quedan: son formas de
+            contacto que el cliente elige cuando ya decidió, no atajos para
+            saltarse el formulario. */}
         <li class="flex gap-3">
           <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" aria-hidden="true"></span>
           <span>
