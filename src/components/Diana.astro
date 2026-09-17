@@ -1,0 +1,55 @@
+---
+/**
+ * La diana CMYK del logo, suelta como elemento gráfico recurrente: separadores
+ * de sección, bullets, detalles de tarjeta, indicadores.
+ *
+ * Va en SVG y no recortada del PNG: escala sin romperse, así que se ve igual de
+ * nítida en un bullet de 10px que en un separador de 40px. Los colores son los
+ * medidos sobre el logo original (tokens cmykC / cmykM / cmykY / cmykK).
+ */
+interface Props {
+  /** `sola` la diana · `separador` la diana centrada entre dos filetes. */
+  variante?: 'sola' | 'separador';
+  /** Lado de la diana en px. */
+  tam?: number;
+  class?: string;
+}
+const { variante = 'sola', tam = 16, class: clase = '' } = Astro.props;
+
+// Decorativa en los dos casos: el texto que acompaña ya dice lo que hay que
+// saber, y un lector de pantalla no gana nada anunciando un adorno.
+---
+
+{
+  variante === 'separador' ? (
+    <div class={`flex items-center gap-4 ${clase}`} aria-hidden="true">
+      <span class="h-px flex-1 bg-line" />
+      <svg width={tam} height={tam} viewBox="0 0 32 32" class="shrink-0">
+        <circle cx="16" cy="16" r="11" fill="#fff" />
+        <path d="M16 5a11 11 0 00-11 11h11z" fill="var(--cmyk-c)" />
+        <path d="M16 5a11 11 0 0111 11H16z" fill="var(--cmyk-m)" />
+        <path d="M16 27a11 11 0 01-11-11h11z" fill="var(--cmyk-k)" />
+        <path d="M16 27a11 11 0 0011-11H16z" fill="var(--cmyk-y)" />
+        <circle cx="16" cy="16" r="11" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.35" />
+        <path d="M16 0v6M16 26v6M0 16h6M26 16h6" stroke="currentColor" stroke-width="1.5" opacity="0.35" />
+      </svg>
+      <span class="h-px flex-1 bg-line" />
+    </div>
+  ) : (
+    <svg
+      width={tam}
+      height={tam}
+      viewBox="0 0 32 32"
+      class={`inline-block shrink-0 align-middle ${clase}`}
+      aria-hidden="true"
+    >
+      <circle cx="16" cy="16" r="11" fill="#fff" />
+      <path d="M16 5a11 11 0 00-11 11h11z" fill="var(--cmyk-c)" />
+      <path d="M16 5a11 11 0 0111 11H16z" fill="var(--cmyk-m)" />
+      <path d="M16 27a11 11 0 01-11-11h11z" fill="var(--cmyk-k)" />
+      <path d="M16 27a11 11 0 0011-11H16z" fill="var(--cmyk-y)" />
+      <circle cx="16" cy="16" r="11" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.35" />
+      <path d="M16 0v6M16 26v6M0 16h6M26 16h6" stroke="currentColor" stroke-width="1.5" opacity="0.35" />
+    </svg>
+  )
+}

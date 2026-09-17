@@ -33,15 +33,19 @@ const breadcrumb = {
       migas={[{ label: 'Inicio', href: '/' }, { label: 'Solicitar cotización' }]}
     />
 
-    <div class="shell pt-8">
+    <QuoteCTA titulo="Cuéntanos qué necesitas">
       {/* El endpoint devuelve aquí con ?error=1 cuando faltan campos
           obligatorios o la categoría no existe. Se descubre en el cliente
-          para que la página siga siendo estática y cacheable. */}
+          para que la página siga siendo estática y cacheable.
+          Va dentro de QuoteCTA (slot "aviso"), no en un bloque blanco antes
+          de la sección: así no deja un hueco de otro color cuando está
+          oculto, que es lo que pasaba antes. */}
       <p
         id="aviso-error"
         role="alert"
         hidden
-        class="border-l-4 border-accent bg-mist px-5 py-4 text-[15px] leading-relaxed"
+        slot="aviso"
+        class="border-l-4 border-accent bg-white px-5 py-4 text-[15px] leading-relaxed"
       >
         No pudimos enviar tu solicitud: revisa que estén llenos tu nombre, teléfono, ciudad y la
         categoría. Si sigue fallando, llámanos al{' '}
@@ -49,9 +53,7 @@ const breadcrumb = {
           {PHONE_DISPLAY}
         </a>.
       </p>
-    </div>
-
-    <QuoteCTA titulo="Cuéntanos qué necesitas" />
+    </QuoteCTA>
     <Faq items={FAQS_HOME} titulo="Antes de pedir tu cotización" />
   </main>
   <Footer />

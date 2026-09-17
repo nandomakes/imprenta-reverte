@@ -1,0 +1,82 @@
+---
+/**
+ * "Parte 2" de la bio: /bio/ reparte a redes, ubicación y aquí; esta página
+ * reparte otra vez, pero hacia los 6 rubros del catálogo — mismo estilo
+ * Linktree, mismo público (100% móvil, llegando desde Instagram/Facebook).
+ *
+ * Es el primer escalón de tres:
+ *   /bio/catalogo/                    → 6 rubros (esta página)
+ *   /bio/catalogo/<rubro>/            → subcategorías de ese rubro
+ *   /bio/catalogo/<rubro>/<categoria>/ → imagen del PDF de esa subcategoría
+ *
+ * Los rubros son los mismos 6 de `NAV` (Papelería, Sellos e impresión
+ * comercial, etc.), no una lista aparte.
+ */
+import Layout from '../../../layouts/Layout.astro';
+import LeadModal from '../../../components/LeadModal.astro';
+import Diana from '../../../components/Diana.astro';
+import { SITE, CONTACT, PHONE_TEL, PHONE_DISPLAY, NAV } from '../../../consts';
+
+const ORIGEN = 'bio_instagram';
+const RETORNO = '/bio/catalogo/';
+
+// El primer elemento de NAV es "Todo el catálogo", no un rubro: se salta.
+const rubros = NAV.slice(1);
+---
+
+<Layout
+  title={`Catálogo | ${SITE.brand} — Enlaces`}
+  description={`Elige un rubro del catálogo de ${SITE.brand} en ${CONTACT.locality}.`}
+  noindex
+>
+  <main id="contenido" class="flex min-h-svh flex-col items-center bg-paper px-5 py-10">
+    <div class="w-full max-w-md">
+      <div class="text-center">
+        <img
+          src="/logo-letras-negras.png"
+          alt={SITE.brand}
+          width="1860"
+          height="726"
+          class="mx-auto h-14 w-auto"
+        />
+        <p class="mt-5 text-[15px] leading-relaxed text-ash">Elige qué necesitas imprimir</p>
+        <Diana variante="separador" tam={16} class="mx-auto mt-6 max-w-[220px] text-ash" />
+      </div>
+
+      <nav class="mt-8" aria-label="Rubros del catálogo">
+        <ul class="grid gap-3">
+          {
+            rubros.map((r) => (
+              <li>
+                <a
+                  href={`/bio/catalogo/${r.slug}/`}
+                  class="flex min-h-[56px] w-full items-center justify-center border border-line bg-white px-5 py-3.5 text-center text-[15px] font-medium text-ink transition-colors hover:border-brand"
+                >
+                  {r.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <p class="mt-8 text-center">
+        <a href="/bio/" class="text-[14px] font-semibold text-brand underline underline-offset-2">
+          ← Volver
+        </a>
+      </p>
+
+      <p class="mt-6 text-center text-[14px] leading-relaxed text-ash">
+        {CONTACT.addressFull}<br />
+        {CONTACT.hoursText}<br />
+        <a href={`tel:${PHONE_TEL}`} class="font-semibold text-brand underline underline-offset-2">
+          {PHONE_DISPLAY}
+        </a>
+      </p>
+
+      <div class="h-[calc(5rem+env(safe-area-inset-bottom))]" aria-hidden="true"></div>
+    </div>
+  </main>
+
+  <LeadModal origen={ORIGEN} retorno={RETORNO} etiqueta="Pide tu cotización" />
+</Layout>

@@ -3,15 +3,18 @@
 // pone los logotipos de las marcas que confían en ella. Aquí no se inventan
 // logotipos de clientes: se nombran los giros, que es verificable.
 import { GIROS } from '../consts';
+import Diana from './Diana.astro';
 ---
 
-<section class="bg-mist py-12 md:py-16">
+<section class="bg-paper py-12 md:py-16">
   <div class="shell text-center">
     <h2 class="h-sec reveal">Negocios de Ciudad Valles que ya imprimen con nosotros</h2>
+    <Diana variante="separador" tam={18} class="reveal mx-auto mt-6 max-w-[320px] text-ash" />
     <ul class="mt-9 flex flex-wrap justify-center gap-x-3 gap-y-3">
       {
         GIROS.map((g) => (
-          <li class="reveal border border-line bg-white px-5 py-2.5 text-[15px] text-ink">
+          <li class="reveal flex items-center gap-2.5 border border-line bg-white px-5 py-2.5 text-[15px] text-ink">
+            <Diana tam={11} class="text-ash" />
             {g}
           </li>
         ))

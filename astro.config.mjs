@@ -14,10 +14,24 @@ export default defineConfig({
   integrations: [
     tailwind(),
     sitemap({
-      // /gracias/ is a post-submit confirmation; it has no business in search.
-      filter: (page) => !page.includes('/gracias'),
+      // /gracias/ is a post-submit confirmation; /bio is a campaign landing
+      // page marked noindex. Neither belongs in search.
+      filter: (page) => !['/gracias', '/bio'].some((p) => page.includes(p)),
       serialize: (item) => ({ ...item, lastmod: new Date().toISOString() }),
     }),
   ],
   build: { inlineStylesheets: 'auto' },
+  // El catálogo pasó de 9 categorías agrupadas por objeto a 16 agrupadas por
+  // técnica (ver src/data/catalogo.ts). Varias rutas viejas se dividieron en
+  // dos o más nuevas; cada redirect apunta a la que se queda con la mayor
+  // parte del contenido, para no perder un enlace que ya estuviera indexado.
+  redirects: {
+    '/catalogo/papeleria-comercial-corporativa/': '/catalogo/notas-formatos-negocio/',
+    '/catalogo/publicidad-identidad-visual/': '/catalogo/impresion-comercial/',
+    '/catalogo/impresion-gran-formato-senaletica/': '/catalogo/publicidad-exterior-gran-formato/',
+    '/catalogo/impresion-textil-promocionales/': '/catalogo/dtf/',
+    '/catalogo/grabado-laser-sublimacion-rigidos/': '/catalogo/grabado-laser/',
+    '/catalogo/sellos-articulos-oficina/': '/catalogo/sellos/',
+    '/catalogo/impresion-eventos/': '/catalogo/eventos-invitaciones/',
+  },
 });

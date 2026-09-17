@@ -1,22 +1,24 @@
 ---
-// Orden de secciones calcado de printshopsolution.com/es/:
-// hero → dos paneles promo → carrusel "top" → banda celeste → 3 maneras →
-// carrusel "más pedidos" → experiencia → carrusel "tendencia" → mosaico →
-// distintivos → giros → testimonios → dos tarjetas CTA → contacto → footer.
+// Rediseño compacto, inspirado en la estructura de colorciti.com.mx:
+// hero → nosotros → servicios → portafolio → proceso (mapa) → reseñas →
+// marcas que confían → formulario → mapa → footer.
+//
+// Reemplaza al orden anterior (calcado de printshopsolution.com/es/, con tres
+// carruseles de producto, dos paneles promo, banda de distintivos y mosaico a
+// sangre). Esos componentes se quedan en el repo sin usar, por si conviene
+// reaprovechar alguno — el carrusel de producto, por ejemplo, encajaría bien
+// en un futuro "portafolio" con fotos reales.
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
-import PromoDuo from '../components/PromoDuo.astro';
-import Carrusel from '../components/Carrusel.astro';
-import BannerSky from '../components/BannerSky.astro';
-import TresManeras from '../components/TresManeras.astro';
 import Experiencia from '../components/Experiencia.astro';
-import Mosaico from '../components/Mosaico.astro';
-import Distintivos from '../components/Distintivos.astro';
-import Giros from '../components/Giros.astro';
+import Servicios from '../components/Servicios.astro';
+import Portafolio from '../components/Portafolio.astro';
+import Proceso from '../components/Proceso.astro';
 import Testimonios from '../components/Testimonios.astro';
-import CtaDuo from '../components/CtaDuo.astro';
-import Contacto from '../components/Contacto.astro';
+import Giros from '../components/Giros.astro';
+import QuoteCTA from '../components/QuoteCTA.astro';
+import Location from '../components/Location.astro';
 import Footer from '../components/Footer.astro';
 import CallFab from '../components/CallFab.astro';
 import { FAQS_HOME, faqPageSchema } from '../consts';
@@ -26,47 +28,14 @@ import { FAQS_HOME, faqPageSchema } from '../consts';
   <Header />
   <main id="contenido">
     <Hero />
-    <PromoDuo />
-
-    <Carrusel
-      titulo="Lo más pedido"
-      descripcion="Una selección de las categorías que más nos encargan los negocios de Ciudad Valles."
-      slugs={[
-        'publicidad-identidad-visual',
-        'papeleria-comercial-corporativa',
-        'impresion-gran-formato-senaletica',
-        'impresion-textil-promocionales',
-      ]}
-    />
-
-    <BannerSky />
-    <TresManeras />
-
-    <Carrusel
-      titulo="Todo el catálogo"
-      descripcion="Nueve categorías, del recetario del consultorio a la lona del frente del negocio."
-      fondo="mist"
-    />
-
     <Experiencia />
-
-    <Carrusel
-      titulo="Para tu evento"
-      descripcion="Invitaciones, reconocimientos y todo lo que se imprime para una fecha que no se mueve."
-      slugs={[
-        'impresion-eventos',
-        'grabado-laser-sublimacion-rigidos',
-        'sellos-articulos-oficina',
-        'papeleria-medica-laboratorio',
-      ]}
-    />
-
-    <Mosaico />
-    <Distintivos />
-    <Giros />
+    <Servicios />
+    <Portafolio />
+    <Proceso />
     <Testimonios />
-    <CtaDuo />
-    <Contacto />
+    <Giros />
+    <QuoteCTA />
+    <Location />
   </main>
   <Footer />
   <CallFab />

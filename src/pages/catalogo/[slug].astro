@@ -83,7 +83,7 @@ const servicio = {
     />
 
     <section class="shell grid items-center gap-8 py-10 md:py-14 lg:grid-cols-2 lg:gap-12">
-      <div class={`order-1 overflow-hidden lg:order-2 ${tonos[c.tono] ?? 'bg-mist'}`}>
+      <div class={`order-1 overflow-hidden lg:order-2 ${tonos[c.tono] ?? 'bg-paper'}`}>
         <Foto
           id={c.imagen}
           alt={c.imagenAlt}
@@ -96,18 +96,31 @@ const servicio = {
         <p class="text-[17px] leading-relaxed text-ink">{c.descripcion}</p>
         <div class="mt-7 flex flex-wrap gap-3">
           <Cta href="#cotizar" />
-          <a href="/catalogo/" class="btn-outline">Ver todo el catálogo</a>
+          <a href="/catalogo/" class="btn-brand">Ver todo el catálogo</a>
         </div>
       </div>
     </section>
 
-    <section class="bg-mist py-12 md:py-16">
+    <section class="bg-paper py-12 md:py-16">
       <div class="shell grid gap-10 lg:grid-cols-[1.5fr_1fr] lg:gap-14">
         <div>
           <h2 class="h-sec reveal">Todo lo que hacemos en esta categoría</h2>
-          <ul class="reveal mt-7 grid gap-x-8 gap-y-0 sm:grid-cols-2">
-            {
-              c.ejemplos.map((e) => (
+          {/* Estilo carta: nombre del producto + su técnica de impresión, tal
+              como las rotula el catálogo. Si una categoría no trae el detalle
+              por producto (hoy solo "Otros servicios"), cae a la lista plana
+              de ejemplos. */}
+          {c.productos ? (
+            <ul class="reveal mt-7 divide-y divide-line">
+              {c.productos.map((p) => (
+                <li class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 py-3.5">
+                  <span class="text-[15px] text-ink">{p.nombre}</span>
+                  <span class="eyebrow text-[11px] text-ash">{p.tecnica}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <ul class="reveal mt-7 grid gap-x-8 gap-y-0 sm:grid-cols-2">
+              {c.ejemplos.map((e) => (
                 <li class="flex items-start gap-3 border-b border-line py-3 text-[15px] text-ink">
                   <svg
                     aria-hidden="true"
@@ -123,16 +136,16 @@ const servicio = {
                   </svg>
                   <span class="capitalize-first">{e}</span>
                 </li>
-              ))
-            }
-          </ul>
+              ))}
+            </ul>
+          )}
 
           {
             /* El contraste del catálogo, tal cual está en la fuente: es lo que
                evita que alguien pida una taza creyendo que entra en textil. */
             c.noIncluye && (
               <div class="reveal mt-8 border-l-4 border-accent bg-white px-5 py-4">
-                <p class="text-[13px] font-bold uppercase tracking-wider text-ink">
+                <p class="eyebrow text-[13px] text-ink">
                   Esto va en otra categoría
                 </p>
                 <p class="mt-2 text-[15px] leading-relaxed">

@@ -12,7 +12,7 @@ const tonos: Record<string, string> = {
 };
 ---
 
-<section id="tres-maneras" class="bg-mist py-12 md:py-16 lg:py-20">
+<section id="tres-maneras" class="bg-paper py-12 md:py-16 lg:py-20">
   <div class="shell">
     <h2 class="h-sec reveal mb-8 max-w-3xl lg:mb-10 lg:text-center lg:mx-auto">
       Diseña tu impreso de 3 maneras
@@ -26,7 +26,7 @@ const tonos: Record<string, string> = {
               <h3 class="text-[20px] font-semibold text-brand lg:text-[22px]">{m.titulo}</h3>
               <p class="mt-3 text-[15px] leading-relaxed">{m.texto}</p>
             </div>
-            <div class={tonos[m.tono] ?? 'bg-mist'}>
+            <div class={tonos[m.tono] ?? 'bg-paper'}>
               <Foto
                 id={m.imagen}
                 alt={m.alt}
@@ -41,7 +41,7 @@ const tonos: Record<string, string> = {
 
     <div class="mt-9 lg:text-center">
       <a href="/catalogo/" class="btn-brand reveal">Ver todo el catálogo</a>
-      <a href="/cotizar/" class="btn-accent reveal ml-0 mt-3 sm:ml-3 sm:mt-0">{CTA_LABEL}</a>
+      <a href="/cotizar/" class="btn-brand reveal ml-0 mt-3 sm:ml-3 sm:mt-0">{CTA_LABEL}</a>
     </div>
   </div>
 </section>

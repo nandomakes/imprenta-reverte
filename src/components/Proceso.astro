@@ -1,0 +1,99 @@
+---
+// Sección de proceso, a la manera de colorciti.com.mx: palabra fantasma de
+// fondo, eyebrow, titular grande, y los pasos como iconos en círculo
+// conectados por una línea punteada. Mucho más grande que la banda angosta
+// que había antes — este es un momento de la página, no una fila más.
+import { PROCESO } from '../consts';
+import TituloFantasma from './TituloFantasma.astro';
+
+// Un ícono propio por paso, en vez de reciclar el mismo círculo cuatro veces:
+// así cada etapa se reconoce de un vistazo, no solo por el número.
+const iconos = [
+  // 01 — Nos cuentas qué necesitas: burbuja de mensaje.
+  'M4 5h16a1 1 0 011 1v10a1 1 0 01-1 1H9l-4 4v-4H4a1 1 0 01-1-1V6a1 1 0 011-1z',
+  // 02 — Te asesoramos: foco de idea.
+  'M12 3a6 6 0 00-3.5 10.9c.6.44 1 1.15 1 1.93V17h5v-1.17c0-.78.4-1.5 1-1.93A6 6 0 0012 3zM9.5 20h5M10 21.5h4',
+  // 03 — Te cotizamos: etiqueta de precio.
+  'M12.6 3.4l7 7a2 2 0 010 2.8l-6.4 6.4a2 2 0 01-2.8 0l-7-7A2 2 0 013 11V5a2 2 0 012-2h6a2 2 0 011.4.6zM7.5 7.5h.01',
+  // 04 — ¡Manos a la obra!: pliego saliendo de la prensa.
+  'M6 9V3h12v6M6 18h12v3H6v-3zM4 9h16a2 2 0 012 2v5a2 2 0 01-2 2h-2v-4H6v4H4a2 2 0 01-2-2v-5a2 2 0 012-2z',
+];
+
+// Los 4 pasos, en los colores de imprenta en vez del mostaza genérico que
+// había: azul claro, azul oscuro (navy de marca), rosa y amarillo — la
+// misma paleta de la diana CMYK del logo, no colores elegidos a ojo.
+//
+// El azul claro NO es el cian exacto de la diana (#0090D8): a ese tono,
+// tanto texto blanco (3.5:1) como navy (4.4:1) quedan por debajo de 4.5:1 en
+// un número de 13px. Se oscureció un poco (#0074B0, 5.1:1 con blanco) para
+// que siga leyéndose como "azul claro" y a la vez sea legible.
+const coloresBadge = [
+  { fondo: '#0074B0', texto: 'text-white' }, // azul claro
+  { fondo: '#0B2545', texto: 'text-white' }, // azul oscuro (navy de marca)
+  { fondo: '#D80078', texto: 'text-white' }, // rosa (magenta de la diana)
+  { fondo: '#F0D818', texto: 'text-brand' }, // amarillo — con texto navy: blanco da 1.4:1, ilegible
+];
+
+// El trazo del ícono va sobre el círculo BLANCO, no sobre el badge — ahí el
+// amarillo de la diana es casi invisible (1.4:1 contra blanco). Para el
+// ícono se oscurece a #A08A08 (3.4:1, el mínimo para un gráfico funcional);
+// los otros tres colores ya pasan de sobra contra blanco y se quedan igual.
+const coloresIcono = ['#0074B0', '#0B2545', '#D80078', '#A08A08'];
+---
+
+<section class="relative overflow-hidden bg-mist py-16 md:py-24">
+  <div class="shell relative">
+    <div class="mx-auto max-w-2xl text-center">
+      <TituloFantasma fantasma="Proceso" eyebrow="Proceso" />
+      <h2 class="reveal -mt-1 text-[32px] leading-tight text-ink sm:-mt-2 sm:text-[42px] lg:text-[48px]">
+        Con nosotros, imprimir es fácil y rápido
+      </h2>
+      <p class="reveal mx-auto mt-4 max-w-lg text-[16px] leading-relaxed text-ash">
+        Sigue estos cuatro pasos y en poco tiempo tienes tu trabajo cotizado, aprobado y listo.
+      </p>
+    </div>
+
+    <ol class="relative mt-16 grid gap-14 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
+      {/* Línea punteada conectora, solo en escritorio: pasa por el centro de
+          cada círculo (que mide 96px, la mitad son 48px = top-12). */}
+      <div
+        class="absolute left-[12%] right-[12%] top-12 hidden border-t-2 border-dashed border-line lg:block"
+        aria-hidden="true"
+      />
+
+      {
+        PROCESO.map((p, i) => (
+          <li class="reveal relative flex flex-col items-center text-center">
+            <div class="relative z-10 grid h-24 w-24 shrink-0 place-items-center rounded-full border-4 border-paper bg-white shadow-md">
+              <svg
+                viewBox="0 0 24 24"
+                class="h-9 w-9"
+                style={`color:${coloresIcono[i]}`}
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d={iconos[i]} />
+              </svg>
+              <span
+                class={`absolute -right-1 -top-1 grid h-8 w-8 place-items-center rounded-full text-[13px] font-bold shadow ${coloresBadge[i].texto}`}
+                style={`background-color:${coloresBadge[i].fondo}`}
+              >
+                {p.numero}
+              </span>
+            </div>
+            <h3 class="mt-5 text-[19px] font-semibold text-ink">{p.titulo}</h3>
+            <p class="mt-2 max-w-[26ch] text-[14px] leading-relaxed text-ash">{p.texto}</p>
+          </li>
+        ))
+      }
+    </ol>
+
+    <p class="reveal mt-14 text-center">
+      <a href="#cotizar" class="btn-brand">Empecemos</a>
+    </p>
+  </div>
+</section>

@@ -1,35 +1,22 @@
 ---
 interface Props {
-  /** `color` sobre fondo claro · `blanco` sobre el footer azul. */
+  /** `color` sobre fondo claro · `blanco` sobre fondos oscuros (footer azul). */
   tono?: 'color' | 'blanco';
   class?: string;
 }
 const { tono = 'color', class: clase = '' } = Astro.props;
 
-// Isotipo: una "R" construida con tres planchas de color superpuestas, que es
-// como se imprime a registro (cian, magenta, azul). En el footer va en blanco.
-const marca = tono === 'blanco' ? '#FFFFFF' : '#0221C4';
-const texto = tono === 'blanco' ? 'text-white' : 'text-ink';
+// Dos archivos, no un filtro CSS: el logo con letras negras es el principal y
+// solo se lee sobre fondo claro; sobre el azul del footer va el de letras
+// blancas. El original mide 2051x767 (≈2.67:1); se sirve a alto fijo.
+const src = tono === 'blanco' ? '/logo-letras-blancas.png' : '/logo-letras-negras.png';
 ---
 
-<span class={`inline-flex items-center gap-2.5 ${clase}`}>
-  <svg
-    viewBox="0 0 48 48"
-    class="h-10 w-10 shrink-0 sm:h-11 sm:w-11"
-    role="img"
-    aria-label="Imprenta Reverte"
-  >
-    <path d="M6 4h20a11 11 0 016 20l8 20h-9l-7-18H14v18H6z" fill={marca}></path>
-    {
-      tono === 'color' && (
-        <>
-          <path d="M6 4h20a11 11 0 016 20l8 20h-9l-7-18H14v18H6z" fill="#E00087" opacity="0.85" transform="translate(4 3)" />
-          <path d="M6 4h20a11 11 0 016 20l8 20h-9l-7-18H14v18H6z" fill="#0221C4" />
-        </>
-      )
-    }
-  </svg>
-  <span class={`text-[15px] font-bold uppercase leading-[1.05] tracking-tight ${texto} sm:text-[17px]`}>
-    Imprenta<br />Reverte
-  </span>
-</span>
+<img
+  src={src}
+  alt="Imprenta Reverte"
+  width="2051"
+  height="767"
+  decoding="async"
+  class={`h-11 w-auto shrink-0 sm:h-12 ${clase}`}
+/>

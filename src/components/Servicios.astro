@@ -1,0 +1,68 @@
+---
+/**
+ * Rejilla de servicios: los 6 rubros de NAV, cada uno con su propia foto (no
+ * la de su categoría principal) y el resumen de esa categoría. La foto es a
+ * propósito distinta de la que se ve al entrar a la categoría — se pidió así
+ * para que esta rejilla no repita imágenes con las páginas de detalle.
+ */
+import { NAV, categoriaPorSlug } from '../consts';
+import Foto from './Foto.astro';
+import TituloFantasma from './TituloFantasma.astro';
+
+// El primer elemento de NAV es "Todo el catálogo", no un rubro: se salta.
+const rubros = NAV.slice(1).map((item) => {
+  const principal = categoriaPorSlug(item.hijos?.[0] ?? '');
+  return { ...item, principal };
+});
+---
+
+<section class="relative overflow-hidden bg-white py-16 md:py-24">
+  <div class="shell">
+    <div class="mx-auto max-w-2xl text-center">
+      <TituloFantasma fantasma="Servicios" eyebrow="Servicios" />
+      <h2 class="reveal -mt-1 text-[30px] leading-tight text-ink sm:-mt-2 sm:text-[38px] lg:text-[42px]">
+        Qué imprimimos
+      </h2>
+      <p class="reveal mt-2 text-[15px] text-ash">Seis rubros, dieciséis categorías, un solo lugar.</p>
+    </div>
+
+    <ul class="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        rubros.map((r) => (
+          <li class="reveal">
+            <a
+              href={r.href}
+              class="zoom-parent lift group flex h-full flex-col border border-line bg-white"
+            >
+              <div class="overflow-hidden bg-paper">
+                <Foto
+                  id={r.imagen}
+                  alt={r.imagenAlt}
+                  ratio="16/10"
+                  sizes="(min-width:1024px) 420px, (min-width:640px) 50vw, 100vw"
+                  class="zoom-img"
+                />
+              </div>
+              <div class="flex flex-1 flex-col p-5">
+                <h3 class="text-[17px] font-semibold text-ink group-hover:text-brand">{r.label}</h3>
+                {r.principal && (
+                  <p class="mt-2 text-[14px] leading-relaxed text-ash">{r.principal.resumen}</p>
+                )}
+                <span class="mt-4 inline-flex items-center gap-1.5 text-[14px] font-semibold text-brand">
+                  Ver categoría
+                  <svg viewBox="0 0 16 16" class="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="M6 3l5 5-5 5" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </span>
+              </div>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="reveal mt-8 text-center">
+      <a href="/catalogo/" class="btn-brand">Ver el catálogo completo</a>
+    </p>
+  </div>
+</section>

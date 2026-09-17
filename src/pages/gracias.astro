@@ -4,17 +4,25 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import CallFab from '../components/CallFab.astro';
 import Carrusel from '../components/Carrusel.astro';
-import { CONTACT, PHONE_DISPLAY, PHONE_TEL, SITE, WHATSAPP_URL } from '../consts';
+import { CONTACT, PHONE_DISPLAY, PHONE_TEL, SITE } from '../consts';
 ---
 
+{/*
+  `sinWhatsApp`: esta página va DESPUÉS de que el prospecto ya dejó sus datos.
+  Mandarlo a WhatsApp aquí trabaja en contra — el lead ya está capturado y el
+  siguiente paso lo da la imprenta, que llama o escribe. Un botón de WhatsApp
+  en este punto solo mueve la conversación a un chat que nadie registró.
+  Se deja el teléfono para el caso urgente, que sí es el cliente quien decide.
+*/}
 <Layout
   title={`Gracias por tu solicitud | ${SITE.brand}`}
   description="Recibimos tu solicitud de cotización. Te contestamos en horario de tienda."
   noindex
+  sinWhatsApp
 >
   <Header />
   <main id="contenido">
-    <section class="bg-sky py-16 md:py-24">
+    <section class="bg-mist py-16 md:py-24">
       <div class="shell max-w-2xl text-center">
         <span class="mx-auto grid h-16 w-16 place-items-center rounded-full bg-brand text-white" aria-hidden="true">
           <svg viewBox="0 0 24 24" class="h-8 w-8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -22,7 +30,7 @@ import { CONTACT, PHONE_DISPLAY, PHONE_TEL, SITE, WHATSAPP_URL } from '../consts
           </svg>
         </span>
 
-        <h1 class="mt-7 text-[30px] font-semibold text-ink sm:text-[38px]">
+        <h1 class="mt-7 text-[30px] text-ink sm:text-[38px]">
           Recibimos tu solicitud
         </h1>
         <p class="mt-5 text-[16px] leading-relaxed">
@@ -30,21 +38,22 @@ import { CONTACT, PHONE_DISPLAY, PHONE_TEL, SITE, WHATSAPP_URL } from '../consts
           entrega dentro del horario de tienda: {CONTACT.hoursText.toLowerCase()}.
         </p>
 
-        <div class="mt-9 flex flex-wrap justify-center gap-3">
-          <a href={`tel:${PHONE_TEL}`} class="btn-accent">Llamar al {PHONE_DISPLAY}</a>
-          <a href={WHATSAPP_URL} target="_blank" rel="noopener" class="btn-outline">
-            Escribir por WhatsApp
-          </a>
+        <p class="mt-7 text-[15px] leading-relaxed text-ash">
+          No necesitas hacer nada más: nosotros te buscamos con el precio y la fecha.
+        </p>
+
+        <div class="mt-7 flex flex-wrap justify-center gap-3">
+          <a href={`tel:${PHONE_TEL}`} class="btn-brand">Llamar al {PHONE_DISPLAY}</a>
         </div>
 
         <p class="mt-9 text-[15px]">
-          ¿Es urgente? Pasa al local: {CONTACT.addressLine}, {CONTACT.locality}.
+          ¿Es urgente? Llámanos o pasa al local: {CONTACT.addressLine}, {CONTACT.locality}.
         </p>
       </div>
     </section>
 
     <Carrusel titulo="Mientras tanto, sigue viendo el catálogo" />
   </main>
-  <Footer />
+  <Footer sinWhatsApp />
   <CallFab />
 </Layout>

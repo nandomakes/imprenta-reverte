@@ -12,12 +12,10 @@ const etiquetaDe = (slug: string) => CATEGORIAS.find((c) => c.slug === slug);
 
 <!-- Barra promocional con degradado, cerrable -->
 <div data-promo class="relative overflow-hidden text-white">
-  <div
-    class="absolute inset-0"
-    style="background:linear-gradient(90deg,#C2622A 0%,#0E7490 28%,#0221C4 58%,#7B2FA8 82%,#E00087 100%)"
-    aria-hidden="true"
-  >
-  </div>
+  {/* Navy institucional rematado por el filete de registro CMYK: la firma
+      de imprenta. Antes esto era un degradado arcoíris heredado de la
+      referencia, que no decía nada de Reverte. */}
+  <div class="franja-cmyk absolute inset-0 bg-brand" aria-hidden="true"></div>
   {/* pr-9 reserva el hueco de la × para que nunca se monte sobre el texto
       cuando este envuelve a dos líneas en pantallas estrechas. */}
   <div class="shell relative flex items-center justify-center py-2 pr-9 text-center text-[12.5px] leading-snug sm:text-[14px]">
@@ -140,7 +138,7 @@ const etiquetaDe = (slug: string) => CATEGORIAS.find((c) => c.slug === slug);
             <a
               href={item.href}
               class:list={[
-                'block whitespace-nowrap px-3 py-3.5 text-[15px] transition-colors',
+                'block whitespace-nowrap px-3 py-3.5 text-[15px] font-medium transition-colors',
                 activo(item.href) ? 'text-brand' : 'text-ink hover:text-brand',
               ]}
               aria-current={activo(item.href) ? 'page' : undefined}
@@ -163,7 +161,7 @@ const etiquetaDe = (slug: string) => CATEGORIAS.find((c) => c.slug === slug);
                       <li>
                         <a
                           href={`/catalogo/${c.slug}/`}
-                          class="block px-5 py-2.5 text-[14px] text-ink hover:bg-mist hover:text-brand"
+                          class="block px-5 py-2.5 text-[14px] text-ink hover:bg-paper hover:text-brand"
                         >
                           {c.etiqueta}
                         </a>
@@ -240,7 +238,7 @@ const etiquetaDe = (slug: string) => CATEGORIAS.find((c) => c.slug === slug);
     </nav>
 
     <div class="border-t border-line p-5">
-      <a href="/cotizar/" class="btn-accent w-full">{CTA_LABEL}</a>
+      <a href="/cotizar/" class="btn-brand w-full">{CTA_LABEL}</a>
       <a
         href={`tel:${PHONE_TEL}`}
         class="mt-3 block text-center text-[15px] font-semibold text-brand"

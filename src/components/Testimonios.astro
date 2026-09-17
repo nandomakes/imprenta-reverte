@@ -1,14 +1,26 @@
 ---
 // "Voces de la delicia": título centrado con subtítulo, tarjetas con borde
 // fino, nombre en azul y comillas grandes en la esquina, con flechas.
-import { TESTIMONIOS } from '../consts';
+import { TESTIMONIOS, CONTACT } from '../consts';
+import TituloFantasma from './TituloFantasma.astro';
 ---
 
-<section class="bg-white py-12 md:py-16 lg:py-20">
+<section class="relative overflow-hidden bg-white py-16 md:py-24">
   <div class="shell" data-carrusel>
-    <div class="text-center">
-      <h2 class="h-sec reveal">Lo que dicen de nosotros</h2>
+    <div class="mx-auto max-w-2xl text-center">
+      <TituloFantasma fantasma="Reseñas" eyebrow="Reseñas" />
+      <h2 class="reveal -mt-1 text-[30px] leading-tight text-ink sm:-mt-2 sm:text-[38px] lg:text-[42px]">
+        Lo que dicen de nosotros
+      </h2>
       <p class="reveal mt-2 text-[15px] text-ash">¡Testimonios de clientes reales!</p>
+      <a
+        href={CONTACT.mapsUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="reveal mt-2 inline-block text-[13px] font-semibold text-brand underline underline-offset-2"
+      >
+        Ver reseñas en Google
+      </a>
     </div>
 
     <div class="relative mt-10">
@@ -33,27 +45,6 @@ import { TESTIMONIOS } from '../consts';
           ))
         }
       </ul>
-
-      <button
-        type="button"
-        data-prev
-        class="arrow absolute -left-2 top-1/2 hidden -translate-y-1/2 lg:grid"
-        aria-label="Anterior"
-      >
-        <svg viewBox="0 0 16 16" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2">
-          <path d="M10 3L5 8l5 5" stroke-linecap="round" stroke-linejoin="round"></path>
-        </svg>
-      </button>
-      <button
-        type="button"
-        data-next
-        class="arrow absolute -right-2 top-1/2 hidden -translate-y-1/2 lg:grid"
-        aria-label="Siguiente"
-      >
-        <svg viewBox="0 0 16 16" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2">
-          <path d="M6 3l5 5-5 5" stroke-linecap="round" stroke-linejoin="round"></path>
-        </svg>
-      </button>
     </div>
   </div>
 </section>

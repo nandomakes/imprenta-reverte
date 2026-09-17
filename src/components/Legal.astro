@@ -10,11 +10,13 @@
 </div>
 
 <style is:global>
+  /* Encabezados legales: funcionales, DM Sans 600. Nunca editoriales. */
   .prose-legal h2 {
     margin-top: 2.25rem;
     font-size: 21px;
     font-weight: 600;
-    color: #3d3d3d;
+    font-family: theme('fontFamily.sans');
+    color: theme('colors.ink');
   }
   .prose-legal h2:first-child {
     margin-top: 0;
@@ -30,12 +32,12 @@
     padding-left: 1.35rem;
   }
   .prose-legal a {
-    color: #0221c4;
+    color: theme('colors.brand');
     text-decoration: underline;
     text-underline-offset: 3px;
   }
   .prose-legal strong {
     font-weight: 600;
-    color: #3d3d3d;
+    color: theme('colors.ink');
   }
 </style>

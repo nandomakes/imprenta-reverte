@@ -5,6 +5,12 @@
 @layer base {
   :root {
     --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    /* CMYK del logo, como variables para que el SVG de la diana las use
+       sin repetir hex por todo el marcado. */
+    --cmyk-c: theme('colors.cmykC');
+    --cmyk-m: theme('colors.cmykM');
+    --cmyk-y: theme('colors.cmykY');
+    --cmyk-k: theme('colors.cmykK');
   }
 
   html {
@@ -15,8 +21,9 @@
   body {
     overflow-x: clip;
     -webkit-font-smoothing: antialiased;
-    /* El sitio de referencia corre a 16px/Quicksand con texto #3D3D3D. */
+    /* Body: DM Sans 400 sobre carbón. */
     font-size: 16px;
+    font-weight: 400;
     color: theme('colors.ink');
     background: #fff;
   }
@@ -31,12 +38,27 @@
     color: #fff;
   }
 
+  /* JERARQUÍA TIPOGRÁFICA
+     ─────────────────────
+     Una sola familia en todo el sitio: DM Sans. No hay serif en ningún
+     título, ni siquiera para "momentos editoriales" — se probó Cormorant
+     Garamond ahí (hero, páginas interiores, 404, gracias) y se retiró por
+     completo a pedido: el sitio se estandariza a la tipografía del hero
+     ("Para negocios con historia…"), que es DM Sans 600. */
   h1,
   h2,
   h3 {
-    text-wrap: balance;
+    font-family: theme('fontFamily.sans');
     font-weight: 600;
+    text-wrap: balance;
+    line-height: 1.25;
+    letter-spacing: -0.011em;
   }
+
+  h1 {
+    line-height: 1.15;
+  }
+
   p {
     text-wrap: pretty;
   }
@@ -49,10 +71,44 @@
     @apply mx-auto w-full max-w-shell px-[15px] sm:px-6 lg:px-8;
   }
 
-  /* Título de sección: Quicksand 600, gris oscuro, muy poco tracking. */
+  /* Título de sección funcional: DM Sans 600. Vuelve a los tamaños aprobados
+     del layout original (30/34/40) — el sans tiene más mancha que el serif y
+     no necesita el aumento que sí pedía Cormorant. */
   .h-sec {
     @apply text-[30px] font-semibold leading-[1.2] text-ink sm:text-[34px] lg:text-[40px];
   }
+
+  /* Eyebrow / label: DM Sans 600, versalitas con tracking moderado.
+     No fija tamaño: lo pone quien la usa, para no mover ninguna caja. */
+  .eyebrow {
+    @apply font-semibold uppercase tracking-[0.08em] text-ash;
+  }
+
+  /* Cifras y precios: DM Sans 600 con cifras tabulares, para que alineen en
+     columna. */
+  .cifra {
+    @apply font-semibold;
+    font-variant-numeric: tabular-nums;
+  }
+  /* FIRMA DE IMPRENTA — filete de registro CMYK.
+     Los cuatro colores de la diana del logo en una tira fina, como la barra de
+     registro que sale al margen de un pliego impreso. Es un detalle de oficio,
+     no un adorno: se usa en filos de 3px, nunca como superficie. */
+  .franja-cmyk {
+    background-image: linear-gradient(
+      90deg,
+      theme('colors.cmykC') 0 25%,
+      theme('colors.cmykM') 0 50%,
+      theme('colors.cmykY') 0 75%,
+      theme('colors.cmykK') 0 100%
+    );
+    background-repeat: no-repeat;
+    /* A todo lo ancho de la barra, no un detalle de esquina: así se ve en la
+       franja promocional superior, donde va pegada al filo inferior. */
+    background-size: 100% 3px;
+    background-position: bottom;
+  }
+
 
   .btn {
     @apply inline-flex items-center justify-center gap-2 px-6 py-3 text-[15px]
@@ -60,14 +116,19 @@
   }
   /* Magenta = acción principal. Azul = acción secundaria. Exactamente como
      los usa la referencia: el CTA del hero es magenta, "Start Browsing" azul. */
+  /* CTA SECUNDARIO — oro con texto negro neutro (ink). Es el acento de firma:
+     se reserva para un CTA por vista, si acaso.
+     Blanco sobre oro da 2.4:1, ilegible. Navy (el texto original) daba 6.5:1
+     — pasa, pero su matiz azulado frío choca con el dorado cálido y puede
+     leerse como un negro "sucio". Ink es el mismo negro neutro que usa todo
+     el texto del sitio, sin nada de azul, y sube el contraste a 7.5:1. */
   .btn-accent {
-    @apply btn bg-accent text-white hover:bg-accentDk;
+    @apply btn bg-accent text-ink hover:bg-accentDk;
   }
+  /* CTA PRIMARIO — navy con texto blanco (15.4:1). Es el botón por defecto
+     del sitio: la autoridad la lleva el navy, no el oro. */
   .btn-brand {
     @apply btn bg-brand text-white hover:bg-brandDk;
-  }
-  .btn-outline {
-    @apply btn border-2 border-brand bg-transparent text-brand hover:bg-brand hover:text-white;
   }
 
   /* Borde de papel rasgado: cierra el hero y abre la banda celeste, igual

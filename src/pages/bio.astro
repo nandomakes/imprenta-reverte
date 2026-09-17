@@ -1,0 +1,128 @@
+---
+/**
+ * Página de bio, tipo Linktree — destino del enlace en Instagram y Facebook.
+ *
+ * Al revés que /promo: aquí el objetivo es REPARTIR tráfico, no forzar una
+ * conversión. Quien llega desde una bio está averiguando quién eres, no viene
+ * empujado por un anuncio, así que varios botones son lo correcto.
+ *
+ * El 100% del tráfico es móvil (se abre dentro de la app de Instagram), así que
+ * está pensada mobile-first: un solo eje vertical, botones de 56px de alto y
+ * nada de imágenes pesadas. Sin catálogo embebido ni scripts más allá del modal.
+ *
+ * Origen del lead: `?ref=fb` lo marca como `bio_facebook`; por defecto es
+ * `bio_instagram`. Pon el enlace con `?ref=fb` solo en la bio de Facebook y
+ * podrás comparar qué red trae mejores prospectos.
+ *
+ * Ese `ref` se lee en el CLIENTE, no aquí: la página es estática para que salga
+ * del CDN al instante, y en build `Astro.url.searchParams` viene vacío. Leerlo
+ * en servidor obligaría a renderizar en cada visita y a pagar ese viaje justo
+ * en la página que más rápido tiene que abrir.
+ */
+import Layout from '../layouts/Layout.astro';
+import LeadModal from '../components/LeadModal.astro';
+import Diana from '../components/Diana.astro';
+import { SITE, CONTACT, SOCIALS, PHONE_TEL, PHONE_DISPLAY } from '../consts';
+
+const ORIGEN = 'bio_instagram';
+const RETORNO = '/bio/';
+
+const instagram = SOCIALS.find((s) => s.icon === 'instagram');
+const facebook = SOCIALS.find((s) => s.icon === 'facebook');
+
+// Sin WhatsApp aparte: la burbuja flotante global (Layout) ya cubre ese
+// camino en todas las páginas, incluida esta — tenerlo dos veces es
+// redundante. "Ver el catálogo" ya no manda directo a /catalogo/: manda a
+// /bio/catalogo/, la "parte 2" de esta misma bio, con las categorías como
+// botones (ver ese archivo para el porqué).
+const enlaces = [
+  { emoji: '🛍️', texto: 'Ver el catálogo', href: '/bio/catalogo/', externo: false },
+  { emoji: '📸', texto: 'Instagram', href: instagram?.href ?? '#', externo: true },
+  { emoji: '👍', texto: 'Facebook', href: facebook?.href ?? '#', externo: true },
+  { emoji: '📍', texto: 'Cómo llegar', href: CONTACT.mapsUrl, externo: true },
+  { emoji: '🌐', texto: 'Sitio web', href: '/', externo: false },
+];
+---
+
+<Layout
+  title={`${SITE.brand} — Enlaces`}
+  description={`Catálogo, WhatsApp, redes y ubicación de ${SITE.brand} en ${CONTACT.locality}.`}
+  noindex
+>
+  <main id="contenido" class="flex min-h-svh flex-col items-center bg-paper px-5 py-10">
+    <div class="w-full max-w-md">
+      <div class="text-center">
+        {/* El logo, no una foto de perfil: es lo que ya reconocen de la bio. */}
+        <img
+          src="/logo-letras-negras.png"
+          alt={SITE.brand}
+          width="1860"
+          height="726"
+          class="mx-auto h-16 w-auto"
+        />
+        <p class="mt-5 text-[15px] leading-relaxed text-ash">
+          Imprenta en {CONTACT.locality}, SLP · Diseño incluido · Entrega local
+        </p>
+        <Diana variante="separador" tam={16} class="mx-auto mt-6 max-w-[220px] text-ash" />
+      </div>
+
+      <nav class="mt-8" aria-label="Enlaces de Imprenta Reverte">
+        <ul class="grid gap-3">
+          {/* El de cotizar va primero y destacado: es el único que nos deja un
+              lead. Los demás reparten, este convierte. */}
+          <li>
+            <button
+              type="button"
+              data-abrir-lead
+              class="flex min-h-[56px] w-full items-center gap-3 border-2 border-brand bg-brand px-5 py-3.5 text-left text-[16px] font-semibold text-white transition-colors hover:bg-brandDk"
+            >
+              <span aria-hidden="true">✏️</span>
+              Pide tu cotización
+            </button>
+          </li>
+          {
+            enlaces.map((e) => (
+              <li>
+                <a
+                  href={e.href}
+                  {...(e.externo ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                  class="flex min-h-[56px] w-full items-center gap-3 border border-line bg-white px-5 py-3.5 text-[16px] font-medium text-ink transition-colors hover:border-brand"
+                >
+                  <span aria-hidden="true">{e.emoji}</span>
+                  {e.texto}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <p class="mt-8 text-center text-[14px] leading-relaxed text-ash">
+        {CONTACT.addressFull}<br />
+        {CONTACT.hoursText}<br />
+        <a href={`tel:${PHONE_TEL}`} class="font-semibold text-brand underline underline-offset-2">
+          {PHONE_DISPLAY}
+        </a>
+      </p>
+
+      {/* Hueco para el botón flotante, que si no tapa el teléfono. */}
+      <div class="h-[calc(5rem+env(safe-area-inset-bottom))]" aria-hidden="true"></div>
+    </div>
+  </main>
+
+  <LeadModal origen={ORIGEN} retorno={RETORNO} etiqueta="Pide tu cotización" />
+</Layout>
+
+<script>
+  // La página se sirve estática con origen `bio_instagram`. Si la visita trae
+  // ?ref=fb, se corrige antes de que el formulario pueda enviarse.
+  const ref = new URLSearchParams(location.search).get('ref');
+  if (ref === 'fb') {
+    document
+      .querySelectorAll<HTMLInputElement>('input[name="origen"]')
+      .forEach((i) => (i.value = 'bio_facebook'));
+    document
+      .querySelectorAll<HTMLInputElement>('input[name="retorno"]')
+      .forEach((i) => (i.value = '/bio/?ref=fb'));
+  }
+</script>

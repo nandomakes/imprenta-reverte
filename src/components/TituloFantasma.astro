@@ -1,0 +1,42 @@
+---
+/**
+ * Cabecera de sección con palabra fantasma: una palabra grande y muy tenue de
+ * fondo, con una etiqueta chica centrada exactamente ENCIMA de ella (no una
+ * arriba de la otra en el flujo normal, sino las dos superpuestas en el mismo
+ * punto). Se resuelve con grid: ambos hijos van en la misma celda
+ * (col-start-1 row-start-1), así que `place-items-center` los centra a los
+ * dos en el mismo sitio sin cálculos de posición absoluta a mano.
+ *
+ * Vive en su propio bloque, en flujo normal (nada de `position: absolute`
+ * empujado con valores negativos): así hereda el padding superior de quien
+ * lo usa en vez de escaparse por encima del borde de la sección, que era el
+ * bug que había antes en Proceso y Portafolio.
+ *
+ * NO lleva padding-top propio: cada sección que lo usa ya trae `py-16
+ * md:py-24` en el `<section>`. Sumarle padding aquí encima duplicaba el
+ * espacio (96px de la sección + 56px de este componente = casi 150px de
+ * vacío antes de que apareciera nada, que es justo lo que se veía de más).
+ *
+ * El título real de la sección (el que cada componente ya trae) se pone
+ * justo debajo, con un margen negativo chico para que se monte un poco sobre
+ * la palabra fantasma — el mismo efecto de capas del sitio de referencia.
+ */
+interface Props {
+  /** Palabra grande y desvanecida de fondo. */
+  fantasma: string;
+  /** Etiqueta chica, centrada exactamente encima de la palabra de fondo. */
+  eyebrow: string;
+}
+
+const { fantasma, eyebrow } = Astro.props;
+---
+
+<div class="reveal relative mx-auto grid place-items-center">
+  <p
+    class="pointer-events-none col-start-1 row-start-1 select-none whitespace-nowrap text-[18vw] font-bold leading-none text-brand/[0.06] sm:text-[110px] lg:text-[130px]"
+    aria-hidden="true"
+  >
+    {fantasma}
+  </p>
+  <p class="eyebrow col-start-1 row-start-1 text-[13px] text-accentDk">{eyebrow}</p>
+</div>

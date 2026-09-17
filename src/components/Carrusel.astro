@@ -31,7 +31,7 @@ const tonos: Record<string, string> = {
 };
 ---
 
-<section id={id} class={fondo === 'mist' ? 'bg-mist py-12 md:py-16' : 'bg-white py-12 md:py-16'}>
+<section id={id} class={fondo === 'mist' ? 'bg-paper py-12 md:py-16' : 'bg-white py-12 md:py-16'}>
   <div class="shell" data-carrusel>
     <div class="grid gap-6 lg:grid-cols-[260px_1fr] lg:gap-10">
       <div class="reveal lg:pt-4">
@@ -59,7 +59,7 @@ const tonos: Record<string, string> = {
           items.map((c) => (
             <li class="w-[210px] sm:w-[240px]">
               <a href={`/catalogo/${c.slug}/`} class="zoom-parent group block">
-                <div class={`overflow-hidden ${tonos[c.tono] ?? 'bg-mist'}`}>
+                <div class={`overflow-hidden ${tonos[c.tono] ?? 'bg-paper'}`}>
                   <Foto
                     id={c.imagen}
                     alt={c.imagenAlt}

@@ -2,28 +2,18 @@
 // Banda celeste centrada con el "quiénes somos" y un botón azul, en el lugar
 // que la referencia usa para "Experiencia 20+ Años de Excelencia".
 import { EXPERIENCIA } from '../consts';
+import TituloFantasma from './TituloFantasma.astro';
 ---
 
-<section id="nosotros" class="bg-sky py-14 md:py-20">
+<section id="nosotros" class="relative overflow-hidden bg-mist py-16 md:py-24">
   <div class="shell max-w-3xl text-center">
-    <h2 class="h-sec reveal">{EXPERIENCIA.titulo}</h2>
+    <TituloFantasma fantasma="Nosotros" eyebrow="Nosotros" />
+    <h2 class="reveal -mt-1 text-[30px] leading-tight text-ink sm:-mt-2 sm:text-[38px] lg:text-[42px]">
+      {EXPERIENCIA.titulo}
+    </h2>
     <p class="reveal mx-auto mt-5 max-w-2xl text-[15px] leading-relaxed sm:text-[16px]">
       {EXPERIENCIA.texto}
     </p>
-    <dl class="reveal mx-auto mt-9 grid max-w-lg grid-cols-3 gap-4">
-      <div>
-        <dt class="text-[13px] text-ash">Categorías</dt>
-        <dd class="text-[30px] font-semibold text-brand">9</dd>
-      </div>
-      <div>
-        <dt class="text-[13px] text-ash">Tiraje mínimo</dt>
-        <dd class="text-[30px] font-semibold text-brand">1</dd>
-      </div>
-      <div>
-        <dt class="text-[13px] text-ash">Diseño</dt>
-        <dd class="text-[30px] font-semibold text-brand">Incluido</dd>
-      </div>
-    </dl>
     <a href={EXPERIENCIA.href} class="btn-brand reveal mt-9">{EXPERIENCIA.cta}</a>
   </div>
 </section>

@@ -9,7 +9,7 @@ import { CONTACT, PHONE_DISPLAY, PHONE_TEL, SITE } from '../consts';
 
       <address class="reveal mt-7 space-y-6 not-italic">
         <div>
-          <h3 class="text-[13px] font-semibold uppercase tracking-wider text-ash">Dirección</h3>
+          <h3 class="eyebrow text-[13px]">Dirección</h3>
           <p class="mt-1.5 text-[17px] leading-relaxed text-ink">
             {CONTACT.street}<br />
             {CONTACT.neighborhood}<br />
@@ -18,7 +18,7 @@ import { CONTACT, PHONE_DISPLAY, PHONE_TEL, SITE } from '../consts';
         </div>
 
         <div>
-          <h3 class="text-[13px] font-semibold uppercase tracking-wider text-ash">Teléfono</h3>
+          <h3 class="eyebrow text-[13px]">Teléfono</h3>
           <p class="mt-1.5">
             <a href={`tel:${PHONE_TEL}`} class="text-[26px] font-semibold text-brand hover:underline">
               {PHONE_DISPLAY}
@@ -27,12 +27,12 @@ import { CONTACT, PHONE_DISPLAY, PHONE_TEL, SITE } from '../consts';
         </div>
 
         <div>
-          <h3 class="text-[13px] font-semibold uppercase tracking-wider text-ash">Horario</h3>
+          <h3 class="eyebrow text-[13px]">Horario</h3>
           <p class="mt-1.5 text-[16px] text-ink">{CONTACT.hoursText}</p>
         </div>
       </address>
 
-      <a href={CONTACT.mapsUrl} target="_blank" rel="noopener" class="btn-outline reveal mt-8">
+      <a href={CONTACT.mapsUrl} target="_blank" rel="noopener" class="btn-brand reveal mt-8">
         Cómo llegar
       </a>
     </div>

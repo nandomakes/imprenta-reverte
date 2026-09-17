@@ -10,7 +10,7 @@ import { CATEGORIAS, SITE } from '../../consts';
 
 const title = `Catálogo de imprenta | ${SITE.brand} — Ciudad Valles, SLP`;
 const description =
-  'Catálogo completo de Imprenta Reverte: papelería comercial y médica, publicidad, gran formato, textil, grabado láser, sellos e impresión para eventos en Ciudad Valles, SLP.';
+  'Catálogo completo de Imprenta Reverte: papelería, sellos, impresión comercial, gran formato, DTF, serigrafía, sublimación, bordado, grabado láser y eventos en Ciudad Valles, SLP.';
 
 const breadcrumb = {
   '@context': 'https://schema.org',
@@ -34,7 +34,7 @@ const tonos: Record<string, string> = {
   <main id="contenido">
     <PageHead
       titulo="Todo el catálogo"
-      intro="Nueve categorías con todo lo que imprimimos. Es una guía para consultar, no una tienda: cuando encuentres lo tuyo, pídenos precio."
+      intro="Diecisiete categorías con todo lo que imprimimos. Es una guía para consultar, no una tienda: cuando encuentres lo tuyo, pídenos precio."
       migas={[{ label: 'Inicio', href: '/' }, { label: 'Catálogo' }]}
     />
 
@@ -42,7 +42,7 @@ const tonos: Record<string, string> = {
         cliente sobre el HTML ya renderizado: son 9 categorías, no hace falta
         un índice ni un servidor para filtrarlas. */}
     <div class="shell pt-8">
-      <p id="aviso-busqueda" hidden class="mb-6 border-l-4 border-brand bg-mist px-5 py-3 text-[15px]"></p>
+      <p id="aviso-busqueda" hidden class="mb-6 border-l-4 border-brand bg-paper px-5 py-3 text-[15px]"></p>
     </div>
 
     <section class="shell pb-12 pt-4 md:pb-16">
@@ -58,7 +58,7 @@ const tonos: Record<string, string> = {
                 href={`/catalogo/${c.slug}/`}
                 class="zoom-parent lift group flex h-full flex-col border border-line bg-white"
               >
-                <div class={`overflow-hidden ${tonos[c.tono] ?? 'bg-mist'}`}>
+                <div class={`overflow-hidden ${tonos[c.tono] ?? 'bg-paper'}`}>
                   <Foto
                     id={c.imagen}
                     alt={c.imagenAlt}

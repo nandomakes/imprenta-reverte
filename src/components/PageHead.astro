@@ -10,7 +10,7 @@ interface Props {
 const { titulo, intro, migas } = Astro.props;
 ---
 
-<section class="border-b border-line bg-mist py-9 md:py-12">
+<section class="border-b border-line bg-paper py-9 md:py-12">
   <div class="shell">
     <nav aria-label="Ruta" class="text-[14px] text-ash">
       <ol class="flex flex-wrap items-center gap-x-2">
@@ -30,7 +30,7 @@ const { titulo, intro, migas } = Astro.props;
         }
       </ol>
     </nav>
-    <h1 class="mt-3 text-[30px] font-semibold leading-tight text-ink sm:text-[36px] lg:text-[42px]">
+    <h1 class="mt-3 text-[30px] text-ink sm:text-[36px] lg:text-[42px]">
       {titulo}
     </h1>
     {intro && <p class="mt-4 max-w-2xl text-[16px] leading-relaxed">{intro}</p>}

@@ -6,34 +6,115 @@ interface Props {
 }
 
 const { items, titulo = 'Preguntas frecuentes', fondo = 'blanco' } = Astro.props;
+
+// IDs estables para aria-controls / aria-labelledby: como el título puede
+// repetirse entre instancias del componente en la misma página, se deriva
+// del texto de la pregunta + su posición, no solo del índice.
+const slug = (s: string) =>
+  s
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '')
+    .slice(0, 40);
 ---
 
-<section class={fondo === 'mist' ? 'bg-mist py-12 md:py-16' : 'bg-white py-12 md:py-16'}>
+<section class={fondo === 'mist' ? 'bg-paper py-12 md:py-16' : 'bg-white py-12 md:py-16'}>
   <div class="shell max-w-3xl">
     <h2 class="h-sec reveal text-center">{titulo}</h2>
 
-    <div class="mt-9 divide-y divide-line border-y border-line">
+    {/* Nada de <details>/<summary>: el toggle nativo depende de reglas
+        internas del user-agent (display, content-visibility) que varían
+        entre navegadores y son las que hacían que la respuesta apareciera
+        de golpe en vez de crecer, por más CSS que se le pusiera encima. Un
+        <div> con la altura controlada a mano por JS no tiene ese problema:
+        lo que se manda a animar es exactamente lo que se pinta. */}
+    <div class="mt-9 divide-y divide-line border-y border-line" data-acordeon>
       {
-        items.map((f) => (
-          <details class="faq reveal group">
-            <summary class="flex cursor-pointer list-none items-start justify-between gap-4 py-4 text-left text-[16px] font-semibold text-ink hover:text-brand">
-              <span>{f.q}</span>
-              <svg
-                aria-hidden="true"
-                viewBox="0 0 20 20"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                class="mt-1 h-5 w-5 shrink-0 text-brand transition-transform duration-300 group-open:rotate-45"
+        items.map((f, i) => {
+          const id = `faq-${slug(f.q) || i}`;
+          return (
+            <div class="faq reveal">
+              <h3>
+                <button
+                  type="button"
+                  aria-expanded="false"
+                  aria-controls={`${id}-panel`}
+                  id={`${id}-btn`}
+                  data-faq-boton
+                  class="flex w-full cursor-pointer list-none items-start justify-between gap-4 py-4 text-left text-[16px] font-semibold text-ink transition-colors hover:text-brand"
+                >
+                  <span>{f.q}</span>
+                  <svg
+                    aria-hidden="true"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    data-faq-icono
+                    class="mt-1 h-5 w-5 shrink-0 text-brand transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
+                  >
+                    <path d="M10 4v12M4 10h12" />
+                  </svg>
+                </button>
+              </h3>
+              <div
+                id={`${id}-panel`}
+                role="region"
+                aria-labelledby={`${id}-btn`}
+                data-faq-panel
+                class="grid overflow-hidden opacity-0 transition-[grid-template-rows,opacity] duration-[380ms] ease-[cubic-bezier(0.34,1.56,0.64,1)]"
+                style="grid-template-rows: 0fr;"
               >
-                <path d="M10 4v12M4 10h12" />
-              </svg>
-            </summary>
-            <p class="pb-5 pr-9 text-[15px] leading-relaxed">{f.a}</p>
-          </details>
-        ))
+                <div class="min-h-0 overflow-hidden">
+                  <p class="pb-5 pr-9 text-[15px] leading-relaxed">{f.a}</p>
+                </div>
+              </div>
+            </div>
+          );
+        })
       }
     </div>
   </div>
 </section>
+
+<script>
+  // Acordeón: abrir cierra las demás del mismo bloque. La altura se anima
+  // con CSS (grid-template-rows 0fr → 1fr, que sí sabe animar a "el alto que
+  // haga falta" sin medir nada en JS), y aquí solo se cambia esa variable y
+  // el estado de aria-expanded — nada de max-height calculado a mano, que se
+  // desincroniza en cuanto el texto cambia de tamaño (rotación de pantalla,
+  // zoom, fuente distinta).
+  document.querySelectorAll<HTMLElement>('[data-acordeon]').forEach((grupo) => {
+    const filas = [...grupo.querySelectorAll<HTMLElement>('.faq')].map((faq) => ({
+      boton: faq.querySelector<HTMLButtonElement>('[data-faq-boton]')!,
+      panel: faq.querySelector<HTMLElement>('[data-faq-panel]')!,
+      icono: faq.querySelector<SVGElement>('[data-faq-icono]')!,
+    }));
+
+    const cerrar = (fila: (typeof filas)[number]) => {
+      fila.boton.setAttribute('aria-expanded', 'false');
+      fila.panel.style.gridTemplateRows = '0fr';
+      fila.panel.style.opacity = '0';
+      fila.icono.style.transform = '';
+    };
+
+    const abrir = (fila: (typeof filas)[number]) => {
+      fila.boton.setAttribute('aria-expanded', 'true');
+      fila.panel.style.gridTemplateRows = '1fr';
+      fila.panel.style.opacity = '1';
+      fila.icono.style.transform = 'rotate(45deg)';
+    };
+
+    filas.forEach((fila) => {
+      fila.boton.addEventListener('click', () => {
+        const yaAbierta = fila.boton.getAttribute('aria-expanded') === 'true';
+        filas.forEach((otra) => (otra === fila ? null : cerrar(otra)));
+        if (yaAbierta) cerrar(fila);
+        else abrir(fila);
+      });
+    });
+  });
+</script>

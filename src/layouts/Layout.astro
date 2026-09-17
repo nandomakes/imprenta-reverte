@@ -1,15 +1,16 @@
 ---
-// Quicksand es la tipografía de printshopsolution.com (comprobado con
-// getComputedStyle sobre el sitio en vivo). Autoalojada: sin petición
-// bloqueante a fonts.googleapis.com y sin mandar la IP de cada visitante a
-// Google. Solo subconjunto latino.
-import '@fontsource/quicksand/latin-400.css';
-import '@fontsource/quicksand/latin-500.css';
-import '@fontsource/quicksand/latin-600.css';
-import '@fontsource/quicksand/latin-700.css';
-// Manuscrita solo para el titular del hero, igual que la referencia.
-import '@fontsource/dancing-script/latin-600.css';
+// Sistema tipográfico del sitio: una sola familia, DM Sans, para todo —
+// títulos, texto, navegación, botones. Se probó Cormorant Garamond como serif
+// de "momentos editoriales" y se retiró a pedido: el sitio se estandariza a
+// la tipografía del hero, que ya era DM Sans.
+// Autoalojada: sin petición bloqueante a fonts.googleapis.com y sin mandar la
+// IP de cada visitante a Google. Solo subconjunto latino.
+import '@fontsource/dm-sans/latin-400.css';
+import '@fontsource/dm-sans/latin-500.css';
+import '@fontsource/dm-sans/latin-600.css';
+import '@fontsource/dm-sans/latin-700.css';
 import '../styles/global.css';
+import WhatsAppFab from '../components/WhatsAppFab.astro';
 import {
   SITE,
   CONTACT,
@@ -26,6 +27,13 @@ interface Props {
   noindex?: boolean;
   /** Nodos JSON-LD propios de la página (BreadcrumbList, FAQPage, Service…). */
   schema?: unknown[];
+  /**
+   * Oculta la burbuja flotante de WhatsApp. Lo usa /gracias: una vez que el
+   * prospecto ya dejó sus datos, empujarlo a WhatsApp es contraproducente —
+   * la conversación la abre la imprenta, no el cliente, y un lead que se va
+   * a WhatsApp deja de ser un lead registrado para volverse un chat suelto.
+   */
+  sinWhatsApp?: boolean;
 }
 
 const {
@@ -33,6 +41,7 @@ const {
   description = SITE.description,
   noindex = false,
   schema = [],
+  sinWhatsApp = false,
 } = Astro.props;
 
 const site = Astro.site ?? new URL(SITE.url);
@@ -120,7 +129,12 @@ const jsonLdNodes = [negocio, website, ...schema];
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {/* viewport-fit=cover es lo que hace que env(safe-area-inset-*) exista de
+        verdad en iOS Safari — sin esto vale 0 siempre y la barra fija de
+        abajo y el botón de WhatsApp pueden quedar pegados a la barra de
+        gestos del home indicator en iPhones sin botón físico (X en
+        adelante). */}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <!-- Todas las fotos vienen del CDN de Unsplash; abrir la conexión temprano
          le quita el DNS+TLS al camino crítico de la imagen del hero. -->
     <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
@@ -179,6 +193,7 @@ const jsonLdNodes = [negocio, website, ...schema];
       Saltar al contenido
     </a>
     <slot />
+    {!sinWhatsApp && <WhatsAppFab />}
 
     <script>
       // Reveal escalonado por hermanos, para que rejillas y filas entren en
@@ -303,35 +318,30 @@ const jsonLdNodes = [negocio, website, ...schema];
         sync();
       });
 
-      // Slider del hero: autoavance con pausa al pasar el cursor.
-      const slider = document.querySelector<HTMLElement>('[data-slider]');
-      if (slider) {
-        const slides = [...slider.querySelectorAll<HTMLElement>('[data-slide]')];
-        const puntos = [...slider.querySelectorAll<HTMLButtonElement>('[data-punto]')];
-        let i = 0;
-        let timer = 0;
-        const ir = (n: number) => {
-          i = (n + slides.length) % slides.length;
-          slides.forEach((s, k) => {
-            s.classList.toggle('opacity-0', k !== i);
-            s.classList.toggle('pointer-events-none', k !== i);
-            s.setAttribute('aria-hidden', String(k !== i));
+      // Alto de todo lo que va ENCIMA del hero, para que este ocupe exactamente
+      // la pantalla que queda debajo. Son dos piezas, no una: la barra
+      // promocional va fuera del <header> y además es cerrable, así que se
+      // miden y se observan las dos.
+      const cabecera = document.querySelector<HTMLElement>('header');
+      if (cabecera) {
+        const promo2 = document.querySelector<HTMLElement>('[data-promo]');
+        const medir = () => {
+          const alto =
+            cabecera.getBoundingClientRect().height +
+            (promo2 && !promo2.hidden ? promo2.getBoundingClientRect().height : 0);
+          document.documentElement.style.setProperty('--alto-cabecera', `${Math.round(alto)}px`);
+        };
+        medir();
+        const ro = new ResizeObserver(medir);
+        ro.observe(cabecera);
+        if (promo2) {
+          ro.observe(promo2);
+          // `hidden` no dispara el ResizeObserver en todos los navegadores.
+          new MutationObserver(medir).observe(promo2, {
+            attributes: true,
+            attributeFilter: ['hidden'],
           });
-          puntos.forEach((p, k) => p.setAttribute('aria-current', String(k === i)));
-        };
-        const arrancar = () => {
-          if (slides.length < 2) return;
-          if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-          timer = window.setInterval(() => ir(i + 1), 6500);
-        };
-        const parar = () => window.clearInterval(timer);
-        slider.querySelector('[data-slider-prev]')?.addEventListener('click', () => { parar(); ir(i - 1); arrancar(); });
-        slider.querySelector('[data-slider-next]')?.addEventListener('click', () => { parar(); ir(i + 1); arrancar(); });
-        puntos.forEach((p, k) => p.addEventListener('click', () => { parar(); ir(k); arrancar(); }));
-        slider.addEventListener('mouseenter', parar);
-        slider.addEventListener('mouseleave', arrancar);
-        ir(0);
-        arrancar();
+        }
       }
 
       // Barra promocional: se cierra y no vuelve en la sesión.

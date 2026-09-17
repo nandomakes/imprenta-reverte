@@ -8,9 +8,20 @@ interface Props {
 }
 
 const { categoria, titulo = 'Cuéntanos qué necesitas y te cotizamos' } = Astro.props;
+const tieneAviso = Astro.slots.has('aviso');
 ---
 
 <section id="cotizar" class="scroll-mt-32 bg-mist py-12 md:py-16 lg:py-20">
+  {/* Slot para un aviso propio de la página (p. ej. el banner de error de
+      /cotizar/): vive DENTRO de esta sección mist, no en un div blanco
+      aparte antes de ella — así nunca deja un hueco de otro color cuando
+      está oculto ni desentona cuando se muestra. El wrapper solo se emite
+      si de verdad hay algo que poner ahí. */}
+  {tieneAviso && (
+    <div class="shell">
+      <slot name="aviso" />
+    </div>
+  )}
   <div class="shell grid gap-8 lg:grid-cols-[1fr_1.4fr] lg:gap-12">
     <div>
       <h2 id="titulo-cotizar" class="h-sec reveal">{titulo}</h2>
