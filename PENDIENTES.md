@@ -5,20 +5,30 @@ se borra de aquí (el historial ya está en git).
 
 ## Bloqueado: necesito datos o accesos tuyos
 
-- [ ] **Credenciales de Telegram.** El código ya está listo, pero faltan los
-      valores reales de `TELEGRAM_BOT_TOKEN` y `TELEGRAM_CHAT_ID` en `.env`.
-      Sin ellos el aviso no sale (el formulario sigue funcionando igual y solo
-      deja un aviso en el log). Ver README → "Aviso por Telegram".
+- [ ] **Envío por correo (Resend) — decidir y configurar.** Hoy el sitio avisa
+      SOLO por Telegram: `QUOTE_TO_EMAIL` y `QUOTE_FROM_EMAIL` están vacíos en
+      `.env`, y sin ellos el paso del correo se salta (el lead no se pierde —
+      queda en el log del servidor y el visitante ve la página de gracias
+      igual). Para reactivarlo hay que decidir el remitente, y ojo: **Resend no
+      deja enviar desde una dirección de Gmail**, necesita un dominio propio
+      verificado. Dos caminos:
+      - Verificar `imprentareverte.com` en Resend y usar
+        `QUOTE_FROM_EMAIL=cotizaciones@imprentareverte.com` con
+        `QUOTE_TO_EMAIL=reverteimprenta@gmail.com`.
+      - Para probar sin dominio: `QUOTE_FROM_EMAIL=onboarding@resend.dev`
+        (remitente de pruebas de Resend) y el Gmail como destino.
 
-- [ ] **Variables de entorno en Vercel.** Hay que dar de alta en
-      *Settings → Environment Variables* y volver a desplegar:
-      `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`.
-      Comprobar de paso que las de Resend ya estén puestas:
-      `RESEND_API_KEY`, `QUOTE_TO_EMAIL`, `QUOTE_FROM_EMAIL`.
+- [ ] **Variables de entorno en Vercel.** En local ya están puestas y
+      probadas; falta darlas de alta en *Settings → Environment Variables* y
+      volver a desplegar: `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` y
+      `RESEND_API_KEY` (más las dos de correo, si se resuelve el punto de
+      arriba).
 
-- [ ] **Prueba end-to-end del formulario.** Con las variables ya puestas en
-      producción: mandar una cotización de prueba desde `/cotizar/` y confirmar
-      que llegan las dos cosas, el correo y el mensaje de Telegram.
+- [ ] **Prueba end-to-end en producción.** Con las variables ya puestas en
+      Vercel: mandar una cotización de prueba desde `/cotizar/` y confirmar que
+      llega el mensaje de Telegram (y el correo, si se configuró).
+      En local ya quedó probado: bot `@imprenta_reverte_bot` escribiendo al
+      grupo "Prospectos Imprenta Reverte".
 
 - [ ] **Fotos reales del catálogo y del portafolio.** Mencionaste que vas a
       convertir el PDF a imágenes (hojas completas) y luego a fotos por
