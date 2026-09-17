@@ -18,17 +18,12 @@ se borra de aquí (el historial ya está en git).
       - Para probar sin dominio: `QUOTE_FROM_EMAIL=onboarding@resend.dev`
         (remitente de pruebas de Resend) y el Gmail como destino.
 
-- [ ] **Variables de entorno en Vercel.** En local ya están puestas y
-      probadas; falta darlas de alta en *Settings → Environment Variables* y
-      volver a desplegar: `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` y
-      `RESEND_API_KEY` (más las dos de correo, si se resuelve el punto de
-      arriba).
-
-- [ ] **Prueba end-to-end en producción.** Con las variables ya puestas en
-      Vercel: mandar una cotización de prueba desde `/cotizar/` y confirmar que
-      llega el mensaje de Telegram (y el correo, si se configuró).
-      En local ya quedó probado: bot `@imprenta_reverte_bot` escribiendo al
-      grupo "Prospectos Imprenta Reverte".
+- [ ] **Dominio propio.** El sitio vive en `imprenta-reverte.vercel.app`;
+      `imprentareverte.com` todavía no resuelve. Cuando se conecte el dominio
+      en Vercel, revisar que siga funcionando el envío del formulario: los
+      dominios ya están declarados en `security.allowedDomains`
+      (`astro.config.mjs`), así que debería entrar solo, pero conviene mandar
+      una cotización de prueba desde el dominio nuevo para confirmarlo.
 
 - [ ] **Fotos reales del catálogo y del portafolio.** Mencionaste que vas a
       convertir el PDF a imágenes (hojas completas) y luego a fotos por
