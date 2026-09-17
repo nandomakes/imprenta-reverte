@@ -123,8 +123,13 @@ export const POST: APIRoute = async ({ request, redirect, cookies }) => {
   // La categoría se valida contra el catálogo real, no contra texto libre:
   // un valor inventado es un lead que ventas no puede rutear.
   const categoriaValida = SLUGS_CATALOGO.includes(categoria);
+  // Diez dígitos exactos, contando solo números: el campo admite espacios,
+  // guiones y paréntesis al escribir. Se valida aquí además de en el
+  // navegador porque un teléfono incompleto es un lead imposible de
+  // contactar — que es justo para lo que sirve el formulario.
+  const telefonoValido = telefono.replace(/\D/g, '').length === 10;
 
-  if (faltantes || !categoriaValida) {
+  if (faltantes || !categoriaValida || !telefonoValido) {
     // Vuelve a la página desde la que se envió, no siempre a /cotizar/.
     // El separador depende de si esa ruta ya trae query (/bio/?ref=fb).
     return redirect(`${retorno}${sep}error=1#cotizar`, 303);

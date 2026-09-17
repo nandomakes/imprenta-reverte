@@ -67,16 +67,33 @@ const { categoria, compacto = false, origen = 'sitio', retorno = '/cotizar/' } =
     <label class="field-label" for="telefono">
       Teléfono o WhatsApp <span class="text-cmykM">*</span>
     </label>
+    {/* `pattern` admite espacios, guiones y paréntesis porque mucha gente
+        escribe "481 381 6663" o "(481) 381-6663"; el script de abajo cuenta
+        solo los dígitos y exige 10. `maxlength` 16 deja margen para esos
+        separadores sin permitir un número de otro país por error.
+        `inputmode="numeric"` saca el teclado de números en el celular.
+
+        El patrón va SIN barras invertidas a propósito: dentro del atributo se
+        procesan como escapes de cadena, y `\-` `\s` llegaban al HTML como `-`
+        y `s`, dejando la clase rota (`[0-9()-s]`, con un rango `)-s`). Por eso
+        el espacio va literal y el guion al final, donde no forma rango. */}
     <input
       class="field"
       id="telefono"
       name="telefono"
       type="tel"
       required
-      inputmode="tel"
-      autocomplete="tel"
+      inputmode="numeric"
+      autocomplete="tel-national"
+      maxlength="16"
+      pattern="[0-9 ()-]{10,16}"
+      aria-describedby="ayuda-telefono"
+      data-telefono
       placeholder="481 000 0000"
     />
+    <p id="ayuda-telefono" class="mt-1.5 text-[13px] text-ash">
+      10 dígitos, con lada. Ejemplo: 481 381 6663
+    </p>
   </div>
 
   <div>
@@ -224,5 +241,44 @@ const { categoria, compacto = false, origen = 'sitio', retorno = '/cotizar/' } =
       boton.disabled = true;
       boton.textContent = 'Enviando…';
     });
+  });
+
+  // Teléfono: exactamente 10 dígitos.
+  //
+  // `pattern` por sí solo no sirve aquí, porque cuenta caracteres y no
+  // dígitos: "481 381 66" pasa el patrón (10 caracteres) con solo 8 dígitos.
+  // Así que se cuentan los dígitos a mano y se usa setCustomValidity, que
+  // hace que el navegador muestre el mensaje en su propio globo y bloquee el
+  // envío — el mismo camino que ya usa para los campos requeridos, sin
+  // inventar una UI de errores aparte.
+  document.querySelectorAll<HTMLInputElement>('[data-telefono]').forEach((campo) => {
+    const revisar = () => {
+      const digitos = campo.value.replace(/\D/g, '');
+
+      if (campo.value.trim() === '') {
+        // Vacío no es "faltan dígitos": de eso ya se queja `required` con su
+        // propio mensaje, y pisarlo aquí sería contradecirlo.
+        campo.setCustomValidity('');
+      } else if (digitos.length < 10) {
+        const faltan = 10 - digitos.length;
+        campo.setCustomValidity(
+          `Faltan ${faltan} ${faltan === 1 ? 'dígito' : 'dígitos'}: el teléfono debe tener 10.`
+        );
+      } else if (digitos.length > 10) {
+        campo.setCustomValidity('El teléfono debe tener 10 dígitos, con lada.');
+      } else {
+        campo.setCustomValidity('');
+      }
+    };
+
+    // `input` limpia el aviso en cuanto se corrige, sin esperar a reenviar.
+    // `change` cubre el autocompletado del navegador, que rellena el campo
+    // sin que nadie escriba. NO se revalida en el `submit` del formulario:
+    // la validación nativa corre ANTES de ese evento, así que para entonces
+    // el navegador ya decidió si dejaba pasar el envío.
+    campo.addEventListener('input', revisar);
+    campo.addEventListener('change', revisar);
+    campo.addEventListener('blur', revisar);
+    revisar();
   });
 </script>
