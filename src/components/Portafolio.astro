@@ -25,75 +25,85 @@
 import Foto from './Foto.astro';
 import TituloFantasma from './TituloFantasma.astro';
 
+/**
+ * La pieza grande va PRIMERA en el array a propósito.
+ *
+ * Antes iba en segundo lugar y en móvil (2 columnas) dejaba un hueco: ocupa
+ * 2 columnas, no cabía junto a la primera pieza y saltaba de fila, dejando
+ * vacía la casilla de la derecha de la primera fila. Puesta al frente ocupa
+ * un bloque limpio de 2×2 y las 8 chicas rellenan filas completas detrás,
+ * sin huecos — en móvil (2 col), en tablet (4 col) y en escritorio.
+ *
+ * En `lg` manda la posición explícita de cada pieza (`posicion`), así que el
+ * orden del DOM no altera el bento diseñado; solo arregla cómo fluye antes
+ * de ese breakpoint. La posición vive dentro de cada objeto, no en un array
+ * aparte indexado por número: así reordenar piezas no vuelve a desfasar las
+ * posiciones.
+ */
 const piezas = [
-  {
-    titulo: 'Invitaciones de evento',
-    imagen: 'photo-1566125882500-87e10f726cdc',
-    imagenAlt: 'Papelería de invitación blanca flat lay con sobre kraft sobre fondo claro',
-    grande: false,
-  },
   {
     titulo: 'Rotulación vehicular',
     imagen: 'photo-1580828343064-fde4fc206bc6',
     imagenAlt: 'Letras grandes de vinil adhesivo aplicadas sobre el aparador de un local',
     grande: true,
+    posicion: 'lg:col-start-2 lg:col-span-2 lg:row-start-1 lg:row-span-2',
+  },
+  {
+    titulo: 'Invitaciones de evento',
+    imagen: 'photo-1566125882500-87e10f726cdc',
+    imagenAlt: 'Papelería de invitación blanca flat lay con sobre kraft sobre fondo claro',
+    grande: false,
+    posicion: 'lg:col-start-1 lg:row-start-1',
   },
   {
     titulo: 'Playeras con logo',
     imagen: 'photo-1651761179569-4ba2aa054997',
     imagenAlt: 'Playera blanca lisa de algodón en mockup de estudio sobre fondo blanco',
     grande: false,
+    posicion: 'lg:col-start-4 lg:row-start-1',
   },
   {
     titulo: 'Tarjetas de presentación',
     imagen: 'photo-1623305463957-df17547327cb',
     imagenAlt: 'Par de tarjetas de presentación en blanco sobre fondo gris claro de estudio',
     grande: false,
+    posicion: 'lg:col-start-1 lg:row-start-2',
   },
   {
     titulo: 'Sellos personalizados',
     imagen: 'photo-1562330094-4a3730591558',
     imagenAlt: 'Tijeras, un sello de goma y una tarjeta en blanco sobre madera clara',
     grande: false,
+    posicion: 'lg:col-start-4 lg:row-start-2',
   },
   {
     titulo: 'Papelería corporativa',
     imagen: 'photo-1627618998627-70a92a874cc2',
     imagenAlt: 'Hojas de papel membretado en blanco sobre un sobre kraft, composición flat lay',
     grande: false,
+    posicion: 'lg:col-start-1 lg:row-start-3',
   },
   {
     titulo: 'Tarjetas de presentación a color',
     imagen: 'photo-1623305466040-b753da413c9b',
     imagenAlt: 'Pila de tarjetas de presentación en blanco alineadas sobre fondo de estudio',
     grande: false,
+    posicion: 'lg:col-start-2 lg:row-start-3',
   },
   {
     titulo: 'Revistas y folletos',
     imagen: 'photo-1621944192380-808416c390e2',
     imagenAlt: 'Folleto o revista en blanco abierto, mockup sobre fondo gris claro de estudio',
     grande: false,
+    posicion: 'lg:col-start-3 lg:row-start-3',
   },
   {
     titulo: 'Etiquetas de producto',
     imagen: 'photo-1763667926453-6a992d38ac43',
     imagenAlt: 'Botella de producto con etiqueta blanca en blanco, estilo mockup',
     grande: false,
+    posicion: 'lg:col-start-4 lg:row-start-3',
   },
-];
-
-// Posición explícita de cada celda en el bento de 4×3. Solo se aplica desde
-// `lg`; antes de eso el grid cae a una columna y este mapa no se usa.
-const posiciones = [
-  'lg:col-start-1 lg:row-start-1',
-  'lg:col-start-2 lg:col-span-2 lg:row-start-1 lg:row-span-2', // la grande
-  'lg:col-start-4 lg:row-start-1',
-  'lg:col-start-1 lg:row-start-2',
-  'lg:col-start-4 lg:row-start-2',
-  'lg:col-start-1 lg:row-start-3',
-  'lg:col-start-2 lg:row-start-3',
-  'lg:col-start-3 lg:row-start-3',
-  'lg:col-start-4 lg:row-start-3',
 ];
 ---
 
@@ -117,12 +127,15 @@ const posiciones = [
         con la retícula sin tener que fijar alturas a mano. */}
     <ul class="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-4">
       {
-        piezas.map((p, i) => (
+        piezas.map((p) => (
           <li
             class:list={[
               'reveal group relative aspect-square overflow-hidden bg-white',
-              p.grande && 'col-span-2',
-              posiciones[i],
+              // 2×2 en todos los tamaños: así su alto equivale a dos filas
+              // chicas apiladas y la retícula cierra sin huecos tanto en 2
+              // columnas (móvil) como en 4 (tablet).
+              p.grande && 'col-span-2 row-span-2',
+              p.posicion,
             ]}
           >
             <Foto

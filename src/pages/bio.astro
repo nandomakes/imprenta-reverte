@@ -69,16 +69,21 @@ const enlaces = [
       <nav class="mt-8" aria-label="Enlaces de Imprenta Reverte">
         <ul class="grid gap-3">
           {/* El de cotizar va primero y destacado: es el único que nos deja un
-              lead. Los demás reparten, este convierte. */}
+              lead. Los demás reparten, este convierte.
+
+              Es un <a> a /cotizar/, no un <button>: si el JS no carga, el
+              modal no existe y un <button> sin JS no hace nada. Así siempre
+              hay a dónde ir. El script de LeadModal lo intercepta y abre el
+              modal cuando sí hay JS. */}
           <li>
-            <button
-              type="button"
+            <a
+              href="/cotizar/"
               data-abrir-lead
               class="flex min-h-[56px] w-full items-center gap-3 border-2 border-brand bg-brand px-5 py-3.5 text-left text-[16px] font-semibold text-white transition-colors hover:bg-brandDk"
             >
               <span aria-hidden="true">✏️</span>
               Pide tu cotización
-            </button>
+            </a>
           </li>
           {
             enlaces.map((e) => (
@@ -105,12 +110,14 @@ const enlaces = [
         </a>
       </p>
 
-      {/* Hueco para el botón flotante, que si no tapa el teléfono. */}
-      <div class="h-[calc(5rem+env(safe-area-inset-bottom))]" aria-hidden="true"></div>
+      {/* Solo la zona segura: aquí ya no hay botón flotante que dejar libre
+          (el de cotizar vive dentro de la lista), así que reservar 5rem de
+          más solo dejaba un hueco vacío al final. */}
+      <div class="h-[env(safe-area-inset-bottom)]" aria-hidden="true"></div>
     </div>
   </main>
 
-  <LeadModal origen={ORIGEN} retorno={RETORNO} etiqueta="Pide tu cotización" />
+  <LeadModal origen={ORIGEN} retorno={RETORNO} etiqueta="Pide tu cotización" sinBotonFlotante />
 </Layout>
 
 <script>

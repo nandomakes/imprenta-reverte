@@ -22,28 +22,49 @@ interface Props {
   retorno: string;
   /** Texto del botón flotante. */
   etiqueta?: string;
+  /**
+   * No dibuja el botón flotante, solo el modal. Para páginas que ya tienen
+   * su propio disparador con `data-abrir-lead` — en /bio el botón vive
+   * dentro de la lista de enlaces, y con el flotante encima se veía el mismo
+   * botón dos veces. El script de abajo engancha cualquier
+   * `[data-abrir-lead]` de la página, así que el modal sigue abriéndose.
+   */
+  sinBotonFlotante?: boolean;
 }
 
-const { origen, retorno, etiqueta = 'Pedir cotización' } = Astro.props;
+const {
+  origen,
+  retorno,
+  etiqueta = 'Pedir cotización',
+  sinBotonFlotante = false,
+} = Astro.props;
 ---
 
 {/* bottom-[calc(1rem+env(...))]: en un iPhone sin botón físico, 1rem a secas
     deja el botón demasiado cerca de la línea de gestos del home indicator.
     En Android o con botón físico env() vale 0 y queda igual que antes. */}
-<a
-  href="/cotizar/"
-  data-abrir-lead
-  class="btn-brand fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] left-1/2 z-40 w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 shadow-2xl sm:w-auto"
->
-  {etiqueta}
-</a>
+{
+  !sinBotonFlotante && (
+    <a
+      href="/cotizar/"
+      data-abrir-lead
+      class="btn-brand fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] left-1/2 z-40 w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 shadow-2xl sm:w-auto"
+    >
+      {etiqueta}
+    </a>
+  )
+}
 
 <dialog
   data-lead-modal
   class="w-[min(680px,calc(100vw-1.5rem))] rounded-none bg-white p-0 backdrop:bg-brand/60"
   aria-labelledby="titulo-cotizar"
 >
-  <div class="max-h-[85vh] overflow-y-auto p-5 sm:p-7">
+  {/* `barra-visible`: en móvil la barra de scroll va siempre a la vista, no
+      solo mientras se arrastra. El formulario no cabe entero en una pantalla
+      de teléfono y, con la barra oculta (como la deja iOS por defecto), nada
+      indica que abajo quedan campos por llenar. Ver el <style> del final. */}
+  <div class="barra-visible max-h-[85vh] overflow-y-auto p-5 sm:p-7">
     <div class="mb-5 flex items-start justify-between gap-4">
       <div>
         <h2 id="titulo-cotizar" class="text-[22px] sm:text-[26px]">Pide tu cotización</h2>
@@ -97,3 +118,41 @@ const { origen, retorno, etiqueta = 'Pedir cotización' } = Astro.props;
     if (new URLSearchParams(location.search).get('error') === '1') modal.showModal();
   }
 </script>
+
+<style>
+  /*
+    Barra de scroll siempre visible DENTRO del modal, solo en móvil.
+
+    En un teléfono el formulario no cabe entero, y iOS/Android esconden la
+    barra hasta que se arrastra: el usuario no tiene forma de saber que abajo
+    siguen campos obligatorios. Forzarla a la vista es la señal de que falta
+    contenido.
+
+    Se limita a <640px (el breakpoint `sm` de Tailwind) porque en escritorio
+    la barra del sistema ya se comporta bien y una permanente se ve pesada.
+  */
+  @media (max-width: 639px) {
+    .barra-visible {
+      scrollbar-width: thin;
+      scrollbar-color: theme('colors.brand') theme('colors.line');
+    }
+
+    /* WebKit (Safari iOS, Chrome Android) ignora las dos de arriba: necesita
+       sus propios pseudo-elementos, y `-webkit-overflow-scrolling` para que
+       la barra no se autooculte. */
+    .barra-visible::-webkit-scrollbar {
+      width: 6px;
+      -webkit-appearance: none;
+    }
+
+    .barra-visible::-webkit-scrollbar-track {
+      background: theme('colors.line');
+      border-radius: 3px;
+    }
+
+    .barra-visible::-webkit-scrollbar-thumb {
+      background: theme('colors.brand');
+      border-radius: 3px;
+    }
+  }
+</style>
