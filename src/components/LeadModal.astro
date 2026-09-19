@@ -67,9 +67,12 @@ const {
   <div class="barra-visible max-h-[85vh] overflow-y-auto p-5 sm:p-7">
     <div class="mb-5 flex items-start justify-between gap-4">
       <div>
-        <h2 id="titulo-cotizar" class="text-[22px] sm:text-[26px]">Pide tu cotización</h2>
+        {/* El encabezado dice qué va a pasar después de enviar: llama un asesor.
+            Antes decía "Pide tu cotización / te pasamos precio", que prometía
+            un precio que este formulario no da (no pregunta qué ni cuánto). */}
+        <h2 id="titulo-cotizar" class="text-[22px] sm:text-[26px]">Déjanos tus datos</h2>
         <p class="mt-1 text-[15px] text-ash">
-          Cuéntanos qué necesitas y te pasamos precio. Sin compromiso.
+          Un asesor de ventas se contacta contigo para cotizarte. Sin compromiso.
         </p>
       </div>
       <button
@@ -84,7 +87,7 @@ const {
       </button>
     </div>
 
-    <QuoteForm compacto origen={origen} retorno={retorno} />
+    <QuoteForm origen={origen} retorno={retorno} />
   </div>
 </dialog>
 

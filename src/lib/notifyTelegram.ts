@@ -17,12 +17,9 @@ export type ProspectoTelegram = {
 const ETIQUETAS: Record<string, string> = {
   nombre: '👤 Nombre',
   telefono: '📱 Teléfono',
-  email: '✉️ Email',
-  ciudad: '📍 Ciudad',
-  categoria: '🏷️ Categoría',
-  cantidad: '🔢 Cantidad',
-  fecha: '📅 Para cuándo',
-  detalles: '📝 Detalles',
+  ciudad: '🏙️ Ciudad',
+  codigo_postal: '📮 Código postal',
+  categoria: '👀 Veía',
   origen: '📍 Origen',
   campana: '🎯 Campaña',
 };
@@ -31,12 +28,10 @@ const ETIQUETAS: Record<string, string> = {
 const ORDEN = [
   'nombre',
   'telefono',
-  'email',
   'ciudad',
+  'codigo_postal',
+  // Qué ficha del catálogo estaba viendo cuando dejó sus datos, si se sabe.
   'categoria',
-  'cantidad',
-  'fecha',
-  'detalles',
   // La atribución va al final: es para nosotros, no para contactar al prospecto.
   'origen',
   'campana',

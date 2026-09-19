@@ -7,7 +7,7 @@ interface Props {
   titulo?: string;
 }
 
-const { categoria, titulo = 'Cuéntanos qué necesitas y te cotizamos' } = Astro.props;
+const { categoria, titulo = 'Déjanos tus datos y te cotizamos' } = Astro.props;
 const tieneAviso = Astro.slots.has('aviso');
 ---
 
@@ -26,8 +26,8 @@ const tieneAviso = Astro.slots.has('aviso');
     <div>
       <h2 id="titulo-cotizar" class="h-sec reveal">{titulo}</h2>
       <p class="reveal mt-4 text-[15px] leading-relaxed">
-        Llena el formulario con lo que tengas a la mano. Si aún no sabes medidas ni cantidades, no
-        importa: escríbenos y lo aterrizamos juntos.
+        Solo te pedimos cuatro datos. Un asesor de ventas se contacta contigo para saber qué
+        necesitas y pasarte precio; si aún no tienes medidas ni cantidades, lo aterrizan juntos.
       </p>
 
       <ul class="reveal mt-8 space-y-4 text-[15px]">

@@ -12,7 +12,7 @@ import { FAQS_HOME, PHONE_DISPLAY, PHONE_TEL, SITE, faqPageSchema } from '../con
 
 const title = `Solicitar una cotización | ${SITE.brand}`;
 const description =
-  'Pide tu cotización a Imprenta Reverte en Ciudad Valles, SLP. Dinos qué necesitas imprimir y te damos precio y fecha de entrega, sin compromiso.';
+  'Déjanos tus datos y un asesor de Imprenta Reverte en Ciudad Valles, SLP, se contacta contigo para cotizarte. Sin compromiso.';
 
 const breadcrumb = {
   '@context': 'https://schema.org',
@@ -29,13 +29,13 @@ const breadcrumb = {
   <main id="contenido">
     <PageHead
       titulo="Solicitar una cotización"
-      intro="Sin compromiso y sin costo. Te damos precio y fecha de entrega en horario de tienda."
+      intro="Sin compromiso y sin costo. Un asesor de ventas se contacta contigo en horario de tienda."
       migas={[{ label: 'Inicio', href: '/' }, { label: 'Solicitar cotización' }]}
     />
 
-    <QuoteCTA titulo="Cuéntanos qué necesitas">
+    <QuoteCTA titulo="Déjanos tus datos">
       {/* El endpoint devuelve aquí con ?error=1 cuando faltan campos
-          obligatorios o la categoría no existe. Se descubre en el cliente
+          obligatorios o el teléfono o el código postal no tienen el largo correcto. Se descubre en el cliente
           para que la página siga siendo estática y cacheable.
           Va dentro de QuoteCTA (slot "aviso"), no en un bloque blanco antes
           de la sección: así no deja un hueco de otro color cuando está
@@ -47,8 +47,8 @@ const breadcrumb = {
         slot="aviso"
         class="border-l-4 border-accent bg-white px-5 py-4 text-[15px] leading-relaxed"
       >
-        No pudimos enviar tu solicitud: revisa que estén llenos tu nombre, ciudad y la categoría,
-        y que el teléfono tenga los 10 dígitos con lada. Si sigue fallando, llámanos al{' '}
+        No pudimos enviar tu solicitud: revisa que estén llenos tu nombre y tu ciudad, que el
+        teléfono tenga los 10 dígitos con lada y el código postal sus 5 dígitos. Si sigue fallando, llámanos al{' '}
         <a href={`tel:${PHONE_TEL}`} class="font-semibold text-brand underline underline-offset-4">
           {PHONE_DISPLAY}
         </a>.

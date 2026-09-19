@@ -1,5 +1,5 @@
 /**
- * Recibe el formulario de cotización, lo manda por correo con Resend y avisa
+ * Recibe el formulario de datos (nombre, teléfono, ciudad, CP), lo manda por correo con Resend y avisa
  * por Telegram. Las dos notificaciones van en paralelo y son independientes.
  *
  * La única ruta del sitio que no es HTML estático: necesita servidor porque
@@ -100,14 +100,19 @@ export const POST: APIRoute = async ({ request, redirect, cookies }) => {
     return redirect('/gracias/', 303);
   }
 
+  // Los cuatro datos que pide el formulario. Todos obligatorios: son lo mínimo
+  // para que un asesor pueda llamar y saber más o menos desde dónde.
   const nombre = campo(data, 'nombre', 120);
   const telefono = campo(data, 'telefono', 40);
   const ciudad = campo(data, 'ciudad', 80);
-  const email = campo(data, 'email', 160);
+  const codigoPostal = campo(data, 'codigo_postal', 10);
+
+  // Contexto opcional: las fichas de catálogo mandan su categoría en un campo
+  // oculto para que el asesor sepa qué estaba viendo la persona. Si no viene,
+  // o viene con un valor que no existe en el catálogo, se ignora sin rechazar
+  // el lead — ya no es un dato que la persona haya elegido.
   const categoria = campo(data, 'categoria', 80);
-  const cantidad = campo(data, 'cantidad', 120);
-  const fecha = campo(data, 'fecha', 120);
-  const detalles = campo(data, 'detalles', 2000);
+  const etiqueta = SLUGS_CATALOGO.includes(categoria) ? etiquetaDe(categoria) : '';
 
   // Atribución: de qué página y de qué campaña viene el lead. Sirve para
   // comparar con el tiempo qué canal trae prospectos de mejor calidad.
@@ -119,34 +124,29 @@ export const POST: APIRoute = async ({ request, redirect, cookies }) => {
 
   // El navegador ya valida `required`, pero un POST puede llegar de cualquier
   // lado: la validación que cuenta es esta.
-  const faltantes = !nombre || !telefono || !ciudad || !categoria;
-  // La categoría se valida contra el catálogo real, no contra texto libre:
-  // un valor inventado es un lead que ventas no puede rutear.
-  const categoriaValida = SLUGS_CATALOGO.includes(categoria);
+  const faltantes = !nombre || !telefono || !ciudad || !codigoPostal;
   // Diez dígitos exactos, contando solo números: el campo admite espacios,
   // guiones y paréntesis al escribir. Se valida aquí además de en el
   // navegador porque un teléfono incompleto es un lead imposible de
   // contactar — que es justo para lo que sirve el formulario.
   const telefonoValido = telefono.replace(/\D/g, '').length === 10;
+  // Cinco dígitos, el formato de todo México.
+  const codigoPostalValido = /^[0-9]{5}$/.test(codigoPostal);
 
-  if (faltantes || !categoriaValida || !telefonoValido) {
+  if (faltantes || !telefonoValido || !codigoPostalValido) {
     // Vuelve a la página desde la que se envió, no siempre a /cotizar/.
     // El separador depende de si esa ruta ya trae query (/bio/?ref=fb).
     return redirect(`${retorno}${sep}error=1#cotizar`, 303);
   }
 
-  const etiqueta = etiquetaDe(categoria);
-  const asunto = `Cotización (${origen}) — ${etiqueta} — ${ciudad}`;
+  const asunto = `Prospecto (${origen}) — ${nombre} — ${ciudad}`;
 
   const lineas: [string, string][] = [
     ['Nombre', nombre],
     ['Teléfono', telefono],
     ['Ciudad', ciudad],
-    ['Correo', email || '—'],
-    ['Categoría', etiqueta],
-    ['Cantidad', cantidad || '—'],
-    ['Para cuándo', fecha || '—'],
-    ['Detalles', detalles || '—'],
+    ['Código postal', codigoPostal],
+    ...(etiqueta ? ([['Veía', etiqueta]] as [string, string][]) : []),
     ['Origen', origen],
     ...(utmSource || utmMedium || utmCampaign || utmContent
       ? ([
@@ -164,7 +164,7 @@ export const POST: APIRoute = async ({ request, redirect, cookies }) => {
           ([k, v]) =>
             `<tr>
                <td style="padding:6px 16px 6px 0;color:#767676;vertical-align:top">${k}</td>
-               <td style="padding:6px 0;color:#3D3D3D">${escaparHtml(v).replace(/\n/g, '<br>')}</td>
+               <td style="padding:6px 0;color:#3D3D3D">${escaparHtml(v)}</td>
              </tr>`
         )
         .join('')}
@@ -175,12 +175,9 @@ export const POST: APIRoute = async ({ request, redirect, cookies }) => {
   const avisoTelegram = notifyTelegram({
     nombre,
     telefono,
-    email,
     ciudad,
-    categoria: etiqueta,
-    cantidad,
-    fecha,
-    detalles,
+    codigo_postal: codigoPostal,
+    categoria: etiqueta || undefined,
     // "sitio" es el valor por defecto: no aporta nada saber que un lead del
     // formulario del sitio vino del sitio. Solo se manda el origen cuando
     // dice algo — bio_instagram, bio_facebook, una campaña… El correo sí lo
@@ -207,8 +204,7 @@ export const POST: APIRoute = async ({ request, redirect, cookies }) => {
         subject: asunto,
         text: texto,
         html,
-        // Contestar el aviso responde al prospecto, no a la máquina.
-        ...(email ? { replyTo: email } : {}),
+        // Sin correo del prospecto no hay reply-to: se le llama, no se le escribe.
       });
       if (error) {
         console.error('[cotizar] Resend devolvió error:', error, '\nLead:\n' + texto);

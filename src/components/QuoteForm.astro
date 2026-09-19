@@ -1,19 +1,27 @@
 ---
-// Formulario de cotización.
+// Formulario de captura de datos. Es el MISMO en todo el sitio: /cotizar/,
+// las fichas de categoría y el modal de la bio.
+//
+// SOLO CUATRO CAMPOS, todos obligatorios: nombre, teléfono, ciudad y código
+// postal. Lo demás (correo, categoría, cantidad, fecha, detalles) se quitó a
+// pedido del cliente. La razón de fondo: este formulario no cotiza, capta.
+// Lo que sigue es una llamada de un asesor, y todo lo que hace falta para
+// cotizar se pregunta en esa llamada. Cada campo extra aquí es un lead menos,
+// sobre todo con el público de la bio, que en buena parte pasa de los 50.
 //
 // HTML nativo con POST a /api/cotizar: funciona aunque el JS falle o tarde,
 // que en una conexión móvil de Ciudad Valles no es un caso hipotético.
-// El `<select>` de categoría se genera desde el catálogo, así que añadir una
-// categoría en `data/catalogo.ts` la hace aparecer aquí sin tocar nada.
-import { CATALOGO } from '../data/catalogo';
-import { CIUDADES_SUGERIDAS, CTA_LABEL, PHONE_DISPLAY, PHONE_TEL } from '../consts';
+import { CIUDADES_SUGERIDAS, PHONE_DISPLAY, PHONE_TEL } from '../consts';
 
 interface Props {
-  /** Preselecciona una categoría (lo usan las fichas de catálogo). */
-  categoria?: string;
-  compacto?: boolean;
   /**
-   * De dónde sale este lead: `sitio`, `promo_meta_ads`, `bio_instagram`…
+   * Categoría desde la que se abrió el formulario (lo pasan las fichas de
+   * catálogo). Ya NO es un campo visible: viaja oculto, como `origen`, para
+   * que el asesor sepa qué estaba viendo la persona cuando dejó sus datos.
+   */
+  categoria?: string;
+  /**
+   * De dónde sale este lead: `sitio`, `bio_instagram`, `bio_facebook`…
    * Viaja al correo y a Telegram para poder comparar canales.
    */
   origen?: string;
@@ -21,7 +29,7 @@ interface Props {
   retorno?: string;
 }
 
-const { categoria, compacto = false, origen = 'sitio', retorno = '/cotizar/' } = Astro.props;
+const { categoria, origen = 'sitio', retorno = '/cotizar/' } = Astro.props;
 ---
 
 <form
@@ -31,11 +39,13 @@ const { categoria, compacto = false, origen = 'sitio', retorno = '/cotizar/' } =
   aria-labelledby="titulo-cotizar"
   data-form-cotizar
 >
-  {/* Atribución. `origen` lo fija la página; los utm_* los rellena el script
-      de abajo leyendo la URL, porque en un HTML estático no se conocen en el
-      servidor. Si el JS no llega, el lead entra igual: solo sin campaña. */}
+  {/* Atribución. `origen` y `categoria` los fija la página; los utm_* los
+      rellena el script de abajo leyendo la URL, porque en un HTML estático no
+      se conocen en el servidor. Si el JS no llega, el lead entra igual: solo
+      sin campaña. */}
   <input type="hidden" name="origen" value={origen} />
   <input type="hidden" name="retorno" value={retorno} />
+  {categoria && <input type="hidden" name="categoria" value={categoria} />}
   <input type="hidden" name="utm_source" data-utm="utm_source" />
   <input type="hidden" name="utm_medium" data-utm="utm_medium" />
   <input type="hidden" name="utm_campaign" data-utm="utm_campaign" />
@@ -116,71 +126,37 @@ const { categoria, compacto = false, origen = 'sitio', retorno = '/cotizar/' } =
   </div>
 
   <div>
-    <label class="field-label" for="email">Correo <span class="text-ash">(opcional)</span></label>
+    <label class="field-label" for="codigo_postal">
+      Código postal <span class="text-cmykM">*</span>
+    </label>
+    {/* Cinco dígitos, que es el formato de todo México. `inputmode="numeric"`
+        para el teclado de números; `pattern` solo dígitos, sin separadores,
+        porque un CP nunca los lleva. */}
     <input
       class="field"
-      id="email"
-      name="email"
-      type="email"
-      autocomplete="email"
-      placeholder="tucorreo@ejemplo.com"
-    />
-  </div>
-
-  <div class="sm:col-span-2">
-    <label class="field-label" for="categoria">
-      ¿Qué necesitas imprimir? <span class="text-cmykM">*</span>
-    </label>
-    <select class="field" id="categoria" name="categoria" required>
-      <option value="" disabled selected={!categoria}>Elige una categoría del catálogo</option>
-      {
-        CATALOGO.map((c) => (
-          <option value={c.slug} selected={c.slug === categoria}>
-            {c.etiqueta}
-          </option>
-        ))
-      }
-    </select>
-  </div>
-
-  <div>
-    <label class="field-label" for="cantidad">
-      Cantidad aproximada <span class="text-ash">(opcional)</span>
-    </label>
-    <input
-      class="field"
-      id="cantidad"
-      name="cantidad"
+      id="codigo_postal"
+      name="codigo_postal"
       type="text"
-      placeholder="Ej. 100 piezas, 1 block, 3×2 m"
+      required
+      inputmode="numeric"
+      autocomplete="postal-code"
+      maxlength="5"
+      pattern="[0-9]{5}"
+      aria-describedby="ayuda-cp"
+      data-codigo-postal
+      placeholder="79000"
     />
-  </div>
-
-  <div>
-    <label class="field-label" for="fecha">
-      ¿Para cuándo lo necesitas? <span class="text-ash">(opcional)</span>
-    </label>
-    <input class="field" id="fecha" name="fecha" type="text" placeholder="Ej. la próxima semana" />
-  </div>
-
-  <div class="sm:col-span-2">
-    <label class="field-label" for="detalles">
-      Detalles del trabajo <span class="text-ash">(opcional)</span>
-    </label>
-    <textarea
-      class="field"
-      id="detalles"
-      name="detalles"
-      rows={compacto ? 3 : 4}
-      placeholder="Medidas, colores, si ya tienes diseño, cualquier cosa que nos ayude a cotizarte mejor."></textarea>
+    <p id="ayuda-cp" class="mt-1.5 text-[13px] text-ash">5 dígitos. Ejemplo: 79000</p>
   </div>
 
   <div class="sm:col-span-2">
     <button type="submit" data-boton-enviar class="btn-brand w-full sm:w-auto">
-      {CTA_LABEL}
+      Enviar mis datos
     </button>
-    <p class="mt-3 text-[14px] text-ash">
-      Te respondemos en horario de tienda. ¿Es urgente? Llámanos al{' '}
+    {/* Quién llama y para qué ya lo dice el encabezado de la página o del
+        modal; aquí solo cuándo, y la salida para quien no puede esperar. */}
+    <p class="mt-3 text-[14px] leading-relaxed text-ash">
+      Te llamamos en horario de tienda. ¿Es urgente? Llámanos al{' '}
       <a href={`tel:${PHONE_TEL}`} class="font-semibold text-brand underline underline-offset-2">
         {PHONE_DISPLAY}
       </a>
