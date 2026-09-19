@@ -1,0 +1,38 @@
+---
+/**
+ * Marca de origen de la bio: Instagram o Facebook.
+ *
+ * La bio es UNA sola página (/bio/) para las dos redes; lo único que cambia
+ * es el enlace del perfil: Instagram apunta a /bio/ y Facebook a /bio/?ref=fb.
+ * Las páginas se sirven estáticas con origen `bio_instagram`, así que la
+ * corrección a `bio_facebook` se hace en el cliente.
+ *
+ * El `?ref=fb` solo viene en la primera página; en cuanto la persona toca
+ * "Ver el catálogo" desaparece de la barra. Antes eso hacía que un lead que
+ * llegó por Facebook y dejó sus datos dos pantallas después contara como de
+ * Instagram. Por eso la marca se guarda en sessionStorage y se aplica en
+ * TODAS las páginas de la bio, no solo en la de entrada: el origen se decide
+ * al llegar, no en la página donde se envía.
+ *
+ * Va en las tres páginas del flujo (/bio/, /bio/catalogo/, /bio/catalogo/x/).
+ */
+---
+
+<script>
+  const CLAVE = 'reverte-ref';
+  const ref = new URLSearchParams(location.search).get('ref');
+
+  let guardado: string | null = null;
+  try {
+    if (ref) sessionStorage.setItem(CLAVE, ref);
+    guardado = sessionStorage.getItem(CLAVE);
+  } catch {
+    /* modo privado o storage bloqueado: seguimos solo con la URL de esta página */
+  }
+
+  if ((ref ?? guardado) === 'fb') {
+    document
+      .querySelectorAll<HTMLInputElement>('input[name="origen"]')
+      .forEach((i) => (i.value = 'bio_facebook'));
+  }
+</script>

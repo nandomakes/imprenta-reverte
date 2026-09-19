@@ -16,6 +16,7 @@ import LeadModal from '../../../components/LeadModal.astro';
 import Diana from '../../../components/Diana.astro';
 import BioBoton from '../../../components/BioBoton.astro';
 import BioLeadCard from '../../../components/BioLeadCard.astro';
+import BioOrigen from '../../../components/BioOrigen.astro';
 import { SITE, CONTACT, PHONE_TEL, PHONE_DISPLAY, NAV } from '../../../consts';
 
 const ORIGEN = 'bio_instagram';
@@ -87,4 +88,5 @@ const rubros = NAV.slice(1);
   </main>
 
   <LeadModal origen={ORIGEN} retorno={RETORNO} etiqueta="Déjanos tus datos" sinBotonFlotante />
+  <BioOrigen />
 </Layout>

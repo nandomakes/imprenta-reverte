@@ -77,16 +77,12 @@ const { categoria, origen = 'sitio', retorno = '/cotizar/' } = Astro.props;
     <label class="field-label" for="telefono">
       Teléfono o WhatsApp <span class="text-cmykM">*</span>
     </label>
-    {/* `pattern` admite espacios, guiones y paréntesis porque mucha gente
-        escribe "481 381 6663" o "(481) 381-6663"; el script de abajo cuenta
-        solo los dígitos y exige 10. `maxlength` 16 deja margen para esos
-        separadores sin permitir un número de otro país por error.
-        `inputmode="numeric"` saca el teclado de números en el celular.
-
-        El patrón va SIN barras invertidas a propósito: dentro del atributo se
-        procesan como escapes de cadena, y `\-` `\s` llegaban al HTML como `-`
-        y `s`, dejando la clase rota (`[0-9()-s]`, con un rango `)-s`). Por eso
-        el espacio va literal y el guion al final, donde no forma rango. */}
+    {/* Solo dígitos y exactamente diez: `maxlength` corta en el décimo, y el
+        script de abajo (`data-solo-digitos`) descarta al vuelo cualquier cosa
+        que no sea número, de modo que ni un espacio ni un guion entran. Se
+        pidió así a propósito: que el campo no DEJE escribir más, en vez de
+        avisar después. `inputmode="numeric"` saca el teclado de números en
+        el celular. `pattern` es la red por si el script no llega. */}
     <input
       class="field"
       id="telefono"
@@ -95,14 +91,15 @@ const { categoria, origen = 'sitio', retorno = '/cotizar/' } = Astro.props;
       required
       inputmode="numeric"
       autocomplete="tel-national"
-      maxlength="16"
-      pattern="[0-9 ()-]{10,16}"
+      maxlength="10"
+      pattern="[0-9]{10}"
       aria-describedby="ayuda-telefono"
-      data-telefono
-      placeholder="481 000 0000"
+      data-solo-digitos="10"
+      data-nombre-campo="El teléfono"
+      placeholder="4813816663"
     />
     <p id="ayuda-telefono" class="mt-1.5 text-[13px] text-ash">
-      10 dígitos, con lada. Ejemplo: 481 381 6663
+      10 dígitos, con lada, sin espacios. Ejemplo: 4813816663
     </p>
   </div>
 
@@ -129,7 +126,8 @@ const { categoria, origen = 'sitio', retorno = '/cotizar/' } = Astro.props;
     <label class="field-label" for="codigo_postal">
       Código postal <span class="text-cmykM">*</span>
     </label>
-    {/* Cinco dígitos, que es el formato de todo México. `inputmode="numeric"`
+    {/* Cinco dígitos, que es el formato de todo México. `maxlength` y el script de
+        `data-solo-digitos` impiden escribir otra cosa. `inputmode="numeric"`
         para el teclado de números; `pattern` solo dígitos, sin separadores,
         porque un CP nunca los lleva. */}
     <input
@@ -143,7 +141,8 @@ const { categoria, origen = 'sitio', retorno = '/cotizar/' } = Astro.props;
       maxlength="5"
       pattern="[0-9]{5}"
       aria-describedby="ayuda-cp"
-      data-codigo-postal
+      data-solo-digitos="5"
+      data-nombre-campo="El código postal"
       placeholder="79000"
     />
     <p id="ayuda-cp" class="mt-1.5 text-[13px] text-ash">5 dígitos. Ejemplo: 79000</p>
@@ -219,39 +218,45 @@ const { categoria, origen = 'sitio', retorno = '/cotizar/' } = Astro.props;
     });
   });
 
-  // Teléfono: exactamente 10 dígitos.
+  // Campos de solo dígitos con largo fijo: teléfono (10) y código postal (5).
   //
-  // `pattern` por sí solo no sirve aquí, porque cuenta caracteres y no
-  // dígitos: "481 381 66" pasa el patrón (10 caracteres) con solo 8 dígitos.
-  // Así que se cuentan los dígitos a mano y se usa setCustomValidity, que
-  // hace que el navegador muestre el mensaje en su propio globo y bloquee el
-  // envío — el mismo camino que ya usa para los campos requeridos, sin
-  // inventar una UI de errores aparte.
-  document.querySelectorAll<HTMLInputElement>('[data-telefono]').forEach((campo) => {
-    const revisar = () => {
-      const digitos = campo.value.replace(/\D/g, '');
+  // Dos cosas, en este orden:
+  //   1. Filtrar al escribir: cualquier carácter que no sea número desaparece
+  //      en el acto, y lo que pase del largo se corta. Cubre el teclado, el
+  //      pegado ("481 381-6663" queda como 4813816663) y el autocompletado.
+  //      Es lo que se pidió: que el campo no deje meter de más, no que avise
+  //      después.
+  //   2. Si quedan menos dígitos de los debidos, decir cuántos faltan con
+  //      setCustomValidity: el navegador lo muestra en su propio globo y
+  //      bloquea el envío, igual que hace con `required`, sin inventar una UI
+  //      de errores aparte. `pattern` por sí solo diría "formato incorrecto",
+  //      que no ayuda a saber qué corregir.
+  document.querySelectorAll<HTMLInputElement>('[data-solo-digitos]').forEach((campo) => {
+    const largo = Number(campo.dataset.soloDigitos) || 0;
+    const nombre = campo.dataset.nombreCampo ?? 'Este campo';
 
-      if (campo.value.trim() === '') {
+    const revisar = () => {
+      const limpio = campo.value.replace(/\D/g, '').slice(0, largo);
+      if (limpio !== campo.value) campo.value = limpio;
+
+      if (limpio === '') {
         // Vacío no es "faltan dígitos": de eso ya se queja `required` con su
         // propio mensaje, y pisarlo aquí sería contradecirlo.
         campo.setCustomValidity('');
-      } else if (digitos.length < 10) {
-        const faltan = 10 - digitos.length;
+      } else if (limpio.length < largo) {
+        const faltan = largo - limpio.length;
         campo.setCustomValidity(
-          `Faltan ${faltan} ${faltan === 1 ? 'dígito' : 'dígitos'}: el teléfono debe tener 10.`
+          `Faltan ${faltan} ${faltan === 1 ? 'dígito' : 'dígitos'}: ${nombre.toLowerCase()} debe tener ${largo}.`
         );
-      } else if (digitos.length > 10) {
-        campo.setCustomValidity('El teléfono debe tener 10 dígitos, con lada.');
       } else {
         campo.setCustomValidity('');
       }
     };
 
-    // `input` limpia el aviso en cuanto se corrige, sin esperar a reenviar.
-    // `change` cubre el autocompletado del navegador, que rellena el campo
-    // sin que nadie escriba. NO se revalida en el `submit` del formulario:
-    // la validación nativa corre ANTES de ese evento, así que para entonces
-    // el navegador ya decidió si dejaba pasar el envío.
+    // `input` filtra y limpia el aviso en cuanto se corrige. `change` cubre
+    // el autocompletado del navegador, que rellena sin que nadie escriba. NO
+    // se revalida en el `submit`: la validación nativa corre ANTES de ese
+    // evento, así que para entonces el navegador ya decidió.
     campo.addEventListener('input', revisar);
     campo.addEventListener('change', revisar);
     campo.addEventListener('blur', revisar);

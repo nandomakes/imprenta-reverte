@@ -21,13 +21,15 @@
  * público: ver `labelBio` en NAV.
  *
  * Origen del lead: `?ref=fb` lo marca como `bio_facebook`; por defecto es
- * `bio_instagram`. Se lee en el cliente porque la página es estática.
+ * `bio_instagram`. Lo resuelve BioOrigen en el cliente y lo recuerda por el
+ * resto del flujo, porque la página es estática.
  */
 import Layout from '../layouts/Layout.astro';
 import LeadModal from '../components/LeadModal.astro';
 import Diana from '../components/Diana.astro';
 import BioBoton from '../components/BioBoton.astro';
 import BioLeadCard from '../components/BioLeadCard.astro';
+import BioOrigen from '../components/BioOrigen.astro';
 import { SITE, CONTACT, SOCIALS, PHONE_TEL, PHONE_DISPLAY } from '../consts';
 
 const ORIGEN = 'bio_instagram';
@@ -99,18 +101,6 @@ const enlaces = [
   </main>
 
   <LeadModal origen={ORIGEN} retorno={RETORNO} etiqueta="Déjanos tus datos" sinBotonFlotante />
+  <BioOrigen />
 </Layout>
 
-<script>
-  // La página se sirve estática con origen `bio_instagram`. Si la visita trae
-  // ?ref=fb, se corrige antes de que el formulario pueda enviarse.
-  const ref = new URLSearchParams(location.search).get('ref');
-  if (ref === 'fb') {
-    document
-      .querySelectorAll<HTMLInputElement>('input[name="origen"]')
-      .forEach((i) => (i.value = 'bio_facebook'));
-    document
-      .querySelectorAll<HTMLInputElement>('input[name="retorno"]')
-      .forEach((i) => (i.value = '/bio/?ref=fb'));
-  }
-</script>
