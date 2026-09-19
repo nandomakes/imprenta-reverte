@@ -1,0 +1,51 @@
+---
+/**
+ * Botón de la bio, pensado para que se vea que se puede tocar.
+ *
+ * El público de la bio llega desde Instagram, sin contexto, y en buena parte
+ * pasa de los 50: un rectángulo con texto no le dice por sí solo que lleva a
+ * otro lado. Por eso cada botón trae:
+ *
+ * - Una flecha `›` pegada al borde derecho. Es la misma señal que usan los
+ *   Ajustes del teléfono y los menús de WhatsApp — cosas que esa persona
+ *   toca todos los días — para decir "aquí hay más".
+ * - Un ícono o emoji a la izquierda, que anticipa a dónde va.
+ * - Texto de 17px y 56px de alto mínimo, para que se lea y se atine.
+ */
+interface Props {
+  href: string;
+  texto: string;
+  /** Emoji o ícono que va a la izquierda. Si no hay, el texto arranca al ras. */
+  emoji?: string;
+  /** Abre en pestaña nueva (redes, mapa, PDF). */
+  externo?: boolean;
+  /** Para que el script de LeadModal lo intercepte y abra el formulario. */
+  abreFormulario?: boolean;
+  /** `documento` cambia la flecha por un ícono de página: "esto abre un archivo". */
+  tipo?: 'enlace' | 'documento';
+}
+
+const { href, texto, emoji, externo = false, abreFormulario = false, tipo = 'enlace' } = Astro.props;
+---
+
+<a
+  href={href}
+  {...(externo ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+  {...(abreFormulario ? { 'data-abrir-lead': true } : {})}
+  class="flex min-h-[60px] w-full items-center gap-3 border border-line bg-white px-4 py-3.5 text-[17px] font-medium text-ink transition-colors hover:border-brand active:bg-paper"
+>
+  {emoji && <span class="shrink-0 text-[22px] leading-none" aria-hidden="true">{emoji}</span>}
+  <span class="flex-1 leading-snug">{texto}</span>
+  {
+    tipo === 'documento' ? (
+      <svg viewBox="0 0 24 24" class="h-6 w-6 shrink-0 text-brand" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z" />
+        <path d="M14 3v5h5M9 13h6M9 17h6" />
+      </svg>
+    ) : (
+      <svg viewBox="0 0 24 24" class="h-6 w-6 shrink-0 text-brand" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M9 6l6 6-6 6" />
+      </svg>
+    )
+  }
+</a>

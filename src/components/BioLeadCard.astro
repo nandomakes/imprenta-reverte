@@ -1,0 +1,46 @@
+---
+/**
+ * La tarjeta que pide los datos en la bio. Es una tarjeta y no un botón más
+ * de la lista a propósito: el objetivo de todo el flujo de la bio es que la
+ * persona deje su teléfono para que un asesor la llame, y eso merece
+ * explicarse en una frase, no esconderse detrás de "Pide tu cotización".
+ *
+ * Dice abiertamente que la van a llamar. Para alguien de más de 50 eso es
+ * una ventaja, no un riesgo: prefiere que le hablen a llenar formularios, y
+ * saber qué pasa después de tocar el botón es lo que le da confianza para
+ * tocarlo.
+ *
+ * El botón es un <a> a /cotizar/ con `data-abrir-lead`: con JS abre el modal
+ * del formulario ahí mismo; sin JS, lleva a la página del formulario. Nunca
+ * se queda sin destino.
+ */
+interface Props {
+  /** La pregunta o gancho de arriba. */
+  titulo?: string;
+  /** La explicación de qué pasa después. */
+  texto?: string;
+  /** Texto del botón. */
+  boton?: string;
+}
+
+const {
+  titulo = '¿Prefieres que te llamemos?',
+  texto = 'Déjanos tu número y un asesor te llama para cotizarte, sin compromiso.',
+  boton = 'Déjanos tus datos',
+} = Astro.props;
+---
+
+<div class="border-2 border-brand bg-brand p-5 text-white">
+  <p class="text-[19px] font-semibold leading-snug">{titulo}</p>
+  <p class="mt-2 text-[15px] leading-relaxed text-white/85">{texto}</p>
+  <a
+    href="/cotizar/"
+    data-abrir-lead
+    class="mt-4 flex min-h-[56px] w-full items-center justify-center gap-2 bg-accent px-5 text-[17px] font-semibold text-ink transition-colors hover:bg-accentDk"
+  >
+    <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor" aria-hidden="true">
+      <path d="M6.6 10.8a15.1 15.1 0 006.6 6.6l2.2-2.2a1 1 0 011-.2 11.4 11.4 0 003.6.6 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1 11.4 11.4 0 00.6 3.6 1 1 0 01-.2 1z" />
+    </svg>
+    {boton}
+  </a>
+</div>

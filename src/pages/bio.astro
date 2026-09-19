@@ -2,26 +2,32 @@
 /**
  * Página de bio, tipo Linktree — destino del enlace en Instagram y Facebook.
  *
- * Al revés que /promo: aquí el objetivo es REPARTIR tráfico, no forzar una
- * conversión. Quien llega desde una bio está averiguando quién eres, no viene
- * empujado por un anuncio, así que varios botones son lo correcto.
+ * PARA QUÉ EXISTE: que la persona deje su teléfono. Todo lo demás (catálogo,
+ * redes, mapa) es el camino para llegar ahí; la venta la cierra un asesor
+ * llamando después. Por eso la tarjeta de datos va arriba y aparte de la
+ * lista, y por eso aquí NO hay WhatsApp: un chat suelto se lleva el lead
+ * fuera del formulario y nadie lo registra.
  *
- * El 100% del tráfico es móvil (se abre dentro de la app de Instagram), así que
- * está pensada mobile-first: un solo eje vertical, botones de 56px de alto y
- * nada de imágenes pesadas. Sin catálogo embebido ni scripts más allá del modal.
+ * PARA QUIÉN: público que llega desde Instagram sin contexto y en buena
+ * parte mayor de 50. De ahí las decisiones de forma —
+ *   - una pregunta que invita ("¿Qué te gustaría imprimir?") en vez de un
+ *     eslogan, y la instrucción "Toca una opción" con el verbo explícito;
+ *   - flecha › en cada botón, la señal de "esto lleva a otro lado" que ya
+ *     conocen de WhatsApp y de los Ajustes del teléfono;
+ *   - texto de 17px y botones de 60px, para leer y atinar;
+ *   - la tarjeta de datos dice abiertamente que van a llamar.
+ *
+ * Los nombres de los rubros del catálogo también se adaptaron a este
+ * público: ver `labelBio` en NAV.
  *
  * Origen del lead: `?ref=fb` lo marca como `bio_facebook`; por defecto es
- * `bio_instagram`. Pon el enlace con `?ref=fb` solo en la bio de Facebook y
- * podrás comparar qué red trae mejores prospectos.
- *
- * Ese `ref` se lee en el CLIENTE, no aquí: la página es estática para que salga
- * del CDN al instante, y en build `Astro.url.searchParams` viene vacío. Leerlo
- * en servidor obligaría a renderizar en cada visita y a pagar ese viaje justo
- * en la página que más rápido tiene que abrir.
+ * `bio_instagram`. Se lee en el cliente porque la página es estática.
  */
 import Layout from '../layouts/Layout.astro';
 import LeadModal from '../components/LeadModal.astro';
 import Diana from '../components/Diana.astro';
+import BioBoton from '../components/BioBoton.astro';
+import BioLeadCard from '../components/BioLeadCard.astro';
 import { SITE, CONTACT, SOCIALS, PHONE_TEL, PHONE_DISPLAY } from '../consts';
 
 const ORIGEN = 'bio_instagram';
@@ -30,13 +36,8 @@ const RETORNO = '/bio/';
 const instagram = SOCIALS.find((s) => s.icon === 'instagram');
 const facebook = SOCIALS.find((s) => s.icon === 'facebook');
 
-// Sin WhatsApp aparte: la burbuja flotante global (Layout) ya cubre ese
-// camino en todas las páginas, incluida esta — tenerlo dos veces es
-// redundante. "Ver el catálogo" ya no manda directo a /catalogo/: manda a
-// /bio/catalogo/, la "parte 2" de esta misma bio, con las categorías como
-// botones (ver ese archivo para el porqué).
 const enlaces = [
-  { emoji: '🛍️', texto: 'Ver el catálogo', href: '/bio/catalogo/', externo: false },
+  { emoji: '📖', texto: 'Ver el catálogo', href: '/bio/catalogo/', externo: false },
   { emoji: '📸', texto: 'Instagram', href: instagram?.href ?? '#', externo: true },
   { emoji: '👍', texto: 'Facebook', href: facebook?.href ?? '#', externo: true },
   { emoji: '📍', texto: 'Cómo llegar', href: CONTACT.mapsUrl, externo: true },
@@ -48,11 +49,11 @@ const enlaces = [
   title={`${SITE.brand} — Enlaces`}
   description={`Catálogo, redes y ubicación de ${SITE.brand} en ${CONTACT.locality}.`}
   noindex
+  sinWhatsApp
 >
   <main id="contenido" class="flex min-h-svh flex-col items-center bg-paper px-5 py-10">
     <div class="w-full max-w-md">
       <div class="text-center">
-        {/* El logo, no una foto de perfil: es lo que ya reconocen de la bio. */}
         <img
           src="/logo-letras-negras.png"
           alt={SITE.brand}
@@ -60,49 +61,32 @@ const enlaces = [
           height="726"
           class="mx-auto h-16 w-auto"
         />
-        <p class="mt-5 text-[15px] leading-relaxed text-ash">
-          Imprenta en {CONTACT.locality}, SLP · Diseño incluido · Entrega local
-        </p>
-        <Diana variante="separador" tam={16} class="mx-auto mt-6 max-w-[220px] text-ash" />
+        <p class="mt-2 text-[15px] text-ash">Imprenta en {CONTACT.locality}, SLP</p>
+        <Diana variante="separador" tam={16} class="mx-auto mt-5 max-w-[220px] text-ash" />
       </div>
 
-      <nav class="mt-8" aria-label="Enlaces de Imprenta Reverte">
-        <ul class="grid gap-3">
-          {/* El de cotizar va primero y destacado: es el único que nos deja un
-              lead. Los demás reparten, este convierte.
+      <div class="mt-7 text-center">
+        <h1 class="text-[24px] leading-tight text-ink">¿Qué te gustaría imprimir?</h1>
+        <p class="mt-1.5 text-[16px] text-ash">Toca una opción para continuar</p>
+      </div>
 
-              Es un <a> a /cotizar/, no un <button>: si el JS no carga, el
-              modal no existe y un <button> sin JS no hace nada. Así siempre
-              hay a dónde ir. El script de LeadModal lo intercepta y abre el
-              modal cuando sí hay JS. */}
-          <li>
-            <a
-              href="/cotizar/"
-              data-abrir-lead
-              class="flex min-h-[56px] w-full items-center gap-3 border-2 border-brand bg-brand px-5 py-3.5 text-left text-[16px] font-semibold text-white transition-colors hover:bg-brandDk"
-            >
-              <span aria-hidden="true">✏️</span>
-              Pide tu cotización
-            </a>
-          </li>
+      <nav class="mt-5" aria-label="Enlaces de Imprenta Reverte">
+        <ul class="grid gap-3">
           {
             enlaces.map((e) => (
               <li>
-                <a
-                  href={e.href}
-                  {...(e.externo ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-                  class="flex min-h-[56px] w-full items-center gap-3 border border-line bg-white px-5 py-3.5 text-[16px] font-medium text-ink transition-colors hover:border-brand"
-                >
-                  <span aria-hidden="true">{e.emoji}</span>
-                  {e.texto}
-                </a>
+                <BioBoton href={e.href} texto={e.texto} emoji={e.emoji} externo={e.externo} />
               </li>
             ))
           }
         </ul>
       </nav>
 
-      <p class="mt-8 text-center text-[14px] leading-relaxed text-ash">
+      <div class="mt-6">
+        <BioLeadCard />
+      </div>
+
+      <p class="mt-8 text-center text-[15px] leading-relaxed text-ash">
         {CONTACT.addressFull}<br />
         {CONTACT.hoursText}<br />
         <a href={`tel:${PHONE_TEL}`} class="font-semibold text-brand underline underline-offset-2">
@@ -110,14 +94,11 @@ const enlaces = [
         </a>
       </p>
 
-      {/* Solo la zona segura: aquí ya no hay botón flotante que dejar libre
-          (el de cotizar vive dentro de la lista), así que reservar 5rem de
-          más solo dejaba un hueco vacío al final. */}
       <div class="h-[env(safe-area-inset-bottom)]" aria-hidden="true"></div>
     </div>
   </main>
 
-  <LeadModal origen={ORIGEN} retorno={RETORNO} etiqueta="Pide tu cotización" sinBotonFlotante />
+  <LeadModal origen={ORIGEN} retorno={RETORNO} etiqueta="Déjanos tus datos" sinBotonFlotante />
 </Layout>
 
 <script>

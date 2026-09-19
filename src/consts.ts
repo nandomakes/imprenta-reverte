@@ -89,6 +89,14 @@ export const PROMO_BAR = {
  */
 export interface RubroNav {
   label: string;
+  /**
+   * Nombre con el que se ve el rubro en la bio (/bio/catalogo/), cuando el
+   * cliente pidió uno distinto al del menú del sitio. En la bio el público
+   * llega desde Instagram sin contexto y mayor de 50 en buena parte: le
+   * dicen más "Lonas y microperforados" que "Gran formato", que es jerga del
+   * gremio. En el sitio de escritorio se conserva `label`.
+   */
+  labelBio?: string;
   href: string;
   /** Identificador corto del rubro, para rutas tipo /bio/catalogo/<slug>/. */
   slug?: string;
@@ -105,6 +113,7 @@ export const NAV: RubroNav[] = [
   { label: 'Todo el catálogo', href: '/catalogo/', slug: 'todo', imagen: '', imagenAlt: '' },
   {
     label: 'Papelería',
+    labelBio: 'Papelería de empresa en general',
     href: '/catalogo/notas-formatos-negocio/',
     slug: 'papeleria',
     hijos: ['notas-formatos-negocio', 'papeleria-medica-laboratorio', 'papeleria-corporativa'],
@@ -121,6 +130,7 @@ export const NAV: RubroNav[] = [
   },
   {
     label: 'Gran formato',
+    labelBio: 'Lonas y microperforados',
     href: '/catalogo/publicidad-exterior-gran-formato/',
     slug: 'gran-formato',
     hijos: ['publicidad-exterior-gran-formato'],
@@ -129,6 +139,7 @@ export const NAV: RubroNav[] = [
   },
   {
     label: 'Textil y promocionales',
+    labelBio: 'Uniformes y playeras impresas',
     href: '/catalogo/dtf/',
     slug: 'textil-promocionales',
     hijos: ['dtf', 'serigrafia', 'bordado-uniformes'],

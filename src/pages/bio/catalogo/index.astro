@@ -1,20 +1,21 @@
 ---
 /**
- * "Parte 2" de la bio: /bio/ reparte a redes, ubicación y aquí; esta página
- * reparte otra vez, pero hacia los 6 rubros del catálogo — mismo estilo
- * Linktree, mismo público (100% móvil, llegando desde Instagram/Facebook).
+ * "Parte 2" de la bio: reparte hacia los 6 rubros del catálogo. Mismo estilo
+ * y mismo público que /bio/ (ver ese archivo para el porqué de la forma).
  *
- * Es el primer escalón de tres:
- *   /bio/catalogo/                    → 6 rubros (esta página)
- *   /bio/catalogo/<rubro>/            → subcategorías de ese rubro
- *   /bio/catalogo/<rubro>/<categoria>/ → imagen del PDF de esa subcategoría
+ * Escalones del flujo:
+ *   /bio/catalogo/          → 6 rubros (esta página)
+ *   /bio/catalogo/<rubro>/  → subcategorías reales del PDF, cada una abre su PDF
  *
- * Los rubros son los mismos 6 de `NAV` (Papelería, Sellos e impresión
- * comercial, etc.), no una lista aparte.
+ * Los rubros son los de `NAV`, pero con `labelBio` cuando el cliente pidió
+ * un nombre más llano para este público ("Lonas y microperforados" en vez
+ * de "Gran formato"). Sin WhatsApp: el lead debe quedar en el formulario.
  */
 import Layout from '../../../layouts/Layout.astro';
 import LeadModal from '../../../components/LeadModal.astro';
 import Diana from '../../../components/Diana.astro';
+import BioBoton from '../../../components/BioBoton.astro';
+import BioLeadCard from '../../../components/BioLeadCard.astro';
 import { SITE, CONTACT, PHONE_TEL, PHONE_DISPLAY, NAV } from '../../../consts';
 
 const ORIGEN = 'bio_instagram';
@@ -28,6 +29,7 @@ const rubros = NAV.slice(1);
   title={`Catálogo | ${SITE.brand} — Enlaces`}
   description={`Elige un rubro del catálogo de ${SITE.brand} en ${CONTACT.locality}.`}
   noindex
+  sinWhatsApp
 >
   <main id="contenido" class="flex min-h-svh flex-col items-center bg-paper px-5 py-10">
     <div class="w-full max-w-md">
@@ -39,34 +41,40 @@ const rubros = NAV.slice(1);
           height="726"
           class="mx-auto h-14 w-auto"
         />
-        <p class="mt-5 text-[15px] leading-relaxed text-ash">Elige qué necesitas imprimir</p>
-        <Diana variante="separador" tam={16} class="mx-auto mt-6 max-w-[220px] text-ash" />
+        <Diana variante="separador" tam={16} class="mx-auto mt-5 max-w-[220px] text-ash" />
       </div>
 
-      <nav class="mt-8" aria-label="Rubros del catálogo">
+      <div class="mt-7 text-center">
+        <h1 class="text-[24px] leading-tight text-ink">¿Qué te gustaría imprimir?</h1>
+        <p class="mt-1.5 text-[16px] text-ash">Toca una opción para ver el catálogo</p>
+      </div>
+
+      <nav class="mt-5" aria-label="Rubros del catálogo">
         <ul class="grid gap-3">
           {
             rubros.map((r) => (
               <li>
-                <a
-                  href={`/bio/catalogo/${r.slug}/`}
-                  class="flex min-h-[56px] w-full items-center justify-center border border-line bg-white px-5 py-3.5 text-center text-[15px] font-medium text-ink transition-colors hover:border-brand"
-                >
-                  {r.label}
-                </a>
+                <BioBoton href={`/bio/catalogo/${r.slug}/`} texto={r.labelBio ?? r.label} />
               </li>
             ))
           }
         </ul>
       </nav>
 
+      <div class="mt-6">
+        <BioLeadCard
+          titulo="¿No encuentras lo que buscas?"
+          texto="Déjanos tu número y un asesor te llama para orientarte, sin compromiso."
+        />
+      </div>
+
       <p class="mt-8 text-center">
-        <a href="/bio/" class="text-[14px] font-semibold text-brand underline underline-offset-2">
-          ← Volver
+        <a href="/bio/" class="text-[16px] font-semibold text-brand underline underline-offset-2">
+          ← Volver al inicio
         </a>
       </p>
 
-      <p class="mt-6 text-center text-[14px] leading-relaxed text-ash">
+      <p class="mt-6 text-center text-[15px] leading-relaxed text-ash">
         {CONTACT.addressFull}<br />
         {CONTACT.hoursText}<br />
         <a href={`tel:${PHONE_TEL}`} class="font-semibold text-brand underline underline-offset-2">
@@ -74,9 +82,9 @@ const rubros = NAV.slice(1);
         </a>
       </p>
 
-      <div class="h-[calc(5rem+env(safe-area-inset-bottom))]" aria-hidden="true"></div>
+      <div class="h-[env(safe-area-inset-bottom)]" aria-hidden="true"></div>
     </div>
   </main>
 
-  <LeadModal origen={ORIGEN} retorno={RETORNO} etiqueta="Pide tu cotización" />
+  <LeadModal origen={ORIGEN} retorno={RETORNO} etiqueta="Déjanos tus datos" sinBotonFlotante />
 </Layout>

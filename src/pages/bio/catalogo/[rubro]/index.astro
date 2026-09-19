@@ -1,18 +1,22 @@
 ---
 /**
- * Segundo escalón: dado un rubro (p. ej. "Papelería"), lista sus
- * subcategorías REALES del catálogo en PDF — p. ej. "Notas y Formatos para
- * Negocio", "Papelería Médica y de Laboratorio", "Papelería Corporativa",
- * "Papelería Complementaria" — tal como vienen en `CATALOGO_PDF`.
+ * Segundo escalón: dado un rubro, lista sus subcategorías reales del PDF.
+ * Cada botón abre su PDF en pestaña nueva — el ícono de documento avisa que
+ * eso es lo que pasa, para que nadie se sorprenda con un archivo.
  *
- * Cada botón abre su PDF directo en pestaña nueva
- * (`/catalogo-pdf/<archivo>.pdf`): ya no hay un tercer escalón ni página
- * intermedia — el PDF ES la imagen de esa sección que se había dejado
- * pendiente. Ver PENDIENTES.md.
+ * Este es el momento en que la persona YA vio lo que vende la imprenta, así
+ * que aquí la tarjeta de datos pesa más que en las otras páginas: viene
+ * inmediatamente después de la lista, con la pregunta que corresponde a ese
+ * momento ("¿Viste algo que te interese?") y la promesa clara de que un
+ * asesor llama. Es el cierre del embudo de la bio.
+ *
+ * Sin WhatsApp aquí tampoco: el lead debe quedar registrado en el formulario.
  */
 import Layout from '../../../../layouts/Layout.astro';
 import LeadModal from '../../../../components/LeadModal.astro';
 import Diana from '../../../../components/Diana.astro';
+import BioBoton from '../../../../components/BioBoton.astro';
+import BioLeadCard from '../../../../components/BioLeadCard.astro';
 import { SITE, CONTACT, PHONE_TEL, PHONE_DISPLAY, NAV, CATALOGO_PDF } from '../../../../consts';
 
 export function getStaticPaths() {
@@ -27,6 +31,7 @@ interface Props {
 }
 
 const { rubro } = Astro.props;
+const nombre = rubro.labelBio ?? rubro.label;
 
 const ORIGEN = 'bio_instagram';
 const RETORNO = `/bio/catalogo/${rubro.slug}/`;
@@ -35,9 +40,10 @@ const subcategorias = CATALOGO_PDF[rubro.slug ?? ''] ?? [];
 ---
 
 <Layout
-  title={`${rubro.label} | Catálogo | ${SITE.brand}`}
-  description={`Subcategorías de ${rubro.label} en el catálogo de ${SITE.brand}, ${CONTACT.locality}.`}
+  title={`${nombre} | Catálogo | ${SITE.brand}`}
+  description={`Subcategorías de ${nombre} en el catálogo de ${SITE.brand}, ${CONTACT.locality}.`}
   noindex
+  sinWhatsApp
 >
   <main id="contenido" class="flex min-h-svh flex-col items-center bg-paper px-5 py-10">
     <div class="w-full max-w-md">
@@ -49,36 +55,40 @@ const subcategorias = CATALOGO_PDF[rubro.slug ?? ''] ?? [];
           height="726"
           class="mx-auto h-14 w-auto"
         />
-        <p class="mt-5 text-[17px] font-semibold text-ink">{rubro.label}</p>
-        <Diana variante="separador" tam={16} class="mx-auto mt-6 max-w-[220px] text-ash" />
+        <Diana variante="separador" tam={16} class="mx-auto mt-5 max-w-[220px] text-ash" />
       </div>
 
-      <nav class="mt-8" aria-label={`Subcategorías de ${rubro.label}`}>
+      <div class="mt-7 text-center">
+        <h1 class="text-[24px] leading-tight text-ink">{nombre}</h1>
+        <p class="mt-1.5 text-[16px] text-ash">Toca una opción para ver ese catálogo</p>
+      </div>
+
+      <nav class="mt-5" aria-label={`Subcategorías de ${nombre}`}>
         <ul class="grid gap-3">
           {
             subcategorias.map((c) => (
               <li>
-                <a
-                  href={`/catalogo-pdf/${c.archivo}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="flex min-h-[56px] w-full items-center justify-center border border-line bg-white px-5 py-3.5 text-center text-[15px] font-medium text-ink transition-colors hover:border-brand"
-                >
-                  {c.titulo}
-                </a>
+                <BioBoton href={`/catalogo-pdf/${c.archivo}`} texto={c.titulo} externo tipo="documento" />
               </li>
             ))
           }
         </ul>
       </nav>
 
+      <div class="mt-6">
+        <BioLeadCard
+          titulo="¿Viste algo que te interese?"
+          texto="Déjanos tu número y un asesor te llama para cotizarte, sin compromiso."
+        />
+      </div>
+
       <p class="mt-8 text-center">
-        <a href="/bio/catalogo/" class="text-[14px] font-semibold text-brand underline underline-offset-2">
-          ← Volver a rubros
+        <a href="/bio/catalogo/" class="text-[16px] font-semibold text-brand underline underline-offset-2">
+          ← Volver a las opciones
         </a>
       </p>
 
-      <p class="mt-6 text-center text-[14px] leading-relaxed text-ash">
+      <p class="mt-6 text-center text-[15px] leading-relaxed text-ash">
         {CONTACT.addressFull}<br />
         {CONTACT.hoursText}<br />
         <a href={`tel:${PHONE_TEL}`} class="font-semibold text-brand underline underline-offset-2">
@@ -86,9 +96,9 @@ const subcategorias = CATALOGO_PDF[rubro.slug ?? ''] ?? [];
         </a>
       </p>
 
-      <div class="h-[calc(5rem+env(safe-area-inset-bottom))]" aria-hidden="true"></div>
+      <div class="h-[env(safe-area-inset-bottom)]" aria-hidden="true"></div>
     </div>
   </main>
 
-  <LeadModal origen={ORIGEN} retorno={RETORNO} etiqueta="Pide tu cotización" />
+  <LeadModal origen={ORIGEN} retorno={RETORNO} etiqueta="Déjanos tus datos" sinBotonFlotante />
 </Layout>
