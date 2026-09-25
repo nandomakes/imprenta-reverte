@@ -46,7 +46,7 @@ const subcategorias = CATALOGO_PDF[rubro.slug ?? ''] ?? [];
   noindex
   sinWhatsApp
 >
-  <main id="contenido" class="flex min-h-svh flex-col items-center bg-paper px-5 py-10">
+  <main id="contenido" class="flex min-h-svh flex-col items-center bg-paper px-5 py-6">
     <div class="w-full max-w-md">
       <div class="text-center">
         <img
@@ -56,16 +56,16 @@ const subcategorias = CATALOGO_PDF[rubro.slug ?? ''] ?? [];
           height="726"
           class="mx-auto h-14 w-auto"
         />
-        <Diana variante="separador" tam={16} class="mx-auto mt-5 max-w-[220px] text-ash" />
+        <Diana variante="separador" tam={16} class="mx-auto mt-4 max-w-[220px] text-ash" />
       </div>
 
-      <div class="mt-7 text-center">
+      <div class="mt-5 text-center">
         <h1 class="text-[27px] font-semibold leading-tight text-ink">{nombre}</h1>
         <p class="mt-2 text-[18px] text-ash">Toca una opción para ver ese catálogo</p>
       </div>
 
-      <nav class="mt-5" aria-label={`Subcategorías de ${nombre}`}>
-        <ul class="grid gap-3">
+      <nav class="mt-4" aria-label={`Subcategorías de ${nombre}`}>
+        <ul class="grid gap-2.5">
           {
             subcategorias.map((c) => (
               <li>
@@ -76,7 +76,7 @@ const subcategorias = CATALOGO_PDF[rubro.slug ?? ''] ?? [];
         </ul>
       </nav>
 
-      <div class="mt-6">
+      <div class="mt-5">
         <BioLeadCard
           titulo="¿Viste algo que te interese?"
           texto="Déjanos tu número y un asesor te llama para cotizarte, sin compromiso."

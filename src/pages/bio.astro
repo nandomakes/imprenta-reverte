@@ -38,12 +38,20 @@ const RETORNO = '/bio/';
 const instagram = SOCIALS.find((s) => s.icon === 'instagram');
 const facebook = SOCIALS.find((s) => s.icon === 'facebook');
 
+// Dos grupos, por jerarquía. Arriba lo que lleva a vender: el catálogo, cómo
+// llegar y el sitio. Abajo, en una sola fila de dos, las redes: quien llega
+// aquí desde un anuncio de Instagram o Facebook ya está en esa red, así que
+// darles una caja entera a cada una era gastar el espacio que necesita la
+// tarjeta de datos para asomar en pantallas chicas.
 const enlaces = [
   { emoji: '📖', texto: 'Ver el catálogo', href: '/bio/catalogo/', externo: false },
-  { emoji: '📸', texto: 'Instagram', href: instagram?.href ?? '#', externo: true },
-  { emoji: '👍', texto: 'Facebook', href: facebook?.href ?? '#', externo: true },
   { emoji: '📍', texto: 'Cómo llegar', href: CONTACT.mapsUrl, externo: true },
   { emoji: '🌐', texto: 'Sitio web', href: '/', externo: false },
+];
+
+const redes = [
+  { emoji: '📸', texto: 'Instagram', href: instagram?.href ?? '#' },
+  { emoji: '👍', texto: 'Facebook', href: facebook?.href ?? '#' },
 ];
 ---
 
@@ -53,7 +61,7 @@ const enlaces = [
   noindex
   sinWhatsApp
 >
-  <main id="contenido" class="flex min-h-svh flex-col items-center bg-paper px-5 py-10">
+  <main id="contenido" class="flex min-h-svh flex-col items-center bg-paper px-5 py-6">
     <div class="w-full max-w-md">
       <div class="text-center">
         <img
@@ -61,19 +69,19 @@ const enlaces = [
           alt={SITE.brand}
           width="1860"
           height="726"
-          class="mx-auto h-16 w-auto"
+          class="mx-auto h-14 w-auto"
         />
         <p class="mt-2 text-[16px] text-ash">Imprenta en {CONTACT.locality}, SLP</p>
-        <Diana variante="separador" tam={16} class="mx-auto mt-5 max-w-[220px] text-ash" />
+        <Diana variante="separador" tam={16} class="mx-auto mt-4 max-w-[220px] text-ash" />
       </div>
 
-      <div class="mt-7 text-center">
+      <div class="mt-5 text-center">
         <h1 class="text-[27px] font-semibold leading-tight text-ink">¿Qué te gustaría imprimir?</h1>
         <p class="mt-2 text-[18px] text-ash">Toca una opción para continuar</p>
       </div>
 
-      <nav class="mt-5" aria-label="Enlaces de Imprenta Reverte">
-        <ul class="grid gap-3">
+      <nav class="mt-4" aria-label="Enlaces de Imprenta Reverte">
+        <ul class="grid gap-2.5">
           {
             enlaces.map((e) => (
               <li>
@@ -81,10 +89,15 @@ const enlaces = [
               </li>
             ))
           }
+          <li class="grid grid-cols-2 gap-2.5">
+            {redes.map((r) => (
+              <BioBoton href={r.href} texto={r.texto} emoji={r.emoji} externo compacto />
+            ))}
+          </li>
         </ul>
       </nav>
 
-      <div class="mt-6">
+      <div class="mt-5">
         <BioLeadCard />
       </div>
 
