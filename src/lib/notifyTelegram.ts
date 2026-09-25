@@ -16,6 +16,7 @@ export type ProspectoTelegram = {
 /** Etiquetas de los campos conocidos; el resto se manda con su propia clave. */
 const ETIQUETAS: Record<string, string> = {
   nombre: '👤 Nombre',
+  comercio: '🏪 Comercio',
   telefono: '📱 Teléfono',
   ciudad: '🏙️ Ciudad',
   codigo_postal: '📮 Código postal',
@@ -27,6 +28,7 @@ const ETIQUETAS: Record<string, string> = {
 /** El orden importa: es como se lee el mensaje en el móvil. */
 const ORDEN = [
   'nombre',
+  'comercio',
   'telefono',
   'ciudad',
   'codigo_postal',

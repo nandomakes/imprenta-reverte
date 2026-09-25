@@ -212,8 +212,10 @@ Para que además llegue por correo:
 4. En Vercel, mete esas tres variables en **Settings → Environment Variables**
    y vuelve a desplegar.
 
-Campos del formulario: solo cuatro, todos obligatorios — nombre, teléfono
-(10 dígitos), ciudad y código postal (5 dígitos). No se pide correo ni detalles
+Campos del formulario: cinco, todos obligatorios — nombre, nombre del
+comercio, teléfono (10 dígitos), ciudad y código postal (5 dígitos). Si falta
+cualquiera, el servidor rechaza el envío y no se dispara ni el correo ni el
+aviso de Telegram. No se pide correo ni detalles
 del trabajo: el formulario capta el dato de contacto y lo demás lo pregunta un
 asesor por teléfono. Las páginas de categoría mandan además su slug en un
 campo oculto (`categoria`); se comprueba contra `SLUGS_CATALOGO` y, si no

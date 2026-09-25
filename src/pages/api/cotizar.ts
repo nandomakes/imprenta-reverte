@@ -100,9 +100,11 @@ export const POST: APIRoute = async ({ request, redirect, cookies }) => {
     return redirect('/gracias/', 303);
   }
 
-  // Los cuatro datos que pide el formulario. Todos obligatorios: son lo mínimo
-  // para que un asesor pueda llamar y saber más o menos desde dónde.
+  // Los cinco datos que pide el formulario. Todos obligatorios: son lo mínimo
+  // para que un asesor pueda llamar sabiendo a quién, a qué negocio y desde
+  // dónde. Si falta uno solo, no se manda nada — ni correo ni Telegram.
   const nombre = campo(data, 'nombre', 120);
+  const comercio = campo(data, 'comercio', 120);
   const telefono = campo(data, 'telefono', 40);
   const ciudad = campo(data, 'ciudad', 80);
   const codigoPostal = campo(data, 'codigo_postal', 10);
@@ -124,7 +126,7 @@ export const POST: APIRoute = async ({ request, redirect, cookies }) => {
 
   // El navegador ya valida `required`, pero un POST puede llegar de cualquier
   // lado: la validación que cuenta es esta.
-  const faltantes = !nombre || !telefono || !ciudad || !codigoPostal;
+  const faltantes = !nombre || !comercio || !telefono || !ciudad || !codigoPostal;
   // Diez dígitos exactos, contando solo números: el campo admite espacios,
   // guiones y paréntesis al escribir. Se valida aquí además de en el
   // navegador porque un teléfono incompleto es un lead imposible de
@@ -139,10 +141,11 @@ export const POST: APIRoute = async ({ request, redirect, cookies }) => {
     return redirect(`${retorno}${sep}error=1#cotizar`, 303);
   }
 
-  const asunto = `Prospecto (${origen}) — ${nombre} — ${ciudad}`;
+  const asunto = `Prospecto (${origen}) — ${comercio} — ${ciudad}`;
 
   const lineas: [string, string][] = [
     ['Nombre', nombre],
+    ['Comercio', comercio],
     ['Teléfono', telefono],
     ['Ciudad', ciudad],
     ['Código postal', codigoPostal],
@@ -174,6 +177,7 @@ export const POST: APIRoute = async ({ request, redirect, cookies }) => {
   // el envío salga bien: es una notificación aparte, en paralelo.
   const avisoTelegram = notifyTelegram({
     nombre,
+    comercio,
     telefono,
     ciudad,
     codigo_postal: codigoPostal,

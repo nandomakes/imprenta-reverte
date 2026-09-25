@@ -10,7 +10,9 @@
  *   Ajustes del teléfono y los menús de WhatsApp — cosas que esa persona
  *   toca todos los días — para decir "aquí hay más".
  * - Un ícono o emoji a la izquierda, que anticipa a dónde va.
- * - Texto de 17px y 56px de alto mínimo, para que se lea y se atine.
+ * - Texto de 18px semibold y 64px de alto mínimo, para que se lea de lejos
+ *   y se atine con el pulgar. La bio es el destino de los anuncios: la mayor
+ *   parte de quien la abre nunca vio el sitio y decide en segundos.
  */
 interface Props {
   href: string;
@@ -32,9 +34,9 @@ const { href, texto, emoji, externo = false, abreFormulario = false, tipo = 'enl
   href={href}
   {...(externo ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
   {...(abreFormulario ? { 'data-abrir-lead': true } : {})}
-  class="flex min-h-[60px] w-full items-center gap-3 border border-line bg-white px-4 py-3.5 text-[17px] font-medium text-ink transition-colors hover:border-brand active:bg-paper"
+  class="flex min-h-[64px] w-full items-center gap-3 border-2 border-ash/40 bg-white px-4 py-3.5 text-[18px] font-semibold leading-snug text-ink transition-colors hover:border-brand active:bg-paper"
 >
-  {emoji && <span class="shrink-0 text-[22px] leading-none" aria-hidden="true">{emoji}</span>}
+  {emoji && <span class="shrink-0 text-[24px] leading-none" aria-hidden="true">{emoji}</span>}
   <span class="flex-1 leading-snug">{texto}</span>
   {
     tipo === 'documento' ? (

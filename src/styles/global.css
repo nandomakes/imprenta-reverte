@@ -110,8 +110,11 @@
   }
 
 
+  /* 17px y py-3.5: el botón es el final del camino de la página y lo primero
+     que busca quien no ve de cerca. A 15px competía en tamaño con el texto
+     corrido que lo rodea, en vez de destacar sobre él. */
   .btn {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3 text-[15px]
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3.5 text-[17px]
       font-semibold transition-colors duration-200;
   }
   /* Magenta = acción principal. Azul = acción secundaria. Exactamente como
@@ -200,12 +203,23 @@
     @apply pointer-events-none border-line bg-white text-ash opacity-40 shadow-none;
   }
 
+  /* CAMPOS DE FORMULARIO — dimensionados para leerse sin esfuerzo.
+     17px no es capricho: por debajo de 16px Safari en iPhone hace zoom solo
+     al enfocar un campo y descoloca la página, y buena parte de quien llena
+     este formulario pasa de los 50. El borde sube a 2px y el foco a 2px en
+     navy: con 1px sobre blanco no se distingue qué campo está activo. La
+     altura sube a py-3.5 para dar un blanco de toque cómodo con el pulgar. */
   .field {
-    @apply w-full border border-line bg-white px-4 py-3 text-[15px] text-ink
-      placeholder:text-ash focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand;
+    @apply w-full border-2 border-ash/45 bg-white px-4 py-3.5 text-[17px] text-ink
+      placeholder:text-ash focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand;
   }
   .field-label {
-    @apply mb-1.5 block text-[14px] font-semibold text-ink;
+    @apply mb-2 block text-[16px] font-semibold text-ink;
+  }
+  /* Ayuda bajo el campo ("10 dígitos, con lada"). Es instrucción, no letra
+     chica de contrato: 15px y ash, que sobre blanco da 4.9:1. */
+  .field-ayuda {
+    @apply mt-2 text-[15px] leading-snug text-ash;
   }
 
 
@@ -245,6 +259,27 @@
   details.faq summary::-webkit-details-marker {
     display: none;
   }
+
+  /* LATIDO — el CTA de contacto respira para que la vista lo encuentre solo.
+     Es un halo dorado que crece y se desvanece cada 2.6s, NO un parpadeo:
+     prender y apagar estorba la lectura, marea a quien es sensible al
+     movimiento y, pasando los tres destellos por segundo, incumple la WCAG.
+     Un pulso lento llama igual la atención y sigue viéndose como un sitio
+     serio. Solo anima box-shadow, que el navegador resuelve en el compositor
+     sin recalcular la página. El bloque de prefers-reduced-motion del final
+     lo detiene: ahí el halo se queda fijo, la señal no se pierde. */
+  @keyframes latido {
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 rgba(200, 164, 77, 0.6);
+    }
+    50% {
+      box-shadow: 0 0 0 10px rgba(200, 164, 77, 0);
+    }
+  }
+  .latido {
+    animation: latido 2.6s var(--ease-out) infinite;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -259,6 +294,12 @@
   .lift:hover,
   .zoom-parent:hover .zoom-img {
     transform: none;
+  }
+  /* Sin pulso, pero con el halo puesto: la señal se queda, solo deja de
+     moverse. */
+  .latido {
+    animation: none;
+    box-shadow: 0 0 0 4px rgba(200, 164, 77, 0.45);
   }
   *,
   *::before,

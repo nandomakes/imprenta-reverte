@@ -12,9 +12,9 @@ import { CTA_LABEL, PHONE_DISPLAY, PHONE_TEL } from '../consts';
 <div class="fixed inset-x-0 bottom-0 z-40 grid grid-cols-2 border-t border-line bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur sm:hidden">
   <a
     href={`tel:${PHONE_TEL}`}
-    class="flex items-center justify-center gap-2 py-3.5 text-[15px] font-semibold text-brand"
+    class="flex items-center justify-center gap-2 py-4 text-[17px] font-semibold text-brand"
   >
-    <svg viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor" aria-hidden="true">
+    <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor" aria-hidden="true">
       <path
         d="M2.5 4.5A2 2 0 014.5 2.5h2a2 2 0 011.94 1.5l.7 2.7a2 2 0 01-.53 1.94l-1.2 1.2a14.5 14.5 0 006.75 6.75l1.2-1.2a2 2 0 011.94-.53l2.7.7a2 2 0 011.5 1.94v2a2 2 0 01-2 2C10.6 21.5 2.5 13.4 2.5 4.5z"
       ></path>
@@ -24,12 +24,13 @@ import { CTA_LABEL, PHONE_DISPLAY, PHONE_TEL } from '../consts';
   </a>
   <a
     href="/cotizar/"
-    class="flex items-center justify-center bg-accent py-3.5 text-[15px] font-semibold text-ink"
+    class="latido flex items-center justify-center bg-accent py-4 text-[17px] font-bold text-ink"
   >
     {CTA_LABEL}
   </a>
 </div>
 
 {/* Colchón para que la barra fija no tape el final del footer — mismo alto
-    real que la barra, incluida su zona segura. */}
-<div class="h-[calc(54px+env(safe-area-inset-bottom))] sm:hidden" aria-hidden="true"></div>
+    real que la barra, incluida su zona segura. Subió con la barra: el texto
+    pasó de 15 a 17px y el relleno de 3.5 a 4. */}
+<div class="h-[calc(60px+env(safe-area-inset-bottom))] sm:hidden" aria-hidden="true"></div>

@@ -60,8 +60,8 @@ const subcategorias = CATALOGO_PDF[rubro.slug ?? ''] ?? [];
       </div>
 
       <div class="mt-7 text-center">
-        <h1 class="text-[24px] leading-tight text-ink">{nombre}</h1>
-        <p class="mt-1.5 text-[16px] text-ash">Toca una opción para ver ese catálogo</p>
+        <h1 class="text-[27px] font-semibold leading-tight text-ink">{nombre}</h1>
+        <p class="mt-2 text-[18px] text-ash">Toca una opción para ver ese catálogo</p>
       </div>
 
       <nav class="mt-5" aria-label={`Subcategorías de ${nombre}`}>
@@ -84,12 +84,12 @@ const subcategorias = CATALOGO_PDF[rubro.slug ?? ''] ?? [];
       </div>
 
       <p class="mt-8 text-center">
-        <a href="/bio/catalogo/" class="text-[16px] font-semibold text-brand underline underline-offset-2">
+        <a href="/bio/catalogo/" class="text-[17px] font-semibold text-brand underline underline-offset-2">
           ← Volver a las opciones
         </a>
       </p>
 
-      <p class="mt-6 text-center text-[15px] leading-relaxed text-ash">
+      <p class="mt-6 text-center text-[16px] leading-relaxed text-ash">
         {CONTACT.addressFull}<br />
         {CONTACT.hoursText}<br />
         <a href={`tel:${PHONE_TEL}`} class="font-semibold text-brand underline underline-offset-2">
