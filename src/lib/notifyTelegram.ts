@@ -43,6 +43,20 @@ function escaparHtml(s: string): string {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
+/**
+ * Quita el token del bot de cualquier cosa que vaya al log.
+ *
+ * El token viaja DENTRO de la URL de la API de Telegram
+ * (api.telegram.org/bot<TOKEN>/sendMessage), así que basta con que un error
+ * de red arrastre la URL de la petición — cosa que hacen varios errores de
+ * fetch en Node — para que el token acabe impreso en los registros de
+ * Vercel, que ve cualquiera con acceso al proyecto. Es la clase de fuga que
+ * no se nota hasta que ya pasó, y cuesta dos líneas evitarla.
+ */
+function sinToken(texto: string, token: string): string {
+  return token ? texto.split(token).join('<TOKEN>') : texto;
+}
+
 export async function notifyTelegram(data: ProspectoTelegram): Promise<void> {
   const token = import.meta.env.TELEGRAM_BOT_TOKEN;
   const chatId = import.meta.env.TELEGRAM_CHAT_ID;
@@ -72,9 +86,12 @@ export async function notifyTelegram(data: ProspectoTelegram): Promise<void> {
     });
 
     if (!res.ok) {
-      console.error('[telegram] Fallo al enviar:', res.status, await res.text());
+      console.error('[telegram] Fallo al enviar:', res.status, sinToken(await res.text(), token));
     }
   } catch (e) {
-    console.error('[telegram] Excepción al enviar:', e);
+    // El error se imprime como texto, no como objeto: así pasa entero por
+    // el filtro del token. Un objeto de error se serializa después, ya fuera
+    // de nuestro alcance, y con él se escaparía la URL de la petición.
+    console.error('[telegram] Excepción al enviar:', sinToken(String(e), token));
   }
 }
