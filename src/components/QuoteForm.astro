@@ -126,10 +126,10 @@ const { categoria, origen = 'sitio', retorno = '/cotizar/' } = Astro.props;
       aria-describedby="ayuda-telefono"
       data-solo-digitos="10"
       data-nombre-campo="El teléfono"
-      placeholder="4813816663"
+      placeholder="4810000000"
     />
     <p id="ayuda-telefono" class="field-ayuda">
-      10 dígitos, con lada, sin espacios. Ejemplo: 4813816663
+      10 dígitos, con lada, sin espacios. Ejemplo: 4810000000
     </p>
   </div>
 
@@ -253,7 +253,7 @@ const { categoria, origen = 'sitio', retorno = '/cotizar/' } = Astro.props;
   // Dos cosas, en este orden:
   //   1. Filtrar al escribir: cualquier carácter que no sea número desaparece
   //      en el acto, y lo que pase del largo se corta. Cubre el teclado, el
-  //      pegado ("481 381-6663" queda como 4813816663) y el autocompletado.
+  //      pegado ("481 100-1369" queda como 4811001369) y el autocompletado.
   //      Es lo que se pidió: que el campo no deje meter de más, no que avise
   //      después.
   //   2. Si quedan menos dígitos de los debidos, decir cuántos faltan con

@@ -21,17 +21,17 @@ export const SITE = {
   themeColor: '#0B2545',
   title: 'Imprenta Reverte | Imprenta en Ciudad Valles, SLP',
   description:
-    'Imprenta en Ciudad Valles, SLP. Papelería comercial y médica, lonas y gran formato, playeras, grabado láser, sellos e impresión para eventos. Cotiza ahora al 481 381 6663.',
+    'Imprenta en Ciudad Valles, SLP. Papelería comercial y médica, lonas y gran formato, playeras, grabado láser, sellos e impresión para eventos. Cotiza ahora al 481 100 1369.',
   tagline: 'Transforma tu idea en impreso, en cualquier momento, en cualquier lugar.',
 } as const;
 
 /** El CTA del sitio. Una sola etiqueta, en todas partes, sin variantes. */
 export const CTA_LABEL = 'Cotiza ahora';
 
-export const PHONE_DISPLAY = '481 381 6663';
-export const PHONE_TEL = '+524813816663';
+export const PHONE_DISPLAY = '481 100 1369';
+export const PHONE_TEL = '+524811001369';
 export const EMAIL = 'reverteimprenta@gmail.com';
-export const WHATSAPP_URL = `https://wa.me/524813816663?text=${encodeURIComponent(
+export const WHATSAPP_URL = `https://wa.me/524811001369?text=${encodeURIComponent(
   'Hola, quiero cotizar un trabajo de imprenta.'
 )}`;
 
