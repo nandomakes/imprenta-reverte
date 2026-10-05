@@ -212,9 +212,10 @@ Para que además llegue por correo:
 4. En Vercel, mete esas tres variables en **Settings → Environment Variables**
    y vuelve a desplegar.
 
-Campos del formulario: nombre y WhatsApp (10 dígitos) obligatorios; nombre
-del negocio y "¿Qué quieres imprimir?" (casillas, lista en `INTERESES` de
-`src/consts.ts`) opcionales. Si falta un obligatorio, el servidor rechaza el envío y no se dispara ni el correo ni el
+Campos del formulario: cinco, todos obligatorios — nombre, nombre del
+comercio, teléfono (10 dígitos), ciudad y código postal (5 dígitos). Ciudad y
+CP deciden a qué asesor se asigna el lead. No se pregunta qué quiere imprimir,
+a propósito. Si falta cualquiera, el servidor rechaza el envío y no se dispara ni el correo ni el
 aviso de Telegram. No se pide correo ni detalles
 del trabajo: el formulario capta el dato de contacto y lo demás lo pregunta un
 asesor por teléfono. Las páginas de categoría mandan además su slug en un

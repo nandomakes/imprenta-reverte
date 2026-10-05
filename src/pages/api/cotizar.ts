@@ -1,5 +1,5 @@
 /**
- * Recibe el formulario de datos (nombre, WhatsApp, negocio, qué quiere imprimir), lo manda por correo con Resend y avisa
+ * Recibe el formulario de datos (nombre, comercio, teléfono, ciudad, CP), lo manda por correo con Resend y avisa
  * por Telegram. Las dos notificaciones van en paralelo y son independientes.
  *
  * La única ruta del sitio que no es HTML estático: necesita servidor porque
@@ -15,7 +15,6 @@ import type { APIRoute } from 'astro';
 import { Resend } from 'resend';
 import { SLUGS_CATALOGO, etiquetaDe } from '../../data/catalogo';
 import { notifyTelegram } from '../../lib/notifyTelegram';
-import { INTERESES } from '../../consts';
 
 export const prerender = false;
 
@@ -105,25 +104,16 @@ export const POST: APIRoute = async ({ request, redirect, cookies }) => {
     return redirect('/gracias/', 303);
   }
 
-  // Obligatorios solo nombre y WhatsApp: lo mínimo para que un asesor pueda
-  // llamar sabiendo a quién. Si falta uno, no se manda nada — ni correo ni
-  // Telegram. El negocio y el interés ayudan, pero son opcionales.
+  // Los cinco datos que pide el formulario. Todos obligatorios: son lo mínimo
+  // para que un asesor pueda llamar sabiendo a quién y a qué negocio, y para
+  // saber a QUÉ asesor le toca — eso lo deciden ciudad y código postal, porque
+  // hay varios en distintos puntos. Si falta uno solo, no se manda nada — ni
+  // correo ni Telegram.
   const nombre = campo(data, 'nombre', 120);
   const comercio = campo(data, 'comercio', 120);
   const telefono = campo(data, 'telefono', 40);
-
-  // "¿Qué quieres imprimir?": una casilla por opción, así que llega un
-  // `interes` por cada marcada. Solo se aceptan valores de la lista: un POST
-  // manipulado no puede meter texto libre al mensaje.
-  const interes = [
-    ...new Set(
-      data
-        .getAll('interes')
-        .filter((v): v is string => typeof v === 'string')
-        .map((v) => v.trim())
-        .filter((v) => (INTERESES as readonly string[]).includes(v))
-    ),
-  ].join(', ');
+  const ciudad = campo(data, 'ciudad', 80);
+  const codigoPostal = campo(data, 'codigo_postal', 10);
 
   // Contexto opcional: las fichas de catálogo mandan su categoría en un campo
   // oculto para que el asesor sepa qué estaba viendo la persona. Si no viene,
@@ -142,14 +132,16 @@ export const POST: APIRoute = async ({ request, redirect, cookies }) => {
 
   // El navegador ya valida `required`, pero un POST puede llegar de cualquier
   // lado: la validación que cuenta es esta.
-  const faltantes = !nombre || !telefono;
+  const faltantes = !nombre || !comercio || !telefono || !ciudad || !codigoPostal;
   // Diez dígitos exactos, contando solo números: el campo admite espacios,
   // guiones y paréntesis al escribir. Se valida aquí además de en el
   // navegador porque un teléfono incompleto es un lead imposible de
   // contactar — que es justo para lo que sirve el formulario.
   const telefonoValido = telefono.replace(/\D/g, '').length === 10;
+  // Cinco dígitos, el formato de todo México.
+  const codigoPostalValido = /^[0-9]{5}$/.test(codigoPostal);
 
-  if (faltantes || !telefonoValido) {
+  if (faltantes || !telefonoValido || !codigoPostalValido) {
     // Vuelve a la página desde la que se envió, no siempre a /cotizar/.
     // El separador depende de si esa ruta ya trae query (/bio/?ref=fb).
     return redirect(`${retorno}${sep}error=1#cotizar`, 303);
@@ -162,13 +154,14 @@ export const POST: APIRoute = async ({ request, redirect, cookies }) => {
     ? `${utmSource || '?'}/${utmContent}`
     : 'Sin anuncio (orgánico o directo)';
 
-  const asunto = `Prospecto (${origen}) — ${comercio || nombre}`;
+  const asunto = `Prospecto (${origen}) — ${comercio} — ${ciudad}`;
 
   const lineas: [string, string][] = [
     ['Nombre', nombre],
-    ['Comercio', comercio || '-'],
-    ['WhatsApp', telefono],
-    ['Le interesa', interes || '-'],
+    ['Comercio', comercio],
+    ['Teléfono', telefono],
+    ['Ciudad', ciudad],
+    ['Código postal', codigoPostal],
     ...(etiqueta ? ([['Veía', etiqueta]] as [string, string][]) : []),
     ['Entró por', origen],
     ['Anuncio', anuncio],
@@ -198,9 +191,10 @@ export const POST: APIRoute = async ({ request, redirect, cookies }) => {
   // el envío salga bien: es una notificación aparte, en paralelo.
   const avisoTelegram = notifyTelegram({
     nombre,
-    comercio: comercio || undefined,
+    comercio,
     telefono,
-    interes: interes || '-',
+    ciudad,
+    codigo_postal: codigoPostal,
     categoria: etiqueta || undefined,
     // "sitio" es el valor por defecto: no aporta nada saber que un lead del
     // formulario del sitio vino del sitio. Solo se manda el origen cuando

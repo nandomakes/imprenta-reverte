@@ -761,20 +761,6 @@ export const FAQS_HOME = [
   },
 ] as const;
 
-/**
- * Opciones de "¿Qué quieres imprimir?" en el formulario. Son lo que más piden
- * los negocios que llegan por los anuncios de papelería. El servidor solo
- * acepta valores de esta lista: lo que llegue fuera de ella se descarta.
- */
-export const INTERESES = [
-  'Notas de venta',
-  'Comandas',
-  'Recetarios',
-  'Hojas membretadas',
-  'Sellos',
-  'Otro',
-] as const;
-
 export const CIUDADES_SUGERIDAS = [
   'Ciudad Valles',
   'Tamuín',
