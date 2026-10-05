@@ -1,0 +1,69 @@
+---
+/**
+ * Google Analytics 4. Se enciende SOLO si existe la variable de entorno
+ * PUBLIC_GA_ID (el "ID de medición", empieza con G-). Sin ella no se carga
+ * nada: ni script, ni cookies, ni peticiones a Google.
+ *
+ * La variable se lee al construir el sitio, no en el navegador: después de
+ * ponerla en Vercel hay que volver a desplegar (Deployments → Redeploy).
+ *
+ * Además de las visitas, se mandan los eventos que importan a una imprenta:
+ *   - generate_lead   → alguien llegó a /gracias/ tras enviar el formulario
+ *   - click_llamada   → tocó un enlace tel:
+ *   - click_whatsapp  → tocó un enlace a wa.me
+ * Las descargas de los PDF del catálogo las mide GA4 solo, con la "medición
+ * mejorada" (evento file_download), sin código extra.
+ */
+const gaId = (import.meta.env.PUBLIC_GA_ID ?? '').trim();
+// Solo un ID con forma válida llega al HTML: lo que va dentro de un <script>
+// no puede depender de que nadie escriba mal la variable.
+const valido = /^G-[A-Z0-9]{4,20}$/.test(gaId);
+---
+
+{
+  valido && (
+    <>
+      <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} />
+      <script is:inline define:vars={{ gaId }}>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+          dataLayer.push(arguments);
+        }
+        window.gtag = gtag;
+        gtag('js', new Date());
+        gtag('config', gaId);
+
+        // Llamadas y WhatsApp: un solo listener para todo el sitio, así cubre
+        // también los botones que se añadan después sin tocar este archivo.
+        document.addEventListener(
+          'click',
+          (e) => {
+            const a = e.target instanceof Element ? e.target.closest('a[href]') : null;
+            if (!a) return;
+            const href = a.getAttribute('href') || '';
+            const ubicacion = location.pathname;
+            if (href.startsWith('tel:')) {
+              gtag('event', 'click_llamada', { ubicacion });
+            } else if (/^https:\/\/(wa\.me|api\.whatsapp\.com)\//.test(href)) {
+              gtag('event', 'click_whatsapp', { ubicacion });
+            }
+          },
+          { capture: true }
+        );
+
+        // El lead se cuenta una vez por sesión: recargar /gracias/ no debe
+        // inflar la cifra de cotizaciones.
+        if (location.pathname === '/gracias/') {
+          let contado = false;
+          try {
+            contado = sessionStorage.getItem('rv_lead') === '1';
+            sessionStorage.setItem('rv_lead', '1');
+          } catch {
+            /* sin sessionStorage se cuenta igual */
+          }
+          if (!contado) gtag('event', 'generate_lead');
+        }
+      </script>
+    </>
+  )
+}

@@ -18,12 +18,21 @@ se borra de aquí (el historial ya está en git).
       - Para probar sin dominio: `QUOTE_FROM_EMAIL=onboarding@resend.dev`
         (remitente de pruebas de Resend) y el Gmail como destino.
 
-- [ ] **Dominio propio.** El sitio vive en `imprenta-reverte.vercel.app`;
-      `imprentareverte.com` todavía no resuelve. Cuando se conecte el dominio
-      en Vercel, revisar que siga funcionando el envío del formulario: los
-      dominios ya están declarados en `security.allowedDomains`
-      (`astro.config.mjs`), así que debería entrar solo, pero conviene mandar
-      una cotización de prueba desde el dominio nuevo para confirmarlo.
+- [ ] **Google Analytics y Search Console.** El código ya está: falta poner
+      en Vercel `PUBLIC_GA_ID` (y `PUBLIC_GSC_VERIFICATION` si se verifica
+      por etiqueta HTML) y volver a desplegar. Ver `.env.example`.
+
+- [ ] **Dominio sin www.** `imprentareverte.com` (sin www) responde 200 con
+      la misma página en vez de redirigir a `www.`. El canonical evita el
+      contenido duplicado, pero lo correcto es que en Vercel → Settings →
+      Domains el dominio sin www quede como "Redirect to www" (308).
+
+- [ ] **Actualizar Astro 5 → 7.** `npm audit` marca vulnerabilidades en Astro
+      5 que solo se corrigen en la 7 (con Tailwind 4 y el adaptador de Vercel
+      11: cambio mayor). Revisadas una por una, ninguna es explotable hoy en
+      este sitio — es estático salvo /api/cotizar, que no renderiza HTML, y
+      las imágenes se procesan al construir, con archivos propios — pero
+      conviene migrar con calma y probar todo, no a las prisas.
 
 - [ ] **Fotos reales del catálogo y del portafolio.** Mencionaste que vas a
       convertir el PDF a imágenes (hojas completas) y luego a fotos por

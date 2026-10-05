@@ -34,6 +34,10 @@ const SLASH = '/';
 
 function rutaInterna(valor: string, porDefecto: string): string {
   if (valor[0] !== SLASH) return porDefecto;
+  // El navegador borra tabuladores y saltos de línea al leer una URL, así que
+  // "/<TAB>/evil.com" llega a él como "//evil.com" y se salta el chequeo de
+  // abajo. Una ruta interna legítima nunca lleva caracteres de control.
+  if (/[\u0000-\u001F\u007F]/.test(valor)) return porDefecto;
   // El segundo carácter decide si esto sigue siendo una ruta interna: tanto
   // "//evil.com" como su variante con backslash sacan al visitante del sitio,
   // y el navegador trata los dos igual. Se comparan por código para no

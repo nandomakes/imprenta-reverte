@@ -11,6 +11,7 @@ import '@fontsource/dm-sans/latin-600.css';
 import '@fontsource/dm-sans/latin-700.css';
 import '../styles/global.css';
 import WhatsAppFab from '../components/WhatsAppFab.astro';
+import Analytics from '../components/Analytics.astro';
 import {
   SITE,
   CONTACT,
@@ -123,6 +124,11 @@ const website = {
 };
 
 const jsonLdNodes = [negocio, website, ...schema];
+
+// Verificación de Google Search Console por etiqueta HTML: solo el valor de
+// content="..." que da Search Console, no la etiqueta entera. Si la propiedad
+// se verificó por DNS (propiedad de dominio), esta variable sobra.
+const gscToken = (import.meta.env.PUBLIC_GSC_VERIFICATION ?? '').trim();
 ---
 
 <!doctype html>
@@ -151,6 +157,7 @@ const jsonLdNodes = [negocio, website, ...schema];
     <meta name="author" content={SITE.brand} />
     {noindex && <meta name="robots" content="noindex, follow" />}
     <meta name="theme-color" content={SITE.themeColor} />
+    {gscToken && <meta name="google-site-verification" content={gscToken} />}
     <meta name="geo.region" content="MX-SLP" />
     <meta name="geo.placename" content={CONTACT.locality} />
     <meta name="geo.position" content={`${CONTACT.geo.lat};${CONTACT.geo.lng}`} />
@@ -184,6 +191,8 @@ const jsonLdNodes = [negocio, website, ...schema];
     <script is:inline>
       document.documentElement.setAttribute('data-reveal', '');
     </script>
+
+    <Analytics />
   </head>
   <body class="bg-white font-sans text-ink antialiased">
     <a

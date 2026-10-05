@@ -17,7 +17,8 @@ export default defineConfig({
       // /gracias/ is a post-submit confirmation; /bio is a campaign landing
       // page marked noindex. Neither belongs in search.
       filter: (page) => !['/gracias', '/bio'].some((p) => page.includes(p)),
-      serialize: (item) => ({ ...item, lastmod: new Date().toISOString() }),
+      // Sin lastmod: poner la fecha del build a TODAS las páginas le dice a
+      // Google que todo cambió en cada despliegue, y acaba ignorando la señal.
     }),
   ],
   build: { inlineStylesheets: 'auto' },

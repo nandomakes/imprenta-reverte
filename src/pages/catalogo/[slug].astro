@@ -23,8 +23,20 @@ interface Props {
 
 const { categoria: c } = Astro.props;
 
-const title = `${c.etiqueta} en Ciudad Valles | ${SITE.brand}`;
-const description = `${c.resumen} ${c.ejemplos.slice(0, 5).join(', ')} y más en Imprenta Reverte, ${CONTACT.locality}, ${CONTACT.regionCode}. Cotiza ahora.`;
+// Google corta el título hacia los 60 caracteres y la descripción hacia los
+// 155. Pasado eso el resultado sale con "…" y pierde justo el final, que es
+// donde van la marca y el "Cotiza ahora".
+const tituloLargo = `${c.etiqueta} en Ciudad Valles | ${SITE.brand}`;
+const title = tituloLargo.length <= 60 ? tituloLargo : `${c.etiqueta} en Ciudad Valles, SLP`;
+
+/** Recorta en la última palabra completa que quepa, sin dejar comas colgando. */
+function recortar(texto: string, max: number): string {
+  if (texto.length <= max) return texto;
+  return texto.slice(0, max).replace(/[\s,;:.]+\S*$/, '') + '…';
+}
+const cierre = ` En ${CONTACT.locality}, ${CONTACT.regionCode}. Cotiza ahora.`;
+const resumen = recortar(c.resumen.trim(), 155 - cierre.length);
+const description = (/[.…!?]$/.test(resumen) ? resumen : `${resumen}.`) + cierre;
 
 const tonos: Record<string, string> = {
   card1: 'bg-card1',
