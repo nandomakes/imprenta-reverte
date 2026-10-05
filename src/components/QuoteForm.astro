@@ -2,16 +2,19 @@
 // Formulario de captura de datos. Es el MISMO en todo el sitio: /cotizar/,
 // las fichas de categoría y el modal de la bio.
 //
-// CINCO CAMPOS, todos obligatorios: nombre, comercio, teléfono, ciudad y
-// código postal. Lo demás (correo, categoría, cantidad, fecha, detalles) se
-// quitó a pedido del cliente. La razón de fondo: este formulario no cotiza, capta.
+// DOS CAMPOS OBLIGATORIOS: nombre y WhatsApp. El negocio es opcional y
+// "¿Qué quieres imprimir?" son botones de un toque, también opcionales.
+// Ciudad y código postal se quitaron (oct 2026): eran dos campos más que
+// llenar a cambio de un dato que el asesor confirma en la llamada. El
+// interés sí se agregó, porque le dice al asesor de qué hablar antes de
+// marcar. La razón de fondo no cambia: este formulario no cotiza, capta.
 // Lo que sigue es una llamada de un asesor, y todo lo que hace falta para
 // cotizar se pregunta en esa llamada. Cada campo extra aquí es un lead menos,
 // sobre todo con el público de la bio, que en buena parte pasa de los 50.
 //
 // HTML nativo con POST a /api/cotizar: funciona aunque el JS falle o tarde,
 // que en una conexión móvil de Ciudad Valles no es un caso hipotético.
-import { CIUDADES_SUGERIDAS, PHONE_DISPLAY, PHONE_TEL } from '../consts';
+import { INTERESES, PHONE_DISPLAY, PHONE_TEL } from '../consts';
 
 interface Props {
   /**
@@ -40,8 +43,9 @@ const { categoria, origen = 'sitio', retorno = '/cotizar/' } = Astro.props;
   data-form-cotizar
 >
   {/* Atribución. `origen` y `categoria` los fija la página; los utm_* los
-      rellena el script de abajo leyendo la URL, porque en un HTML estático no
-      se conocen en el servidor. Si el JS no llega, el lead entra igual: solo
+      rellena el script de abajo con lo que guardó el Layout al llegar (ver
+      `reverte_origen` en Layout.astro), porque en un HTML estático no se
+      conocen en el servidor. Si el JS no llega, el lead entra igual: solo
       sin campaña. */}
   <input type="hidden" name="origen" value={origen} />
   <input type="hidden" name="retorno" value={retorno} />
@@ -60,14 +64,6 @@ const { categoria, origen = 'sitio', retorno = '/cotizar/' } = Astro.props;
     </label>
   </p>
 
-  {/* Todos los campos son obligatorios, así que se dice UNA vez arriba en
-      lugar de repetir un asterisco chiquito en cada etiqueta. El asterisco
-      es una convención que hay que saber leer y, cuando marca el 100% de los
-      campos, no informa nada: solo ensucia. */}
-  <p class="sm:col-span-2 text-[16px] font-medium leading-snug text-ink">
-    Todos los datos son necesarios para poder llamarte.
-  </p>
-
   <div>
     <label class="field-label" for="nombre">Tu nombre</label>
     <input
@@ -81,32 +77,8 @@ const { categoria, origen = 'sitio', retorno = '/cotizar/' } = Astro.props;
     />
   </div>
 
-  {/* El nombre del comercio lo pidió ventas: al llamar en frío, saber a qué
-      negocio se le habla cambia por completo la conversación (y el precio que
-      se cotiza no es el mismo para una papelería que para un hotel). Es
-      obligatorio como el resto; quien no tenga negocio pone su nombre otra
-      vez o "particular", que el marcador de posición ya sugiere. */}
   <div>
-    <label class="field-label" for="comercio">Nombre de tu comercio o negocio</label>
-    <input
-      class="field"
-      id="comercio"
-      name="comercio"
-      type="text"
-      required
-      autocomplete="organization"
-      placeholder="Ejemplo: Abarrotes La Huasteca"
-      aria-describedby="ayuda-comercio"
-    />
-    <p id="ayuda-comercio" class="field-ayuda">
-      ¿No tienes negocio? Escribe "Particular".
-    </p>
-  </div>
-
-  <div>
-    <label class="field-label" for="telefono">
-      Teléfono o WhatsApp
-    </label>
+    <label class="field-label" for="telefono">Tu WhatsApp</label>
     {/* Solo dígitos y exactamente diez: `maxlength` corta en el décimo, y el
         script de abajo (`data-solo-digitos`) descarta al vuelo cualquier cosa
         que no sea número, de modo que ni un espacio ni un guion entran. Se
@@ -125,67 +97,63 @@ const { categoria, origen = 'sitio', retorno = '/cotizar/' } = Astro.props;
       pattern="[0-9]{10}"
       aria-describedby="ayuda-telefono"
       data-solo-digitos="10"
-      data-nombre-campo="El teléfono"
+      data-nombre-campo="El WhatsApp"
       placeholder="4810000000"
     />
     <p id="ayuda-telefono" class="field-ayuda">
-      10 dígitos, con lada, sin espacios. Ejemplo: 4810000000
+      10 dígitos, con lada. Ejemplo: 4810000000
     </p>
   </div>
 
-  <div>
-    <label class="field-label" for="ciudad">Ciudad</label>
+  {/* El comercio ayuda al asesor (no se cotiza igual a una papelería que a un
+      hotel), pero ya no es obligatorio: quien no tiene negocio dejaba el
+      formulario al llegar aquí o escribía "particular" por cumplir. */}
+  <div class="sm:col-span-2">
+    <label class="field-label" for="comercio">
+      Nombre de tu negocio <span class="font-normal text-ash">(opcional)</span>
+    </label>
     <input
       class="field"
-      id="ciudad"
-      name="ciudad"
+      id="comercio"
+      name="comercio"
       type="text"
-      required
-      list="ciudades"
-      autocomplete="address-level2"
-      placeholder="¿Desde dónde nos contactas?"
+      autocomplete="organization"
+      placeholder="Ejemplo: Abarrotes La Huasteca"
     />
-    {/* `datalist` sugiere sin restringir: si escriben una ciudad que no está
-        en la lista, se envía igual. */}
-    <datalist id="ciudades">
-      {CIUDADES_SUGERIDAS.map((c) => <option value={c} />)}
-    </datalist>
   </div>
 
-  <div>
-    <label class="field-label" for="codigo_postal">
-      Código postal
-    </label>
-    {/* Cinco dígitos, que es el formato de todo México. `maxlength` y el script de
-        `data-solo-digitos` impiden escribir otra cosa. `inputmode="numeric"`
-        para el teclado de números; `pattern` solo dígitos, sin separadores,
-        porque un CP nunca los lleva. */}
-    <input
-      class="field"
-      id="codigo_postal"
-      name="codigo_postal"
-      type="text"
-      required
-      inputmode="numeric"
-      autocomplete="postal-code"
-      maxlength="5"
-      pattern="[0-9]{5}"
-      aria-describedby="ayuda-cp"
-      data-solo-digitos="5"
-      data-nombre-campo="El código postal"
-      placeholder="79000"
-    />
-    <p id="ayuda-cp" class="field-ayuda">5 dígitos. Ejemplo: 79000</p>
-  </div>
+  {/* Selección múltiple con casillas nativas: funcionan sin JS, el lector de
+      pantalla las anuncia como casillas y el navegador manda un `interes` por
+      cada una marcada. Se ven como botones grandes (toda la caja es la
+      etiqueta) porque el público de los anuncios toca con el pulgar y en
+      buena parte pasa de los 50. Opcional: no saber todavía qué quiere no
+      debe impedir que deje su número. */}
+  <fieldset class="sm:col-span-2">
+    <legend class="field-label">
+      ¿Qué quieres imprimir? <span class="font-normal text-ash">(puedes marcar varios)</span>
+    </legend>
+    <div class="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
+      {
+        INTERESES.map((op) => (
+          <label class="flex min-h-[56px] cursor-pointer items-center gap-2.5 border-2 border-ash/45 bg-white px-3.5 py-2.5 text-[17px] font-semibold leading-snug text-ink transition-colors hover:border-brand has-[:checked]:border-brand has-[:checked]:bg-brand has-[:checked]:text-white has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-brand has-[:focus-visible]:ring-offset-2">
+            <input type="checkbox" name="interes" value={op} class="h-5 w-5 shrink-0 accent-accent" />
+            {op}
+          </label>
+        ))
+      }
+    </div>
+  </fieldset>
 
   <div class="sm:col-span-2">
     <button type="submit" data-boton-enviar class="btn-brand w-full sm:w-auto">
-      Enviar mis datos
+      Quiero mi cotización
     </button>
     {/* Quién llama y para qué ya lo dice el encabezado de la página o del
-        modal; aquí solo cuándo, y la salida para quien no puede esperar. */}
+        modal; aquí cuándo, que no cuesta nada, y la salida para quien no
+        puede esperar. */}
     <p class="mt-4 text-[16px] leading-relaxed text-ash">
-      Te llamamos en horario de tienda. ¿Es urgente? Llámanos al{' '}
+      <strong class="font-semibold text-ink">Te llamamos hoy en horario de tienda. Sin compromiso.</strong>{' '}
+      ¿Es urgente? Llámanos al{' '}
       <a href={`tel:${PHONE_TEL}`} class="font-semibold text-brand underline underline-offset-2">
         {PHONE_DISPLAY}
       </a>
@@ -194,43 +162,31 @@ const { categoria, origen = 'sitio', retorno = '/cotizar/' } = Astro.props;
 </form>
 
 <script>
-  // Copia los utm_* de la URL a los campos ocultos del formulario.
+  // Copia el origen del anuncio a los campos ocultos del formulario.
   //
-  // Se guardan en sessionStorage porque el visitante de un anuncio puede
-  // navegar dentro de la página antes de abrir el formulario, y en cuanto pasa
-  // por un enlace interno los parámetros desaparecen de la barra. Sin esto se
-  // pierde la atribución justo de los leads que más tardaron en decidirse.
+  // Lo guarda el Layout en localStorage (`reverte_origen`) en cuanto alguien
+  // llega con utm_*, en cualquier página. Aquí solo se lee: así un lead que
+  // entró por /bio?utm_content=x y envió desde /cotizar/ — o volvió al día
+  // siguiente — sigue llegando con su anuncio. Si el storage está bloqueado
+  // (modo privado estricto), se cae a la URL de esta misma página.
   (() => {
-    const CLAVE = 'reverte-utm';
     const CAMPOS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'];
 
     let guardados: Record<string, string> = {};
     try {
-      guardados = JSON.parse(sessionStorage.getItem(CLAVE) || '{}');
+      guardados = JSON.parse(localStorage.getItem('reverte_origen') || '{}');
     } catch {
-      /* modo privado o storage bloqueado: seguimos solo con la URL */
+      /* storage bloqueado o JSON roto: seguimos solo con la URL */
     }
 
     const params = new URLSearchParams(location.search);
-    let hayNuevos = false;
-    for (const campo of CAMPOS) {
-      const v = params.get(campo);
-      if (v) {
-        guardados[campo] = v.slice(0, 160);
-        hayNuevos = true;
-      }
-    }
-    if (hayNuevos) {
-      try {
-        sessionStorage.setItem(CLAVE, JSON.stringify(guardados));
-      } catch {
-        /* da igual: los campos de esta página ya quedan rellenos */
-      }
-    }
+    const desdeUrl = CAMPOS.some((c) => params.get(c));
 
     for (const input of document.querySelectorAll<HTMLInputElement>('[data-utm]')) {
       const campo = input.dataset.utm;
-      if (campo && guardados[campo]) input.value = guardados[campo];
+      if (!campo) continue;
+      const v = desdeUrl ? params.get(campo) : guardados[campo];
+      if (typeof v === 'string' && v) input.value = v.slice(0, 160);
     }
   })();
 
@@ -248,7 +204,7 @@ const { categoria, origen = 'sitio', retorno = '/cotizar/' } = Astro.props;
     });
   });
 
-  // Campos de solo dígitos con largo fijo: teléfono (10) y código postal (5).
+  // Campos de solo dígitos con largo fijo (hoy solo el WhatsApp, 10).
   //
   // Dos cosas, en este orden:
   //   1. Filtrar al escribir: cualquier carácter que no sea número desaparece

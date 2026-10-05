@@ -35,7 +35,7 @@ const breadcrumb = {
 
     <QuoteCTA titulo="Déjanos tus datos">
       {/* El endpoint devuelve aquí con ?error=1 cuando faltan campos
-          obligatorios o el teléfono o el código postal no tienen el largo correcto. Se descubre en el cliente
+          obligatorios o el WhatsApp no tiene el largo correcto. Se descubre en el cliente
           para que la página siga siendo estática y cacheable.
           Va dentro de QuoteCTA (slot "aviso"), no en un bloque blanco antes
           de la sección: así no deja un hueco de otro color cuando está
@@ -47,8 +47,8 @@ const breadcrumb = {
         slot="aviso"
         class="border-l-4 border-accent bg-white px-5 py-4 text-[16px] leading-relaxed"
       >
-        No pudimos enviar tu solicitud: revisa que estén llenos los cinco datos, que el
-        teléfono tenga los 10 dígitos con lada y el código postal sus 5 dígitos. Si sigue fallando, llámanos al{' '}
+        No pudimos enviar tu solicitud: revisa que estén tu nombre y tu WhatsApp, y que el
+        WhatsApp tenga los 10 dígitos con lada. Si sigue fallando, llámanos al{' '}
         <a href={`tel:${PHONE_TEL}`} class="font-semibold text-brand underline underline-offset-4">
           {PHONE_DISPLAY}
         </a>.

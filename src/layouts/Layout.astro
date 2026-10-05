@@ -192,6 +192,30 @@ const gscToken = (import.meta.env.PUBLIC_GSC_VERIFICATION ?? '').trim();
       document.documentElement.setAttribute('data-reveal', '');
     </script>
 
+    {/* Origen del visitante, en TODAS las páginas. El anuncio lleva a
+        /bio?utm_..., pero el formulario puede enviarse desde /cotizar/ u otra
+        página, y en cuanto la persona toca un enlace interno los utm_* se
+        caen de la barra. Se guardan aquí al llegar y QuoteForm los lee al
+        enviar. localStorage y no sessionStorage: quien ve el anuncio, cierra
+        y vuelve al día siguiente sigue contando para ese anuncio. Si llega
+        con utm_* nuevos, se sobreescriben (cuenta el último anuncio). */}
+    <script is:inline>
+      (function () {
+        try {
+          var p = new URLSearchParams(location.search);
+          var keys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'];
+          if (keys.some(function (k) { return p.get(k); })) {
+            var o = {};
+            keys.forEach(function (k) { o[k] = (p.get(k) || '').slice(0, 160); });
+            o.landing = location.pathname;
+            o.fecha = new Date().toISOString();
+            localStorage.setItem('reverte_origen', JSON.stringify(o));
+          }
+          if (p.get('fbclid')) localStorage.setItem('reverte_fbclid', p.get('fbclid'));
+        } catch (e) {}
+      })();
+    </script>
+
     <Analytics />
   </head>
   <body class="bg-white font-sans text-ink antialiased">

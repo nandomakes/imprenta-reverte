@@ -32,6 +32,12 @@ interface Props {
    * ya la da el par: dos cajas idénticas lado a lado se leen como botones.
    */
   compacto?: boolean;
+  /**
+   * Fondo oro: el botón que lleva al formulario, para que se distinga a la
+   * primera de los que solo llevan a otra página. Mismo oro con texto navy
+   * que el botón de la tarjeta de datos (6.5:1).
+   */
+  destacado?: boolean;
 }
 
 const {
@@ -42,6 +48,7 @@ const {
   abreFormulario = false,
   tipo = 'enlace',
   compacto = false,
+  destacado = false,
 } = Astro.props;
 ---
 
@@ -50,7 +57,10 @@ const {
   {...(externo ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
   {...(abreFormulario ? { 'data-abrir-lead': true } : {})}
   class:list={[
-    'flex w-full items-center gap-3 border-2 border-ash/40 bg-white px-4 py-3.5 text-[18px] font-semibold leading-snug text-ink transition-colors hover:border-brand active:bg-paper',
+    'flex w-full items-center gap-3 border-2 px-4 py-3.5 text-[18px] font-semibold leading-snug text-ink transition-colors',
+    destacado
+      ? 'border-accent bg-accent font-bold hover:border-accentDk hover:bg-accentDk'
+      : 'border-ash/40 bg-white hover:border-brand active:bg-paper',
     compacto ? 'min-h-[56px] justify-center gap-2' : 'min-h-[64px]',
   ]}
 >

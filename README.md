@@ -212,9 +212,9 @@ Para que además llegue por correo:
 4. En Vercel, mete esas tres variables en **Settings → Environment Variables**
    y vuelve a desplegar.
 
-Campos del formulario: cinco, todos obligatorios — nombre, nombre del
-comercio, teléfono (10 dígitos), ciudad y código postal (5 dígitos). Si falta
-cualquiera, el servidor rechaza el envío y no se dispara ni el correo ni el
+Campos del formulario: nombre y WhatsApp (10 dígitos) obligatorios; nombre
+del negocio y "¿Qué quieres imprimir?" (casillas, lista en `INTERESES` de
+`src/consts.ts`) opcionales. Si falta un obligatorio, el servidor rechaza el envío y no se dispara ni el correo ni el
 aviso de Telegram. No se pide correo ni detalles
 del trabajo: el formulario capta el dato de contacto y lo demás lo pregunta un
 asesor por teléfono. Las páginas de categoría mandan además su slug en un
@@ -249,15 +249,17 @@ porque quien llega de una bio está explorando, no viene empujado por un anuncio
 
 ### Atribución
 
-`QuoteForm` acepta `origen` y `retorno`, y lleva cuatro campos ocultos `utm_*`
-que rellena un script leyendo la URL. Los UTM se guardan en `sessionStorage`
-porque el visitante de un anuncio suele navegar dentro de la página antes de
-abrir el formulario, y al primer enlace interno los parámetros desaparecen de la
-barra: sin eso se perdería la atribución justo de los leads que más tardan en
-decidirse.
+`QuoteForm` acepta `origen` y `retorno`, y lleva cuatro campos ocultos `utm_*`.
+Los rellena con lo que `Layout.astro` guardó en `localStorage`
+(`reverte_origen`, más `reverte_fbclid`) en cuanto alguien llegó con `utm_*` a
+**cualquier** página. Así un lead que entró por `/bio?utm_content=x` y envió
+desde `/cotizar/` —o volvió al día siguiente— sigue llegando con su anuncio. Si
+llega con `utm_*` nuevos, cuenta el último anuncio.
 
-`origen` y la campaña viajan al correo y al aviso de Telegram. El asunto del
-correo lleva el origen delante para poder filtrar la bandeja.
+`origen` y la campaña viajan al correo y al aviso de Telegram. En Telegram
+salen como "📍 Entró por" (la página) y "📣 Origen: meta/<utm_content>" (el
+anuncio), o "Sin anuncio (orgánico o directo)". El asunto del correo lleva el
+origen delante para poder filtrar la bandeja.
 
 En `/bio` el `?ref=fb` se lee **en el cliente**: la página es estática para que
 salga del CDN al instante, y en build `Astro.url.searchParams` viene vacío.

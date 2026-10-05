@@ -43,7 +43,13 @@ const facebook = SOCIALS.find((s) => s.icon === 'facebook');
 // aquí desde un anuncio de Instagram o Facebook ya está en esa red, así que
 // darles una caja entera a cada una era gastar el espacio que necesita la
 // tarjeta de datos para asomar en pantallas chicas.
+//
+// El primero es el formulario (oct 2026): la mitad del tráfico de la bio llega
+// de un anuncio y no debe tener que bajar hasta la tarjeta para dejar sus
+// datos. La tarjeta de abajo se queda: explica que lo van a llamar, para
+// quien no se decide con un botón. Con JS abre el modal; sin JS, /cotizar/.
 const enlaces = [
+  { emoji: '📝', texto: 'Quiero mi cotización', href: '/cotizar/', externo: false, formulario: true },
   { emoji: '📖', texto: 'Ver el catálogo', href: '/bio/catalogo/', externo: false },
   { emoji: '📍', texto: 'Cómo llegar', href: CONTACT.mapsUrl, externo: true },
   { emoji: '🌐', texto: 'Sitio web', href: '/', externo: false },
@@ -65,10 +71,11 @@ const redes = [
     <div class="w-full max-w-md">
       <div class="text-center">
         <img
-          src="/logo-letras-negras.png"
+          src="/logo-letras-negras-480.webp"
           alt={SITE.brand}
-          width="1860"
-          height="726"
+          width="480"
+          height="187"
+          fetchpriority="high"
           class="mx-auto h-14 w-auto"
         />
         <p class="mt-2 text-[16px] text-ash">Imprenta en {CONTACT.locality}, SLP</p>
@@ -85,7 +92,14 @@ const redes = [
           {
             enlaces.map((e) => (
               <li>
-                <BioBoton href={e.href} texto={e.texto} emoji={e.emoji} externo={e.externo} />
+                <BioBoton
+                  href={e.href}
+                  texto={e.texto}
+                  emoji={e.emoji}
+                  externo={e.externo}
+                  abreFormulario={e.formulario}
+                  destacado={e.formulario}
+                />
               </li>
             ))
           }
