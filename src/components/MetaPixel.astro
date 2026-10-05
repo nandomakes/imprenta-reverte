@@ -1,0 +1,82 @@
+---
+/**
+ * Meta Pixel ("Reverte web", cuenta publicitaria 1786662965609532). Sirve
+ * para que Meta cuente, por anuncio, cuántos llegaron a /cotizar/ y cuántos
+ * dejaron sus datos — y para que pueda optimizar la entrega hacia gente que
+ * sí deja sus datos.
+ *
+ * Eventos:
+ *   - PageView     → cada página (código base de Meta)
+ *   - ViewContent  → al cargar /cotizar/
+ *   - Lead         → en /gracias/, SOLO si el servidor confirmó que el aviso
+ *                    de Telegram salió bien: /api/cotizar redirige con
+ *                    `?enviado=1` únicamente en ese caso. La trampa antispam
+ *                    redirige sin él, así que los bots no cuentan.
+ *   - Contact      → al tocar un enlace tel: o de WhatsApp
+ *
+ * El ID no es secreto (va en el HTML de cualquier sitio con píxel); vive en
+ * consts.ts. Si se cambia, revisar el CSP de vercel.json: ahí están permitidos
+ * connect.facebook.net y www.facebook.com, y sin ellos el píxel no carga.
+ */
+import { META_PIXEL_ID } from '../consts';
+
+const pixelId = /^[0-9]{10,20}$/.test(META_PIXEL_ID) ? META_PIXEL_ID : '';
+---
+
+{
+  pixelId && (
+    <script is:inline define:vars={{ pixelId }}>
+      !(function (f, b, e, v, n, t, s) {
+        if (f.fbq) return;
+        n = f.fbq = function () {
+          n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+        };
+        if (!f._fbq) f._fbq = n;
+        n.push = n;
+        n.loaded = !0;
+        n.version = '2.0';
+        n.queue = [];
+        t = b.createElement(e);
+        t.async = !0;
+        t.src = v;
+        s = b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t, s);
+      })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', pixelId);
+      fbq('track', 'PageView');
+
+      if (location.pathname === '/cotizar/') {
+        fbq('track', 'ViewContent', { content_name: 'cotizar' });
+      }
+
+      // Lead: una vez por envío. Se quita `enviado=1` de la barra en el acto,
+      // para que recargar /gracias/ o volver con "atrás" no lo cuente de nuevo.
+      if (location.pathname === '/gracias/') {
+        var q = new URLSearchParams(location.search);
+        if (q.get('enviado') === '1') {
+          fbq('track', 'Lead');
+          q.delete('enviado');
+          var resto = q.toString();
+          history.replaceState(null, '', location.pathname + (resto ? '?' + resto : '') + location.hash);
+        }
+      }
+
+      // Llamadas y WhatsApp: un solo listener para todo el sitio, igual que
+      // en Analytics.astro, para cubrir también botones que se agreguen después.
+      document.addEventListener(
+        'click',
+        function (e) {
+          var a = e.target instanceof Element ? e.target.closest('a[href]') : null;
+          if (!a) return;
+          var href = a.getAttribute('href') || '';
+          if (href.indexOf('tel:') === 0) {
+            fbq('track', 'Contact', { content_name: 'llamada' });
+          } else if (/^https:\/\/(wa\.me|api\.whatsapp\.com)\//.test(href)) {
+            fbq('track', 'Contact', { content_name: 'whatsapp' });
+          }
+        },
+        { capture: true }
+      );
+    </script>
+  )
+}

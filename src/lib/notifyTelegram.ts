@@ -2,6 +2,8 @@
  * Avisa por Telegram de un prospecto nuevo, en paralelo al correo de Resend.
  *
  * NUNCA lanza: un fallo de Telegram no puede costar el lead ni el correo.
+ * Devuelve `true` solo si Telegram aceptó el mensaje: con eso /api/cotizar
+ * decide si el Meta Pixel cuenta el Lead.
  * Todo error se registra con status y cuerpo para poder diagnosticar un token
  * caducado o un chat_id que cambió.
  */
@@ -63,13 +65,13 @@ function sinToken(texto: string, token: string): string {
   return token ? texto.split(token).join('<TOKEN>') : texto;
 }
 
-export async function notifyTelegram(data: ProspectoTelegram): Promise<void> {
+export async function notifyTelegram(data: ProspectoTelegram): Promise<boolean> {
   const token = import.meta.env.TELEGRAM_BOT_TOKEN;
   const chatId = import.meta.env.TELEGRAM_CHAT_ID;
 
   if (!token || !chatId) {
     console.warn('[telegram] Sin configurar: faltan TELEGRAM_BOT_TOKEN o TELEGRAM_CHAT_ID');
-    return;
+    return false;
   }
 
   const claves = [...ORDEN, ...Object.keys(data).filter((k) => !ORDEN.includes(k))];
@@ -93,11 +95,14 @@ export async function notifyTelegram(data: ProspectoTelegram): Promise<void> {
 
     if (!res.ok) {
       console.error('[telegram] Fallo al enviar:', res.status, sinToken(await res.text(), token));
+      return false;
     }
+    return true;
   } catch (e) {
     // El error se imprime como texto, no como objeto: así pasa entero por
     // el filtro del token. Un objeto de error se serializa después, ya fuera
     // de nuestro alcance, y con él se escaparía la URL de la petición.
     console.error('[telegram] Excepción al enviar:', sinToken(String(e), token));
+    return false;
   }
 }

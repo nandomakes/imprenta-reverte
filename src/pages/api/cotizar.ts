@@ -243,5 +243,9 @@ export const POST: APIRoute = async ({ request, redirect, cookies }) => {
   }
 
   marcarEnvio(cookies);
-  return redirect('/gracias/', 303);
+  // `enviado=1` le dice al Meta Pixel de /gracias/ que cuente el Lead. Solo
+  // va si Telegram confirmó: así Meta cuenta los mismos contactos que ve el
+  // grupo, no uno de más cuando el aviso falló.
+  const telegramOk = resultados[1].status === 'fulfilled' && resultados[1].value === true;
+  return redirect(telegramOk ? '/gracias/?enviado=1' : '/gracias/', 303);
 };

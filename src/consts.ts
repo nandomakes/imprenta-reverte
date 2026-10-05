@@ -761,6 +761,12 @@ export const FAQS_HOME = [
   },
 ] as const;
 
+/**
+ * Meta Pixel "Reverte web". No es secreto: va en el HTML público. Lo usa
+ * MetaPixel.astro; vacío lo apaga sin tocar nada más.
+ */
+export const META_PIXEL_ID = '4668591913399845';
+
 export const CIUDADES_SUGERIDAS = [
   'Ciudad Valles',
   'Tamuín',

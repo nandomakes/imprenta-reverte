@@ -12,6 +12,7 @@ import '@fontsource/dm-sans/latin-700.css';
 import '../styles/global.css';
 import WhatsAppFab from '../components/WhatsAppFab.astro';
 import Analytics from '../components/Analytics.astro';
+import MetaPixel from '../components/MetaPixel.astro';
 import {
   SITE,
   CONTACT,
@@ -19,6 +20,7 @@ import {
   SOCIALS,
   CATEGORIAS,
   TESTIMONIOS,
+  META_PIXEL_ID,
 } from '../consts';
 
 interface Props {
@@ -217,6 +219,7 @@ const gscToken = (import.meta.env.PUBLIC_GSC_VERIFICATION ?? '').trim();
     </script>
 
     <Analytics />
+    <MetaPixel />
   </head>
   <body class="bg-white font-sans text-ink antialiased">
     <a
@@ -225,6 +228,19 @@ const gscToken = (import.meta.env.PUBLIC_GSC_VERIFICATION ?? '').trim();
     >
       Saltar al contenido
     </a>
+    {/* Respaldo del Meta Pixel para quien no tiene JS. Va en el <body>
+        porque dentro de un <noscript> del <head> no se permite <img>. */}
+    {META_PIXEL_ID && (
+      <noscript>
+        <img
+          height="1"
+          width="1"
+          style="display:none"
+          alt=""
+          src={`https://www.facebook.com/tr?id=${META_PIXEL_ID}&ev=PageView&noscript=1`}
+        />
+      </noscript>
+    )}
     <slot />
     {!sinWhatsApp && <WhatsAppFab />}
 
