@@ -41,13 +41,13 @@ export const CONTACT = {
   locality: 'Ciudad Valles',
   region: 'San Luis Potosí',
   regionCode: 'SLP',
-  postalCode: '79000',
+  postalCode: '79080',
   country: 'MX',
   get addressLine() {
     return `${this.street}, ${this.neighborhood}`;
   },
   get addressFull() {
-    return `${this.street}, ${this.neighborhood}, ${this.locality}, ${this.regionCode}`;
+    return `${this.street}, ${this.neighborhood}, ${this.postalCode} ${this.locality}, ${this.regionCode}`;
   },
   geo: { lat: 21.9885, lng: -99.0177 },
   hoursText: 'Lunes a viernes 9:00–18:30 · Sábado 9:00–14:00',
@@ -55,12 +55,15 @@ export const CONTACT = {
     { days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '09:00', closes: '18:30' },
     { days: ['Saturday'], opens: '09:00', closes: '14:00' },
   ],
+  // Con el place ID, "Cómo llegar" y "Ver reseñas" abren la ficha exacta de
+  // Google Business en vez de una búsqueda por texto.
   mapsUrl:
     'https://www.google.com/maps/search/?api=1&query=' +
-    encodeURIComponent('Imprenta Reverte, Blvd. México - Laredo 86-SUR, Zona Centro, Ciudad Valles, SLP'),
+    encodeURIComponent('Imprenta Reverte, Ciudad Valles') +
+    '&query_place_id=ChIJI8JOdlFt1oURxQMZeLo7XT0',
   mapEmbedUrl:
     'https://maps.google.com/maps?q=' +
-    encodeURIComponent('Blvd. Mexico-Laredo 86 Sur, Zona Centro, Ciudad Valles, SLP') +
+    encodeURIComponent('Blvd. Mexico - Laredo 86-SUR, Zona Centro, 79080 Cdad. Valles, S.L.P.') +
     '&t=&z=15&ie=UTF8&iwloc=&output=embed',
 } as const;
 
@@ -632,7 +635,7 @@ export const PROCESO = [
 export const EXPERIENCIA = {
   titulo: 'Una imprenta de Ciudad Valles, para los negocios de Ciudad Valles',
   texto:
-    'Estamos sobre el Blvd. México - Laredo, en plena Zona Centro. Atendemos consultorios, restaurantes, escuelas, ferreterías y constructoras: dieciséis categorías de catálogo, tiraje mínimo de una pieza y la entrega en la fecha que prometimos.',
+    'Estamos sobre el Blvd. México - Laredo, en plena Zona Centro. Atendemos consultorios, restaurantes, escuelas, ferreterías y constructoras: diecisiete categorías de catálogo, tiraje mínimo de una pieza y la entrega en la fecha que prometimos.',
   cta: 'Hablemos',
   href: '/contacto/',
 } as const;

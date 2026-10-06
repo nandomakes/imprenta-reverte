@@ -99,7 +99,8 @@ const negocio = {
     reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
     reviewBody: t.texto,
   })),
-  sameAs: SOCIALS.map((s) => s.href),
+  hasMap: CONTACT.mapsUrl,
+  sameAs: [...SOCIALS.map((s) => s.href), CONTACT.mapsUrl],
   hasOfferCatalog: {
     '@type': 'OfferCatalog',
     name: 'Catálogo de servicios de imprenta',

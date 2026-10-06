@@ -39,7 +39,7 @@ Sitio informativo: no es tienda en línea, no hay carrito ni precios publicados.
 
 - Nombre: ${SITE.brand}
 - Giro: imprenta (papelería comercial y médica, gran formato, textil, grabado láser, sellos, eventos)
-- Dirección: ${CONTACT.addressFull}, C.P. ${CONTACT.postalCode}, México
+- Dirección: ${CONTACT.addressFull}, México
 - Teléfono y WhatsApp: ${PHONE_DISPLAY} (${PHONE_TEL})
 - Correo: ${EMAIL}
 - Horario: ${CONTACT.hoursText}

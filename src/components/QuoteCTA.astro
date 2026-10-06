@@ -57,8 +57,7 @@ const tieneAviso = Astro.slots.has('aviso');
         <li class="flex gap-3">
           <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" aria-hidden="true"></span>
           <span>
-            <strong class="font-semibold text-ink">En persona:</strong> {CONTACT.addressLine},
-            {CONTACT.locality}
+            <strong class="font-semibold text-ink">En persona:</strong> {CONTACT.addressFull}
           </span>
         </li>
       </ul>

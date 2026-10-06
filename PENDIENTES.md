@@ -5,6 +5,21 @@ se borra de aquí (el historial ya está en git).
 
 ## Bloqueado: necesito datos o accesos tuyos
 
+- [ ] **Ficha de Google Business (auditoría local del 2026-10-05).** Todo
+      esto se hace en el panel de GBP, no en el código:
+      - Sitio web de la ficha → `https://www.imprentareverte.com` (hoy manda
+        a revertefacturaelectronica.com, que ya no existe).
+      - La web se queda con el teléfono 481 100 1369 y el sábado 9:00–14:00
+        (decisión del 2026-10-05): hay que cambiar la **ficha** para que
+        coincida (hoy dice 481 381 6663 y sábado hasta 14:30).
+      - Dirección oficial: Blvd. Mexico - Laredo 86-SUR, Zona Centro, 79080
+        Cdad. Valles, S.L.P. (la web ya usa el CP 79080).
+      - Falta confirmar el **pin del mapa**: schema 21.9885, -99.0177 vs
+        ficha 21.9794, -99.0041 (~1.7 km). Se cambia en `CONTACT.geo`
+        (`src/consts.ts`).
+      - Categorías secundarias, 30–50 fotos reales, Google Posts semanales y
+        plan de reseñas (hoy 3.6★ · 19 reseñas, 5 de 1★: responderlas).
+
 - [ ] **Envío por correo (Resend) — decidir y configurar.** Hoy el sitio avisa
       SOLO por Telegram: `QUOTE_TO_EMAIL` y `QUOTE_FROM_EMAIL` están vacíos en
       `.env`, y sin ellos el paso del correo se salta (el lead no se pierde —
