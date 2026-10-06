@@ -14,9 +14,6 @@ se borra de aquí (el historial ya está en git).
         coincida (hoy dice 481 381 6663 y sábado hasta 14:30).
       - Dirección oficial: Blvd. Mexico - Laredo 86-SUR, Zona Centro, 79080
         Cdad. Valles, S.L.P. (la web ya usa el CP 79080).
-      - Falta confirmar el **pin del mapa**: schema 21.9885, -99.0177 vs
-        ficha 21.9794, -99.0041 (~1.7 km). Se cambia en `CONTACT.geo`
-        (`src/consts.ts`).
       - Categorías secundarias, 30–50 fotos reales, Google Posts semanales y
         plan de reseñas (hoy 3.6★ · 19 reseñas, 5 de 1★: responderlas).
 

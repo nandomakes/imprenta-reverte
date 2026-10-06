@@ -49,7 +49,8 @@ export const CONTACT = {
   get addressFull() {
     return `${this.street}, ${this.neighborhood}, ${this.postalCode} ${this.locality}, ${this.regionCode}`;
   },
-  geo: { lat: 21.9885, lng: -99.0177 },
+  // Pin exacto de la ficha de Google Business (no el geocodificado de la dirección).
+  geo: { lat: 21.9793651, lng: -99.0040941 },
   hoursText: 'Lunes a viernes 9:00–18:30 · Sábado 9:00–14:00',
   hoursSpec: [
     { days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '09:00', closes: '18:30' },
@@ -61,10 +62,11 @@ export const CONTACT = {
     'https://www.google.com/maps/search/?api=1&query=' +
     encodeURIComponent('Imprenta Reverte, Ciudad Valles') +
     '&query_place_id=ChIJI8JOdlFt1oURxQMZeLo7XT0',
-  mapEmbedUrl:
-    'https://maps.google.com/maps?q=' +
-    encodeURIComponent('Blvd. Mexico - Laredo 86-SUR, Zona Centro, 79080 Cdad. Valles, S.L.P.') +
-    '&t=&z=15&ie=UTF8&iwloc=&output=embed',
+  // Por coordenadas y no por dirección: Google geocodifica la dirección a
+  // ~1.7 km del local real.
+  get mapEmbedUrl() {
+    return `https://maps.google.com/maps?q=${this.geo.lat},${this.geo.lng}&t=&z=17&ie=UTF8&iwloc=&output=embed`;
+  },
 } as const;
 
 export const SOCIALS: { label: string; href: string; icon: 'facebook' | 'whatsapp' | 'instagram' }[] = [
