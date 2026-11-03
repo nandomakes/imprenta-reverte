@@ -286,9 +286,10 @@ que debe describir lo que se ve.
 
 ## Qué falta / para cuando el negocio lo defina
 
-- **Dominio**: `SITE.url` en `src/consts.ts` apunta a
-  `https://www.imprentareverte.com`. Cámbialo si es otro, y también la línea
-  `Sitemap:` de `public/robots.txt`.
+- **Dominio**: el canónico es el apex `https://imprentareverte.com`
+  (`SITE.url` en `src/consts.ts` y `site` en `astro.config.mjs`).
+  `www.imprentareverte.com` redirige con 301 al apex (`vercel.json`).
+  `public/robots.txt` apunta a `https://imprentareverte.com/sitemap.xml`.
 - **Redes sociales**: `SOCIALS` tiene un enlace genérico a Facebook. Pon el
   perfil real o quita la entrada.
 - **Horario**: `CONTACT.hoursText` y `CONTACT.hoursSpec` llevan un horario

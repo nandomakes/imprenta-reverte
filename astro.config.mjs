@@ -1,14 +1,37 @@
 // @ts-check
+import { copyFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
 import sitemap from '@astrojs/sitemap';
 import vercel from '@astrojs/vercel';
 
+/**
+ * @astrojs/sitemap escribe sitemap-index.xml y sitemap-0.xml (el urlset).
+ * /sitemap.xml es la ruta que se pide por convención y respondía 404.
+ * Esta integración corre después y copia el urlset — las URLs reales, con
+ * el apex de `site` — a ese nombre.
+ */
+function sitemapXml() {
+  return {
+    name: 'sitemap-xml',
+    hooks: {
+      'astro:build:done': async (/** @type {{ dir: URL }} */ { dir }) => {
+        const out = fileURLToPath(dir);
+        await copyFile(join(out, 'sitemap-0.xml'), join(out, 'sitemap.xml'));
+      },
+    },
+  };
+}
+
 // Static by default — every catalog page is prerendered HTML. The Vercel
 // adapter exists for exactly one route: /api/cotizar, which opts out of
 // prerendering because it has to hold the Resend key server-side.
+// El canónico es el apex (sin www). www.imprentareverte.com redirige con 301
+// en vercel.json. SITE.url en src/consts.ts tiene que coincidir con `site`.
 export default defineConfig({
-  site: 'https://www.imprentareverte.com',
+  site: 'https://imprentareverte.com',
   output: 'static',
   adapter: vercel(),
   integrations: [
@@ -20,6 +43,8 @@ export default defineConfig({
       // Sin lastmod: poner la fecha del build a TODAS las páginas le dice a
       // Google que todo cambió en cada despliegue, y acaba ignorando la señal.
     }),
+    // Después de sitemap(), para copiar sitemap-0.xml cuando ya existe.
+    sitemapXml(),
   ],
   build: { inlineStylesheets: 'auto' },
   /**
@@ -29,7 +54,7 @@ export default defineConfig({
    * El motivo está en `validateHost()` de Astro: si `allowedDomains` viene
    * vacío, descarta el `Host` real de la petición y cae a "localhost". La
    * protección CSRF entonces compara el `Origin` que manda el navegador
-   * (https://www.imprentareverte.com) contra https://localhost, no coinciden
+   * (https://imprentareverte.com) contra https://localhost, no coinciden
    * y responde 403. En local nunca se ve porque ahí el host SÍ es localhost.
    *
    * Declarando los dominios reales, el host se acepta, el origen coincide y
