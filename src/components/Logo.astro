@@ -8,15 +8,17 @@ const { tono = 'color', class: clase = '' } = Astro.props;
 
 // Dos archivos, no un filtro CSS: el logo con letras negras es el principal y
 // solo se lee sobre fondo claro; sobre el azul del footer va el de letras
-// blancas. El original mide 2051x767 (≈2.67:1); se sirve a alto fijo.
-const src = tono === 'blanco' ? '/logo-letras-blancas.png' : '/logo-letras-negras.png';
+// blancas. El original es 1860×726 (310:121). Se sirve un WebP a 620×242,
+// el mismo ratio, en vez del PNG de ~200–290 KB. width y height son los
+// píxeles del archivo para que la caja no se deforme.
+const src = tono === 'blanco' ? '/logo-letras-blancas.webp' : '/logo-letras-negras.webp';
 ---
 
 <img
   src={src}
   alt="Imprenta Reverte"
-  width="2051"
-  height="767"
+  width="620"
+  height="242"
   decoding="async"
   class={`h-11 w-auto shrink-0 sm:h-12 ${clase}`}
 />

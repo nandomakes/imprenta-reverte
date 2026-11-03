@@ -17,7 +17,7 @@ export const SITE = {
   role: 'Imprenta',
   city: 'Ciudad Valles',
   region: 'San Luis Potosí',
-  url: 'https://www.imprentareverte.com',
+  url: 'https://imprentareverte.com',
   themeColor: '#0B2545',
   title: 'Imprenta Reverte | Imprenta en Ciudad Valles, SLP',
   description:
@@ -545,7 +545,7 @@ export function categoriaPorSlug(slug: string): Categoria | undefined {
 /** 1. Hero (slider). */
 /** 1. Hero único y estático: una sola pieza a pantalla completa, sin carrusel. */
 export const HERO = {
-  script: 'Para negocios con historia…',
+  script: 'Imprenta en Ciudad Valles para negocios con historia…',
   titulo: 'Impresión que sostiene tu día a día',
   cta: 'Explora el catálogo',
   href: '/catalogo/',

@@ -7,7 +7,7 @@ se borra de aquí (el historial ya está en git).
 
 - [ ] **Ficha de Google Business (auditoría local del 2026-10-05).** Todo
       esto se hace en el panel de GBP, no en el código:
-      - Sitio web de la ficha → `https://www.imprentareverte.com` (hoy manda
+      - Sitio web de la ficha → `https://imprentareverte.com` (hoy manda
         a revertefacturaelectronica.com, que ya no existe).
       - La web se queda con el teléfono 481 100 1369 y el sábado 9:00–14:00
         (decisión del 2026-10-05): hay que cambiar la **ficha** para que
@@ -34,10 +34,12 @@ se borra de aquí (el historial ya está en git).
       en Vercel `PUBLIC_GA_ID` (y `PUBLIC_GSC_VERIFICATION` si se verifica
       por etiqueta HTML) y volver a desplegar. Ver `.env.example`.
 
-- [ ] **Dominio sin www.** `imprentareverte.com` (sin www) responde 200 con
-      la misma página en vez de redirigir a `www.`. El canonical evita el
-      contenido duplicado, pero lo correcto es que en Vercel → Settings →
-      Domains el dominio sin www quede como "Redirect to www" (308).
+- [ ] **Dominio en el panel de Vercel (no es DNS).** El código ya trata el
+      apex como canónico: canonical, sitemap, JSON-LD y `robots.txt` usan
+      `https://imprentareverte.com`, y `vercel.json` responde 301 de
+      `www.imprentareverte.com` hacia ese apex. Falta confirmar en
+      Settings → Domains que el dominio principal es el apex y que NO está
+      "Redirect to www": esa opción pelearía con el 301 y haría un bucle.
 
 - [ ] **Actualizar Astro 5 → 7.** `npm audit` marca vulnerabilidades en Astro
       5 que solo se corrigen en la 7 (con Tailwind 4 y el adaptador de Vercel
@@ -101,11 +103,6 @@ se borra de aquí (el historial ya está en git).
       alguno — dime si prefieres que los borre en vez de dejarlos.
 
 ## Mejoras detectadas, sin urgencia
-
-- [ ] **Los PNG del logo pesan.** `logo-letras-negras.png` son ~281 KB y
-      `logo-letras-blancas.png` ~204 KB, para mostrarse a 123x48 px. Pasarlos a
-      SVG (es un logo vectorial de origen) o a WebP dejaría el header bastante
-      más ligero.
 
 - [ ] **`og-image.png` todavía es el genérico.** Convendría una imagen de
       compartir con el logo real, ahora que lo tenemos.
