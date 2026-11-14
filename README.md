@@ -287,8 +287,9 @@ que debe describir lo que se ve.
 ## Qué falta / para cuando el negocio lo defina
 
 - **Dominio**: `SITE.url` en `src/consts.ts` apunta a
-  `https://www.imprentareverte.com`. Cámbialo si es otro, y también la línea
-  `Sitemap:` de `public/robots.txt`.
+  `https://imprenta-reverte.vercel.app` (sin barra final, para que las
+  rutas concatenadas no doblen la barra). Cámbialo si es otro, y también la
+  línea `Sitemap:` de `public/robots.txt` y `site` en `astro.config.mjs`.
 - **Redes sociales**: `SOCIALS` tiene un enlace genérico a Facebook. Pon el
   perfil real o quita la entrada.
 - **Horario**: `CONTACT.hoursText` y `CONTACT.hoursSpec` llevan un horario

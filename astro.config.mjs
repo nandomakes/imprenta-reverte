@@ -8,7 +8,7 @@ import vercel from '@astrojs/vercel';
 // adapter exists for exactly one route: /api/cotizar, which opts out of
 // prerendering because it has to hold the Resend key server-side.
 export default defineConfig({
-  site: 'https://www.imprentareverte.com',
+  site: 'https://imprenta-reverte.vercel.app',
   output: 'static',
   adapter: vercel(),
   integrations: [
@@ -29,19 +29,18 @@ export default defineConfig({
    * El motivo está en `validateHost()` de Astro: si `allowedDomains` viene
    * vacío, descarta el `Host` real de la petición y cae a "localhost". La
    * protección CSRF entonces compara el `Origin` que manda el navegador
-   * (https://www.imprentareverte.com) contra https://localhost, no coinciden
+   * (https://imprenta-reverte.vercel.app) contra https://localhost, no coinciden
    * y responde 403. En local nunca se ve porque ahí el host SÍ es localhost.
    *
-   * Declarando los dominios reales, el host se acepta, el origen coincide y
-   * la protección CSRF sigue funcionando — que es el punto: el fallo era un
+   * Declarando el host real, el host se acepta, el origen coincide y la
+   * protección CSRF sigue funcionando — que es el punto: el fallo era un
    * falso positivo, no una protección de más que convenga apagar.
+   *
+   * El dominio propio se retiró: el sitio vive solo en Vercel. El comodín
+   * `**.vercel.app` cubre el host de producción y las vistas previas.
    */
   security: {
     allowedDomains: [
-      { hostname: 'imprentareverte.com', protocol: 'https' },
-      { hostname: '**.imprentareverte.com', protocol: 'https' },
-      // Los despliegues de vista previa de Vercel, para poder probar el
-      // formulario antes de que el cambio llegue al dominio real.
       { hostname: '**.vercel.app', protocol: 'https' },
     ],
   },
