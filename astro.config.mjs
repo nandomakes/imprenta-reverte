@@ -49,7 +49,15 @@ export default defineConfig({
   // técnica (ver src/data/catalogo.ts). Varias rutas viejas se dividieron en
   // dos o más nuevas; cada redirect apunta a la que se queda con la mayor
   // parte del contenido, para no perder un enlace que ya estuviera indexado.
+  //
+  // /sitemap.xml es la ruta que piden Google y otras herramientas por
+  // convención, pero @astrojs/sitemap publica el índice en /sitemap-index.xml
+  // (la URL que declara robots.txt). Un 301 permanente une las dos.
   redirects: {
+    '/sitemap.xml': {
+      status: 301,
+      destination: '/sitemap-index.xml',
+    },
     '/catalogo/papeleria-comercial-corporativa/': '/catalogo/notas-formatos-negocio/',
     '/catalogo/publicidad-identidad-visual/': '/catalogo/impresion-comercial/',
     '/catalogo/impresion-gran-formato-senaletica/': '/catalogo/publicidad-exterior-gran-formato/',

@@ -21,7 +21,7 @@ export const SITE = {
   themeColor: '#0B2545',
   title: 'Imprenta Reverte | Imprenta en Ciudad Valles, SLP',
   description:
-    'Imprenta en Ciudad Valles, SLP. Papelería comercial y médica, lonas y gran formato, playeras, grabado láser, sellos e impresión para eventos. Cotiza ahora al 481 100 1369.',
+    'Imprenta en Ciudad Valles, S.L.P. Papelería comercial y médica, lonas, playeras, grabado láser y sellos. Cotiza ahora al 481 100 1369.',
   tagline: 'Transforma tu idea en impreso, en cualquier momento, en cualquier lugar.',
 } as const;
 
