@@ -17,7 +17,7 @@ export const SITE = {
   role: 'Imprenta',
   city: 'Ciudad Valles',
   region: 'San Luis Potosí',
-  url: 'https://www.imprentareverte.com',
+  url: 'https://imprenta-reverte.vercel.app',
   themeColor: '#0B2545',
   title: 'Imprenta Reverte | Imprenta en Ciudad Valles, SLP',
   description:
